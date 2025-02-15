@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Investment Group - Professional Real Estate Investment</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <img src="images/phoenix-logo.svg" alt="PhoenixBird Capital Logo" class="logo-img">
+                <h1>PhoenixBird Capital</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#investments">Investments</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+                <a href="#login" class="login-btn">Login</a>
+            </div>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero">
+            <div class="hero-content">
+                <h1>Institutional Quality Real Estate Investment</h1>
+                <p>Access premium real estate opportunities with proven returns</p>
+                <div class="cta-buttons">
+                    <a href="#invest" class="primary-btn">Start Investing</a>
+                    <a href="#learn" class="secondary-btn">Learn More</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="features">
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Premium Returns</h3>
+                    <p>Access institutional-quality investments with competitive returns</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Secure Investment</h3>
+                    <p>Your investments are backed by real, tangible assets</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-user-tie"></i>
+                    <h3>Expert Management</h3>
+                    <p>Professional team with decades of real estate experience</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="investment-opportunities">
+            <h2>Current Investment Opportunities</h2>
+            <div class="opportunities-grid">
+                <!-- Investment cards will be dynamically loaded -->
+            </div>
+            <div class="view-all-btn">
+                <button onclick="showAllInvestments()">View All Opportunities</button>
+            </div>
+        </section>
+
+        <section id="newsletter" class="newsletter-section">
+            <div class="newsletter-container">
+                <h2>Stay Updated</h2>
+                <p>Subscribe to our newsletter for exclusive investment opportunities and market insights.</p>
+                <form id="newsletter-form" class="newsletter-form">
+                    <div class="newsletter-input-group">
+                        <input type="email" id="newsletter-email" required placeholder="Your Email Address">
+                        <button type="submit">Subscribe</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section id="dashboard" class="dashboard-section">
+            <div class="dashboard-header">
+                <h2>Investor Dashboard</h2>
+                <div class="dashboard-nav">
+                    <button class="dashboard-tab active" data-tab="overview">Overview</button>
+                    <button class="dashboard-tab" data-tab="investments">My Investments</button>
+                    <button class="dashboard-tab" data-tab="documents">Documents</button>
+                    <button class="dashboard-tab" data-tab="profile">Profile</button>
+                </div>
+            </div>
+            
+            <div class="dashboard-content">
+                <div class="dashboard-panel active" id="overview-panel">
+                    <div class="dashboard-stats">
+                        <div class="stat-card">
+                            <h3>Total Invested</h3>
+                            <p class="stat-value">$250,000</p>
+                            <p class="stat-change positive">+5.2% this month</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Active Investments</h3>
+                            <p class="stat-value">3</p>
+                            <p class="stat-subtext">Across 2 properties</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Total Returns</h3>
+                            <p class="stat-value">$32,450</p>
+                            <p class="stat-change positive">+12.3% YTD</p>
+                        </div>
+                    </div>
+                    <div class="recent-activity">
+                        <h3>Recent Activity</h3>
+                        <div class="activity-list">
+                            <!-- Activity items will be dynamically loaded -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-panel" id="investments-panel">
+                    <div class="investment-portfolio">
+                        <!-- Portfolio items will be dynamically loaded -->
+                    </div>
+                </div>
+                
+                <div class="dashboard-panel" id="documents-panel">
+                    <div class="documents-list">
+                        <!-- Document items will be dynamically loaded -->
+                    </div>
+                </div>
+                
+                <div class="dashboard-panel" id="profile-panel">
+                    <div class="profile-info">
+                        <form id="profile-form">
+                            <div class="form-group">
+                                <label for="full-name">Full Name</label>
+                                <input type="text" id="full-name" value="John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" value="+1 (555) 123-4567">
+                            </div>
+                            <div class="form-group">
+                                <label for="investment-preferences">Investment Preferences</label>
+                                <select id="investment-preferences" multiple>
+                                    <option value="office" selected>Office Properties</option>
+                                    <option value="residential">Residential Properties</option>
+                                    <option value="retail" selected>Retail Properties</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="save-profile-btn">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <section id="contact" class="contact-section">
+        <div class="contact-container">
+            <h2>Get in Touch</h2>
+            <p>Ready to start your investment journey? Contact us today.</p>
+            <form id="contact-form" class="contact-form">
+                <div class="form-group">
+                    <input type="text" id="name" name="name" required placeholder="Your Name">
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" name="email" required placeholder="Your Email">
+                </div>
+                <div class="form-group">
+                    <select id="investment-interest" name="investment-interest" required>
+                        <option value="" disabled selected>Investment Interest</option>
+                        <option value="office">Office Properties</option>
+                        <option value="residential">Residential Properties</option>
+                        <option value="retail">Retail Properties</option>
+                        <option value="mixed">Mixed Use Properties</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="number" id="investment-amount" name="investment-amount" required placeholder="Intended Investment Amount ($)">
+                </div>
+                <div class="form-group">
+                    <textarea id="message" name="message" required placeholder="Your Message"></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>PhoenixBird Capital</h3>
+                <p>Professional real estate investment opportunities for accredited investors.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#investments">Investments</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>1234 Investment Ave<br>Suite 100<br>New York, NY 10001</p>
+                <p>Phone: (555) 123-4567</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 PhoenixBird Capital. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

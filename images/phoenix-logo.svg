@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="80" version="1.1" viewBox="0 0 400 160">
+  <g transform="translate(0,-10)">
+    <path fill="#FF4B2B" d="M80,40 C80,40 90,30 100,40 C110,50 120,60 130,50 C140,40 150,30 160,40 C170,50 180,60 190,50 C200,40 210,30 220,40 L200,80 L160,100 L120,80 Z"/>
+    <path fill="#FF4B2B" d="M120,80 L160,100 L200,80 C180,90 160,90 140,85 C120,80 100,70 120,80 Z"/>
+    <circle fill="#FF4B2B" cx="140" cy="45" r="5"/>
+  </g>
+</svg>
