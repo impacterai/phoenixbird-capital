@@ -1,0 +1,174 @@
+.signup-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 2rem;
+}
+
+.signup-box {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 480px;
+    padding: 2.5rem;
+}
+
+.signup-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.signup-logo {
+    height: 60px;
+    margin-bottom: 1.5rem;
+}
+
+.signup-header h1 {
+    font-size: 1.75rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.signup-header p {
+    color: #6c757d;
+    font-size: 1rem;
+}
+
+.form-step {
+    transition: all 0.3s ease;
+}
+
+.form-step h2 {
+    font-size: 1.25rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+.investor-status-question {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.investor-status-question p {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.radio-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.radio-option {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 2px solid #e9ecef;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.radio-option:hover {
+    border-color: var(--secondary-color);
+}
+
+.radio-option input[type="radio"] {
+    display: none;
+}
+
+.radio-option input[type="radio"]:checked + .radio-label {
+    color: var(--secondary-color);
+    font-weight: 500;
+}
+
+.radio-option input[type="radio"]:checked + .radio-label::before {
+    border-color: var(--secondary-color);
+    background-color: var(--secondary-color);
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    font-size: 1rem;
+    color: var(--text-color);
+}
+
+.info-text {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.info-text i {
+    color: var(--secondary-color);
+    margin-top: 0.2rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.form-group input:focus {
+    border-color: var(--secondary-color);
+    outline: none;
+}
+
+.next-btn, .submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.next-btn:hover, .submit-btn:hover {
+    background: var(--accent-color);
+}
+
+.signup-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #6c757d;
+}
+
+.signup-footer a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.signup-footer a:hover {
+    color: var(--accent-color);
+}
+
+.hidden {
+    display: none;
+}
