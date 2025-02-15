@@ -4,19 +4,5 @@
       "route": "/*",
       "serve": "/index.html"
     }
-  ],
-  "navigationFallback": {
-    "rewrite": "/index.html"
-  },
-  "mimeTypes": {
-    ".html": "text/html",
-    ".json": "application/json",
-    ".css": "text/css",
-    ".js": "text/javascript",
-    ".png": "image/png",
-    ".jpg": "image/jpeg",
-    ".gif": "image/gif",
-    ".svg": "image/svg+xml",
-    ".ico": "image/x-icon"
-  }
+  ]
 }
