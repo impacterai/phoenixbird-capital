@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#2C3E50"/>
-      <stop offset="100%" style="stop-color:#3498DB"/>
-    </linearGradient>
-  </defs>
+<svg width="500" height="200" viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Phoenix Bird -->
+  <g transform="translate(0, 20)">
+    <path d="M120,80 C140,60 150,40 140,30 C160,40 170,60 165,80 C180,60 190,40 185,30 C200,50 200,70 190,90 C180,110 160,120 140,110 C120,100 110,90 120,80 Z" 
+          fill="#FF4B2B" />
+    <path d="M130,70 C140,60 145,50 140,45 C150,50 155,60 152,70 C160,60 165,50 162,45 C170,55 170,65 165,75 C160,85 150,90 140,85 C130,80 125,75 130,70 Z" 
+          fill="#FF6B45" />
+  </g>
   
-  <!-- Main Circle -->
-  <circle cx="100" cy="100" r="90" fill="white" stroke="url(#logoGradient)" stroke-width="4"/>
+  <!-- Phoenix Bird Text -->
+  <text x="220" y="100" font-family="Arial, sans-serif" font-size="72" font-weight="normal" fill="#000000">
+    Phoenix Bird
+  </text>
   
-  <!-- P Letter -->
-  <path d="M70,60 L70,140 M70,60 C110,60 110,100 70,100" 
-        fill="none" stroke="url(#logoGradient)" stroke-width="8" stroke-linecap="round"/>
-  
-  <!-- B Letter -->
-  <path d="M130,60 L130,140 M130,60 C160,60 160,85 130,85 M130,85 C170,85 170,115 130,115" 
-        fill="none" stroke="url(#logoGradient)" stroke-width="8" stroke-linecap="round"/>
-  
-  <!-- Capital Text -->
-  <text x="100" y="170" text-anchor="middle" font-family="Arial" font-size="14" fill="#2C3E50">CAPITAL</text>
+  <!-- Underline -->
+  <line x1="220" y1="120" x2="480" y2="120" stroke="#000000" stroke-width="2"/>
 </svg>
