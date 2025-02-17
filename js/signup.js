@@ -11,7 +11,7 @@ function nextStep() {
     document.getElementById('step2').classList.remove('hidden');
 }
 
-document.getElementById('signupForm').addEventListener('submit', function(e) {
+async function handleSignup(e) {
     e.preventDefault();
     
     const formData = {
@@ -22,9 +22,20 @@ document.getElementById('signupForm').addEventListener('submit', function(e) {
         phone: document.getElementById('phone').value
     };
 
-    // Here you would typically send the data to your backend
-    console.log('Form submitted:', formData);
-    
-    // For now, just show a success message
-    alert('Thank you for signing up! We will contact you soon.');
-});
+    try {
+        // Here you would typically send the data to your backend
+        console.log('Form submitted:', formData);
+        
+        // Store user data in localStorage (temporary solution)
+        localStorage.setItem('user', JSON.stringify({
+            ...formData,
+            isAuthenticated: true
+        }));
+        
+        // Redirect to investments page
+        window.location.href = 'investments.html';
+    } catch (error) {
+        console.error('Signup error:', error);
+        alert('An error occurred during signup. Please try again.');
+    }
+}

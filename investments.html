@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Opportunities - PhoenixBird Capital</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="js/auth.js"></script>
+</head>
+<body onload="checkAuth(); updateAuthUI();">
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="index.html">PhoenixBird Capital</a>
+        </div>
+        <div class="nav-links">
+            <a href="about.html">About</a>
+            <a href="investments.html" class="active">Invest</a>
+            <a href="faq.html">FAQ</a>
+            <a href="blog.html">Blog</a>
+            <a href="contact.html">Contact</a>
+            <a href="#" class="nav-account">My Account</a>
+        </div>
+    </nav>
+
+    <main class="investment-opportunities">
+        <h1>Investment Opportunities</h1>
+        
+        <div class="investment-grid">
+            <!-- Fund 1 -->
+            <div class="investment-card">
+                <div class="investment-logo">
+                    <img src="images/phoenixbird-logo.png" alt="PhoenixBird Logo">
+                </div>
+                <h2>PhoenixBird Capital Fund 1, LLC</h2>
+                <p class="investment-description">We aim to launch a $100M real estate fund to opportunistically capitalize on market downturns.</p>
+                <div class="investment-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Minimum Investment</span>
+                        <span class="detail-value">$75,000</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Target Raise</span>
+                        <span class="detail-value">$100M</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Current Raise</span>
+                        <span class="detail-value">$25M</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Number of Investors</span>
+                        <span class="detail-value">42</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: 25%;"></div>
+                        <span class="progress-text">25% Raised</span>
+                    </div>
+                </div>
+                <button class="invest-button">Invest Now</button>
+            </div>
+
+            <!-- Fund 2 -->
+            <div class="investment-card">
+                <div class="investment-logo">
+                    <img src="images/phoenixbird-logo.png" alt="PhoenixBird Logo">
+                </div>
+                <h2>PhoenixBird Capital Opportunistic Fund 1, LLC</h2>
+                <p class="investment-description">We aim to buy single family homes at different stages of foreclosure below replacement costs.</p>
+                <div class="investment-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Minimum Investment</span>
+                        <span class="detail-value">$25,000</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Target Raise</span>
+                        <span class="detail-value">$50M</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Current Raise</span>
+                        <span class="detail-value">$15M</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Number of Investors</span>
+                        <span class="detail-value">68</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: 30%;"></div>
+                        <span class="progress-text">30% Raised</span>
+                    </div>
+                </div>
+                <button class="invest-button">Invest Now</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 PhoenixBird Capital. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
