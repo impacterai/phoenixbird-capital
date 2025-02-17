@@ -810,9 +810,10 @@ footer {
 
 .investment-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(2, minmax(350px, 400px));
     gap: 2rem;
     padding: 1rem;
+    justify-content: center;
 }
 
 .investment-card {
@@ -924,17 +925,29 @@ footer {
     font-weight: 500;
 }
 
+@media (max-width: 1024px) {
+    .investment-grid {
+        grid-template-columns: minmax(350px, 400px);
+    }
+}
+
 @media (max-width: 768px) {
     .investment-opportunities {
         padding: 2rem 1rem;
     }
 
     .investment-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(300px, 350px);
+        padding: 0;
     }
 
     .investment-card {
         padding: 1.5rem;
+    }
+
+    .investment-opportunities h1 {
+        font-size: 2rem;
+        margin-bottom: 2rem;
     }
 }
     animation: slideIn 0.3s ease-out;
