@@ -795,73 +795,78 @@ footer {
 
 /* Investment Opportunities Page */
 .investment-opportunities {
-    padding: 2rem calc(50% - 400px);
-    min-height: calc(100vh - 80px);
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px;
 }
 
 .investment-item {
-    margin-bottom: 2rem;
-    width: 800px;
-    margin-left: auto;
-    margin-right: auto;
+    width: 500px;
+    margin: 0 auto 40px;
 }
 
 .investment-logo {
-    width: 80px;
-    margin-bottom: 1rem;
-    display: block;
+    width: 60px;
+    height: 60px;
 }
 
 .investment-logo img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: contain;
 }
 
 .investment-item h2 {
+    margin: 15px 0 10px;
     color: var(--primary-color);
-    font-size: 1.2rem;
+    font-size: 16px;
     font-weight: 600;
-    margin-bottom: 0.5rem;
 }
 
 .investment-description {
+    margin: 10px 0;
+    font-size: 14px;
     color: var(--text-color);
-    font-size: 0.9rem;
-    margin: 0.5rem 0;
-}
-
-.investment-details p {
-    margin: 0.25rem 0;
-    color: var(--text-color);
-    font-size: 0.9rem;
-}
-
-.invest-button {
-    margin-top: 1rem;
-    padding: 0.25rem 1rem;
-    background: var(--secondary-color);
-    color: var(--white);
-    border: none;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    display: block;
-}
-
-hr {
-    margin: 2rem auto;
-    border: none;
-    height: 1px;
-    background: var(--secondary-color);
-    opacity: 0.3;
-    width: 800px;
+    line-height: 1.4;
 }
 
 .detail {
-    margin: 0.25rem 0;
-    font-size: 0.9rem;
+    margin: 5px 0;
+    font-size: 14px;
     color: var(--text-color);
-    line-height: 1.4;
+}
+
+.invest-button {
+    margin-top: 15px;
+    padding: 5px 15px;
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+hr {
+    width: 500px;
+    margin: 30px auto;
+    border: none;
+    height: 1px;
+    background: var(--secondary-color);
+    opacity: 0.2;
+}
+
+@media (max-width: 600px) {
+    .investment-opportunities {
+        padding: 20px;
+    }
+
+    .investment-item,
+    hr {
+        width: 100%;
+    }
 }
 
 @media (max-width: 900px) {
