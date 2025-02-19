@@ -9,6 +9,22 @@ router.post('/register', async (req, res) => {
     try {
         const { email, password, firstName, lastName, phone, isAccredited } = req.body;
         
+        // Validate required fields
+        if (!email || !password || !firstName || !lastName) {
+            return res.status(400).json({ error: 'All required fields must be provided' });
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ error: 'Please provide a valid email address' });
+        }
+
+        // Validate password length
+        if (password.length < 8) {
+            return res.status(400).json({ error: 'Password must be at least 8 characters long' });
+        }
+
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -30,7 +46,7 @@ router.post('/register', async (req, res) => {
         // Generate token
         const token = jwt.sign(
             { userId: user._id },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECRET || 'your-secret-key', // Fallback secret for development
             { expiresIn: '24h' }
         );
 
@@ -41,12 +57,19 @@ router.post('/register', async (req, res) => {
                 id: user._id,
                 email: user.email,
                 firstName: user.firstName,
-                lastName: user.lastName
+                lastName: user.lastName,
+                isAccredited: user.isAccredited
             }
         });
     } catch (error) {
         console.error('Registration error:', error);
-        res.status(500).json({ error: 'Registration failed' });
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ error: 'Invalid input data' });
+        }
+        if (error.code === 11000) {
+            return res.status(400).json({ error: 'Email already exists' });
+        }
+        res.status(500).json({ error: 'Registration failed. Please try again.' });
     }
 });
 
@@ -55,6 +78,17 @@ router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         
+        // Validate required fields
+        if (!email || !password) {
+            return res.status(400).json({ error: 'All required fields must be provided' });
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ error: 'Please provide a valid email address' });
+        }
+
         // Find user
         const user = await User.findOne({ email });
         if (!user) {
@@ -70,7 +104,7 @@ router.post('/login', async (req, res) => {
         // Generate token
         const token = jwt.sign(
             { userId: user._id },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECRET || 'your-secret-key', // Fallback secret for development
             { expiresIn: '24h' }
         );
 
@@ -81,12 +115,13 @@ router.post('/login', async (req, res) => {
                 id: user._id,
                 email: user.email,
                 firstName: user.firstName,
-                lastName: user.lastName
+                lastName: user.lastName,
+                isAccredited: user.isAccredited
             }
         });
     } catch (error) {
         console.error('Login error:', error);
-        res.status(500).json({ error: 'Login failed' });
+        res.status(500).json({ error: 'Login failed. Please try again.' });
     }
 });
 
@@ -134,6 +169,11 @@ router.post('/reset-password/:token', async (req, res) => {
     try {
         const { token } = req.params;
         const { password } = req.body;
+
+        // Validate password length
+        if (password.length < 8) {
+            return res.status(400).json({ error: 'Password must be at least 8 characters long' });
+        }
 
         // Find user with valid reset token
         const user = await User.findOne({
