@@ -1,56 +1,26 @@
-async function handleSignup(e) {
-    e.preventDefault();
-    console.log('Handling signup submission...');
+async function handleSignup(event) {
+    event.preventDefault();
     
     const formData = {
-        accredited: document.querySelector('input[name="accredited"]:checked').value,
         firstName: document.getElementById('firstName').value,
         lastName: document.getElementById('lastName').value,
         email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
         phone: document.getElementById('phone').value,
-        password: document.getElementById('password').value
+        isAccredited: document.querySelector('input[name="accredited"]:checked').value === 'yes'
     };
 
-    console.log('Form data collected:', { ...formData, password: '***' });
-
     try {
-        // Get existing users or initialize empty array
-        const existingUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-        console.log('Current registered users:', existingUsers.length);
-        
-        // Check if email already exists
-        if (existingUsers.some(user => user.email === formData.email)) {
-            throw new Error('An account with this email already exists');
+        const result = await register(formData);
+        if (result.success) {
+            // After successful registration, log the user in
+            const loginResult = await login(formData.email, formData.password);
+            if (loginResult.success) {
+                window.location.href = 'investments.html';
+            }
         }
-
-        // Create new user object
-        const newUser = {
-            id: Date.now(),
-            email: formData.email,
-            password: formData.password,
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            phone: formData.phone,
-            accreditedStatus: formData.accredited,
-            isAuthenticated: true
-        };
-
-        // Add to registered users
-        existingUsers.push(newUser);
-        localStorage.setItem('registeredUsers', JSON.stringify(existingUsers));
-        console.log('User registered successfully');
-
-        // Set current user session
-        const safeUser = { ...newUser };
-        delete safeUser.password; // Don't store password in session
-        localStorage.setItem('user', JSON.stringify(safeUser));
-        console.log('User session created');
-        
-        // Redirect to investments page
-        console.log('Redirecting to investments page...');
-        window.location.href = 'investments.html';
     } catch (error) {
+        alert('Registration failed. ' + (error.message || 'Please try again.'));
         console.error('Signup error:', error);
-        alert(error.message || 'An error occurred during signup. Please try again.');
     }
 }

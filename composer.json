@@ -1,1 +1,8 @@
-{}
+{
+    "require": {
+        "php": "^8.0",
+        "ext-json": "*",
+        "mongodb/mongodb": "^1.16",
+        "vlucas/phpdotenv": "^5.5"
+    }
+}

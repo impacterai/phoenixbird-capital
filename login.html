@@ -124,47 +124,22 @@
         </div>
     </div>
 
+    <script src="js/api.js"></script>
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
-            console.log('Login attempt for:', email);
-            
-            // Get registered users
-            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-            console.log('Found registered users:', registeredUsers.length);
-            
-            // Find user with matching email and password
-            let user = registeredUsers.find(u => u.email === email && u.password === password);
-            
-            // Default test account if no users are registered
-            if (!user && registeredUsers.length === 0 && email === 'test@example.com' && password === 'password123') {
-                user = {
-                    id: 1,
-                    email: 'test@example.com',
-                    firstName: 'Test',
-                    lastName: 'User',
-                    isAuthenticated: true
-                };
-            }
-
-            if (user) {
-                console.log('Login successful for:', user.email);
-                // Create safe user object (without password)
-                const safeUser = { ...user };
-                delete safeUser.password;
-
-                // Store in localStorage
-                localStorage.setItem('user', JSON.stringify(safeUser));
-
-                // Redirect to investments page
-                window.location.href = 'investments.html';
-            } else {
-                console.log('Login failed: Invalid credentials');
+            try {
+                const result = await login(email, password);
+                if (result.success) {
+                    window.location.href = 'investments.html';
+                }
+            } catch (error) {
                 alert('Invalid email or password. Please try again.');
+                console.error('Login error:', error);
             }
         });
     </script>

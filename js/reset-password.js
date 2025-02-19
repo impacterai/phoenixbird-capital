@@ -8,27 +8,38 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = document.getElementById('email').value;
         
         try {
-            // Get registered users from localStorage
-            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-            
-            // Check if the email exists in the registered users
-            const userExists = registeredUsers.some(user => user.email === email);
-            
-            if (userExists) {
-                // In a real application, this would trigger an API call to send a reset email
-                // For this demo, we'll simulate a successful password reset request
-                showMessage('If an account exists with this email, you will receive password reset instructions.', 'success');
+            const response = await fetch('/api/auth/reset-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Show success message
+                messageBox.textContent = data.message;
+                messageBox.className = 'message-box success';
                 
-                // Clear the form
-                resetPasswordForm.reset();
+                // In a real application, we would redirect to a "check your email" page
+                // For demo purposes, if we have a reset token, show it
+                if (data.resetToken) {
+                    const resetLink = document.createElement('p');
+                    resetLink.innerHTML = `For demo purposes, here's your reset link: <br>
+                        <a href="/reset-password-confirm.html?token=${data.resetToken}">
+                            Click here to reset your password
+                        </a>`;
+                    messageBox.appendChild(resetLink);
+                }
             } else {
-                // For security reasons, show the same message even if user doesn't exist
-                showMessage('If an account exists with this email, you will receive password reset instructions.', 'success');
+                throw new Error(data.error || 'Failed to process reset password request');
             }
-            
         } catch (error) {
-            showMessage('An error occurred while processing your request. Please try again later.', 'error');
-            console.error('Reset password error:', error);
+            // Show error message
+            messageBox.textContent = error.message;
+            messageBox.className = 'message-box error';
         }
     });
 
@@ -37,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
         messageBox.className = `message-box ${type}`;
         messageBox.classList.remove('hidden');
         
-        // Clear message after 5 seconds
         setTimeout(() => {
             messageBox.classList.add('hidden');
         }, 5000);
