@@ -1,16 +1,3 @@
-function nextStep() {
-    const accreditedStatus = document.querySelector('input[name="accredited"]:checked');
-    
-    if (!accreditedStatus) {
-        alert('Please select your investor status');
-        return;
-    }
-
-    // Hide step 1 and show step 2
-    document.getElementById('step1').classList.add('hidden');
-    document.getElementById('step2').classList.remove('hidden');
-}
-
 async function handleSignup(e) {
     e.preventDefault();
     console.log('Handling signup submission...');

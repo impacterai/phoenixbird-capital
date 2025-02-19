@@ -19,47 +19,42 @@
             </div>
             
             <form id="signupForm" class="signup-form" onsubmit="handleSignup(event)">
-                <div class="form-step" id="step1">
-                    <h2>Investor Status</h2>
-                    <div class="investor-status-question">
-                        <p>Are you an Accredited Investor?</p>
-                        <div class="radio-group">
-                            <label class="radio-option">
-                                <input type="radio" name="accredited" value="yes" required>
-                                <span class="radio-label">Yes</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="accredited" value="no">
-                                <span class="radio-label">No</span>
-                            </label>
-                        </div>
-                        <div class="info-text">
-                            <i class="fas fa-info-circle"></i>
-                            <span>An accredited investor meets certain income or net worth requirements as defined by the SEC.</span>
-                        </div>
-                    </div>
-                    <button type="button" class="next-btn" onclick="nextStep()">Continue</button>
+                <h2>Personal Information</h2>
+                <div class="form-group">
+                    <input type="text" id="firstName" name="firstName" required placeholder="First Name">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="lastName" name="lastName" required placeholder="Last Name">
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" name="email" required placeholder="Email Address">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" name="password" required placeholder="Create Password">
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="phone" name="phone" required placeholder="Phone Number">
                 </div>
 
-                <div class="form-step hidden" id="step2">
-                    <h2>Personal Information</h2>
-                    <div class="form-group">
-                        <input type="text" id="firstName" name="firstName" required placeholder="First Name">
+                <div class="investor-status-question">
+                    <p>Are you an Accredited Investor?</p>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="accredited" value="yes" required>
+                            <span class="radio-label">Yes</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="accredited" value="no">
+                            <span class="radio-label">No</span>
+                        </label>
                     </div>
-                    <div class="form-group">
-                        <input type="text" id="lastName" name="lastName" required placeholder="Last Name">
+                    <div class="info-text">
+                        <i class="fas fa-info-circle"></i>
+                        <span>An accredited investor meets certain income or net worth requirements as defined by the SEC.</span>
                     </div>
-                    <div class="form-group">
-                        <input type="email" id="email" name="email" required placeholder="Email Address">
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="password" name="password" required placeholder="Create Password">
-                    </div>
-                    <div class="form-group">
-                        <input type="tel" id="phone" name="phone" required placeholder="Phone Number">
-                    </div>
-                    <button type="submit" class="submit-btn">Create Account</button>
                 </div>
+
+                <button type="submit" class="submit-btn">Create Account</button>
             </form>
 
             <div class="signup-footer">
