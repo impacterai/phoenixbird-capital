@@ -1,7 +1,5 @@
 // API base URL - change this when deploying
-const API_URL = window.location.hostname === 'localhost' 
-    ? 'http://localhost:3000/api'
-    : 'https://phoenixbird-capital.herokuapp.com/api';
+const API_URL = window.location.origin + '/api';
 
 // Helper function for making API calls
 async function apiCall(endpoint, method = 'GET', data = null, token = null) {
@@ -15,22 +13,24 @@ async function apiCall(endpoint, method = 'GET', data = null, token = null) {
 
     const config = {
         method,
-        headers,
-        credentials: 'include'
+        headers
     };
 
     if (data) {
         config.body = JSON.stringify(data);
     }
 
-    const response = await fetch(`${API_URL}${endpoint}`, config);
-    const result = await response.json();
-
-    if (!response.ok) {
-        throw new Error(result.error || 'Something went wrong');
+    try {
+        const response = await fetch(`${API_URL}${endpoint}`, config);
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Request failed');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('API call error:', error);
+        throw error;
     }
-
-    return result;
 }
 
 // Store token in localStorage
@@ -67,27 +67,14 @@ function removeUserData() {
 // Register new user
 async function register(userData) {
     try {
-        const response = await fetch(`${API_URL}/auth/register`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(userData)
-        });
-
-        const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.error || 'Registration failed');
-        }
-
+        const data = await apiCall('/auth/register', 'POST', userData);
         if (data.token) {
             setToken(data.token);
             setUserData(data.user);
         }
-
         return data;
     } catch (error) {
+        console.error('Registration error:', error);
         throw error;
     }
 }
@@ -95,27 +82,14 @@ async function register(userData) {
 // Login user
 async function login(email, password) {
     try {
-        const response = await fetch(`${API_URL}/auth/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        });
-
-        const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.error || 'Login failed');
-        }
-
+        const data = await apiCall('/auth/login', 'POST', { email, password });
         if (data.token) {
             setToken(data.token);
             setUserData(data.user);
         }
-
         return data;
     } catch (error) {
+        console.error('Login error:', error);
         throw error;
     }
 }
