@@ -208,6 +208,11 @@ body {
     padding: 5rem 5%;
 }
 
+.investment-opportunities .investment-logo {
+    width: 259px;
+    height: auto;
+}
+
 #investment-opportunities h2 {
     text-align: center;
     color: var(--primary-color);
@@ -715,6 +720,11 @@ body {
 
 .submit-btn:hover {
     background-color: var(--secondary-color);
+}
+
+#resetPasswordForm .login-btn {
+    display: block;
+    margin: 0 auto;
 }
 
 /* Footer Styles */
