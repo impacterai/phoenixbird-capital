@@ -117,23 +117,55 @@
             <button type="submit" class="login-btn">Sign In</button>
         </form>
         <div class="forgot-password">
-            <a href="/forgot-password">Forgot your password?</a>
+            <a href="forgot-password.html">Forgot your password?</a>
         </div>
         <div class="signup-prompt">
-            Don't have an account? <a href="/signup">Create one now</a>
+            Don't have an account? <a href="signup.html">Create one now</a>
         </div>
     </div>
 
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            // Add your login logic here
+            
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
-            // Example login request
-            console.log('Login attempt:', { email });
-            // Add actual authentication logic here
+            console.log('Login attempt for:', email);
+            
+            // Get registered users
+            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            console.log('Found registered users:', registeredUsers.length);
+            
+            // Find user with matching email and password
+            let user = registeredUsers.find(u => u.email === email && u.password === password);
+            
+            // Default test account if no users are registered
+            if (!user && registeredUsers.length === 0 && email === 'test@example.com' && password === 'password123') {
+                user = {
+                    id: 1,
+                    email: 'test@example.com',
+                    firstName: 'Test',
+                    lastName: 'User',
+                    isAuthenticated: true
+                };
+            }
+
+            if (user) {
+                console.log('Login successful for:', user.email);
+                // Create safe user object (without password)
+                const safeUser = { ...user };
+                delete safeUser.password;
+
+                // Store in localStorage
+                localStorage.setItem('user', JSON.stringify(safeUser));
+
+                // Redirect to investments page
+                window.location.href = 'investments.html';
+            } else {
+                console.log('Login failed: Invalid credentials');
+                alert('Invalid email or password. Please try again.');
+            }
         });
     </script>
 </body>
