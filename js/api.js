@@ -48,6 +48,40 @@ function removeToken() {
     localStorage.removeItem('token');
 };
 
+// Download document
+async function downloadDocument(filename) {
+    const token = getToken();
+    if (!token) {
+        throw new Error('Authentication required');
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/documents/download/${filename}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to download document');
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Download error:', error);
+        throw error;
+    }
+}
+
 // Store user data in localStorage
 function setUserData(data) {
     localStorage.setItem('userData', JSON.stringify(data));

@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const authRoutes = require('./routes/auth');
 const investmentRoutes = require('./routes/investments');
+const documentRoutes = require('./routes/documents');
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(express.static(__dirname));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/investments', investmentRoutes);
+app.use('/api/documents', documentRoutes);
 
 // Serve index.html for root route
 app.get('/', (req, res) => {
