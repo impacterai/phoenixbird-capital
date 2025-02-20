@@ -184,10 +184,10 @@ async function getMyInvestments() {
 }
 
 // Logout user
-async function logout() {
-    removeToken();
-    removeUserData();
-    window.location.href = '/login.html';
+function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/index.html';
 }
 
 // Check if user is authenticated
@@ -244,5 +244,15 @@ function updateUserNameDisplay() {
     const accountLink = document.getElementById('userAccountLink');
     if (userData && userData.name) {
         accountLink.textContent = `${userData.name}'s Account`;
+    }
+}
+
+function updateUserName() {
+    const userAccountLink = document.getElementById('userAccountLink');
+    if (userAccountLink) {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (user.firstName) {
+            userAccountLink.textContent = `${user.firstName}`;
+        }
     }
 }

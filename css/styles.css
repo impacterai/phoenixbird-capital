@@ -95,6 +95,35 @@ body {
     display: none;
 }
 
+.nav-account {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: 1rem;
+}
+
+.nav-account span {
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.logout-btn {
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 /* Hero Section */
 #hero {
     height: 100vh;
@@ -536,7 +565,9 @@ body {
     gap: 1rem;
     margin-top: 1.5rem;
     border-bottom: 2px solid #ddd;
-    padding-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    -webkit-overflow-scrolling: touch;
 }
 
 .dashboard-tab {
