@@ -75,3 +75,33 @@ async function handleSignup(event) {
         }
     }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const popup = document.getElementById("accreditedPopup");
+    const link = document.getElementById("accreditedInfoLink");
+    const closeBtn = document.querySelector(".close-btn");
+
+    if (link && popup) {
+        popup.style.display = "none";
+        // Open the popup
+        link.addEventListener("click", function (event) {
+            event.preventDefault();
+            popup.style.display = "flex";
+        });
+
+        // Close the popup when clicking the close button
+        if (closeBtn) {
+            closeBtn.addEventListener("click", function () {
+                popup.style.display = "none";
+            });
+        }
+
+        // Close popup when clicking outside the content area
+        window.addEventListener("click", function (event) {
+            if (event.target === popup) {
+                popup.style.display = "none";
+            }
+        });
+    }
+});
+
