@@ -1,14 +1,14 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const resetPasswordForm = document.getElementById('resetPasswordForm');
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('resetPasswordForm');
     const messageBox = document.getElementById('messageBox');
 
-    resetPasswordForm.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const email = document.getElementById('email').value;
         
         try {
-            const response = await fetch('/api/auth/reset-password', {
+            const response = await fetch('/api/auth/forgot-password', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -19,37 +19,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (response.ok) {
-                // Show success message
-                messageBox.textContent = data.message;
-                messageBox.className = 'message-box success';
-                
-                // In a real application, we would redirect to a "check your email" page
-                // For demo purposes, if we have a reset token, show it
-                if (data.resetToken) {
-                    const resetLink = document.createElement('p');
-                    resetLink.innerHTML = `For demo purposes, here's your reset link: <br>
-                        <a href="/reset-password-confirm.html?token=${data.resetToken}">
-                            Click here to reset your password
-                        </a>`;
-                    messageBox.appendChild(resetLink);
-                }
+                showMessage('success', 'Password reset link has been sent to your email. Please check your inbox.');
+                form.reset();
             } else {
-                throw new Error(data.error || 'Failed to process reset password request');
+                showMessage('error', data.error || 'Failed to send reset link. Please try again.');
             }
         } catch (error) {
-            // Show error message
-            messageBox.textContent = error.message;
-            messageBox.className = 'message-box error';
+            console.error('Error:', error);
+            showMessage('error', 'An error occurred. Please try again later.');
         }
     });
 
-    function showMessage(message, type) {
-        messageBox.textContent = message;
+    function showMessage(type, message) {
         messageBox.className = `message-box ${type}`;
-        messageBox.classList.remove('hidden');
-        
-        setTimeout(() => {
-            messageBox.classList.add('hidden');
-        }, 5000);
+        messageBox.textContent = message;
+        messageBox.style.display = 'block';
     }
 });
