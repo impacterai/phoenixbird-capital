@@ -1,0 +1,328 @@
+.container, .investment-opportunities {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    padding-top: 1rem; /* Reduced top padding since we have the navbar padding in body */
+}
+
+.page-title {
+    font-size: 2rem;
+    color: #1a1a1a;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.offerings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.offering-card, .offerings-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.offering-card:hover, .offerings-card:hover {
+    transform: translateY(-5px);
+}
+
+.offering-image, .offerings-image {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.offering-image img, .offerings-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.investment-logo {
+    width: 120px;
+    height: auto;
+    margin: 1.5rem auto;
+    display: block;
+}
+
+.bitcoin-overlay {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    padding: 5px;
+}
+
+.bitcoin-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.new-tag {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #FFD700;
+    color: #1a1a1a;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.offering-content, .offerings-content {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.offering-title, .offerings-title {
+    font-size: 1.25rem;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.offering-tag, .offerings-tag {
+    display: inline-block;
+    background: #e9ecef;
+    color: #495057;
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.offering-details, .offerings-details {
+    margin: 1.5rem 0;
+    flex-grow: 1;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    align-items: center;
+}
+
+.detail-label {
+    color: #6c757d;
+}
+
+.detail-value {
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.view-offering-btn, button.view-offering-btn {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--gradient-primary);
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    border: none;
+    cursor: pointer;
+    margin-top: auto;
+}
+
+.view-offering-btn:hover, button.view-offering-btn:hover {
+    background: var(--gradient-primary);
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+    padding: 1rem;
+    backdrop-filter: blur(5px);
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal .modal-content {
+    max-width: 500px;
+    width: 100%;
+    margin: 2rem;
+    padding: 2.5rem;
+    background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+                0 5px 10px -5px rgba(0, 0, 0, 0.04);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal .offerings-title {
+    margin-bottom: 2rem;
+    text-align: center;
+    font-size: 1.75rem;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.modal .offerings-details {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.modal .detail-row {
+    margin-bottom: 1.5rem;
+}
+
+.modal .detail-row:last-child {
+    margin-bottom: 0;
+}
+
+.modal .detail-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.modal .detail-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-left: 1rem;
+    background: white;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.modal .detail-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+}
+
+.modal .detail-input:hover {
+    border-color: #cbd5e0;
+}
+
+.modal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2.5rem;
+}
+
+.modal .view-offering-btn {
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    transition: all 0.2s ease;
+    transform: translateY(0);
+}
+
+.modal .view-offering-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal .cancel-btn {
+    background: #64748b !important;
+    margin-top: 0.5rem;
+}
+
+.modal .cancel-btn:hover {
+    background: #475569 !important;
+}
+
+@media (max-width: 768px) {
+    .modal {
+        padding: 1rem;
+    }
+
+    .modal .modal-content {
+        margin: 0;
+        padding: 1.5rem;
+    }
+    
+    .modal .detail-row {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .modal .detail-input {
+        margin-left: 0;
+    }
+    
+    .modal-buttons {
+        gap: 1rem;
+    }
+
+    .modal .offerings-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .offerings-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .container, .investment-opportunities {
+        padding: 1rem;
+    }
+    
+    .modal .modal-content {
+        margin: 1rem;
+    }
+    
+    .modal .detail-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .modal .detail-input {
+        margin-left: 0;
+    }
+    
+    .modal-buttons {
+        gap: 1rem;
+    }
+}
