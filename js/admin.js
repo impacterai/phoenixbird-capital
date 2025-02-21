@@ -47,22 +47,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load investments
     function loadInvestments() {
         console.log('Loading investments...');
-        getInvestments()
+        getAllInvestments()
             .then(investments => {
                 console.log('Investments loaded:', investments);
-                if (!Array.isArray(investments)) {
-                    console.error('Expected array of investments but got:', investments);
-                    throw new Error('Invalid investment data format');
-                }
+                const investmentList = document.getElementById('investmentList');
                 investmentList.innerHTML = '';
                 investments.forEach(investment => {
-                    const investmentElement = createInvestmentElement(investment);
-                    investmentList.appendChild(investmentElement);
+                    investmentList.appendChild(createInvestmentElement(investment));
                 });
             })
             .catch(error => {
                 console.error('Error loading investments:', error);
-                alert('Failed to load investments. Please try again.');
+                const investmentList = document.getElementById('investmentList');
+                investmentList.innerHTML = '<div class="error">Failed to load investments. Please try again.</div>';
             });
     }
 
@@ -70,16 +67,31 @@ document.addEventListener('DOMContentLoaded', function() {
     function createInvestmentElement(investment) {
         const div = document.createElement('div');
         div.className = 'investment-item';
+        
+        // Helper function to format numbers
+        const formatCurrency = (value) => {
+            return (value || 0).toLocaleString();
+        };
+        
+        // Helper function to format percentages
+        const formatPercentage = (value) => {
+            return (value || 0).toString();
+        };
+        
         div.innerHTML = `
             <div class="investment-info">
                 <h3>${investment.title}</h3>
                 <p>${investment.description}</p>
-                <p>Minimum Investment: $${investment.minimumInvestment.toLocaleString()}</p>
-                <p>Target Return: ${investment.targetReturn}%</p>
+                <p>Minimum Investment: $${formatCurrency(investment.minimumInvestment)}</p>
+                <p>Target Return: ${formatPercentage(investment.targetReturn)}%</p>
+                <p>Target Raise: $${formatCurrency(investment.targetRaise)}</p>
+                <p>Current Raise: $${formatCurrency(investment.currentRaise)}</p>
+                <p>Number of Investors: ${investment.numberOfInvestors || 0}</p>
+                <p>Percentage Raised: ${formatPercentage(investment.percentageRaised)}%</p>
                 <p>Status: ${investment.status}</p>
                 <p>Type: ${investment.type}</p>
                 <p>Duration: ${investment.duration} months</p>
-                <p>Fund Size: $${investment.totalFundSize.toLocaleString()}</p>
+                <p>Fund Size: $${formatCurrency(investment.totalFundSize)}</p>
                 <p>Risk Level: ${investment.riskLevel}</p>
                 ${investment.highlights ? `
                 <div class="highlights">
@@ -113,12 +125,48 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Handle investment form submission
-    investmentForm.addEventListener('submit', function(e) {
+    investmentForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
+        // Validate form
+        const requiredFields = ['investmentTitle', 'investmentDescription', 'minimumInvestment', 
+            'totalFundSize', 'targetReturn', 'duration', 'investmentType', 'riskLevel', 'investmentStatus'];
+        
+        const invalidFields = requiredFields.filter(field => {
+            const input = document.getElementById(field);
+            return !input.value.trim();
+        });
+
+        if (invalidFields.length > 0) {
+            alert('Please fill in all required fields');
+            document.getElementById(invalidFields[0]).focus();
+            return;
+        }
+
+        // Validate numeric fields
+        const numericFields = {
+            'minimumInvestment': 'Minimum Investment',
+            'totalFundSize': 'Total Fund Size',
+            'targetReturn': 'Target Return',
+            'duration': 'Duration',
+            'targetRaise': 'Target Raise',
+            'currentRaise': 'Current Raise',
+            'numberOfInvestors': 'Number of Investors',
+            'percentageRaised': 'Percentage Raised'
+        };
+
+        for (const [fieldId, fieldName] of Object.entries(numericFields)) {
+            const value = parseFloat(document.getElementById(fieldId).value);
+            if (isNaN(value) || value <= 0) {
+                alert(`${fieldName} must be a positive number`);
+                document.getElementById(fieldId).focus();
+                return;
+            }
+        }
+        
         const formData = {
-            title: document.getElementById('investmentTitle').value,
-            description: document.getElementById('investmentDescription').value,
+            title: document.getElementById('investmentTitle').value.trim(),
+            description: document.getElementById('investmentDescription').value.trim(),
             minimumInvestment: parseFloat(document.getElementById('minimumInvestment').value),
             totalFundSize: parseFloat(document.getElementById('totalFundSize').value),
             targetReturn: parseFloat(document.getElementById('targetReturn').value),
@@ -126,52 +174,109 @@ document.addEventListener('DOMContentLoaded', function() {
             type: document.getElementById('investmentType').value,
             riskLevel: document.getElementById('riskLevel').value,
             status: document.getElementById('investmentStatus').value,
+            targetRaise: parseFloat(document.getElementById('targetRaise').value),
+            currentRaise: parseFloat(document.getElementById('currentRaise').value),
+            numberOfInvestors: parseInt(document.getElementById('numberOfInvestors').value),
+            percentageRaised: parseFloat(document.getElementById('percentageRaised').value),
             highlights: document.getElementById('highlights').value
                 .split('\n')
                 .map(line => line.trim())
                 .filter(line => line.length > 0)
         };
 
-        console.log('Submitting investment:', formData);
+        const isEdit = investmentForm.dataset.mode === 'edit';
+        const confirmMessage = isEdit 
+            ? 'Are you sure you want to update this investment?' 
+            : 'Are you sure you want to create this investment?';
 
-        const method = investmentForm.dataset.mode === 'edit' ? 'PUT' : 'POST';
-        const endpoint = method === 'PUT' 
-            ? `/investments/${investmentForm.dataset.editId}`
-            : '/investments';
+        if (!confirm(confirmMessage)) {
+            return;
+        }
 
-        apiCall(endpoint, method, formData, token)
-            .then(data => {
-                console.log('Investment saved:', data);
-                loadInvestments();
-                investmentForm.reset();
-                investmentForm.classList.add('hidden');
-                addInvestmentBtn.classList.remove('hidden');
-                investmentForm.dataset.mode = '';
-                investmentForm.dataset.editId = '';
-                alert(method === 'PUT' ? 'Investment updated successfully!' : 'Investment created successfully!');
-            })
-            .catch(error => {
-                console.error('Error saving investment:', error);
-                alert('Failed to save investment. Please try again.');
-            });
+        // Disable form and show loading state
+        const submitBtn = investmentForm.querySelector('button[type="submit"]');
+        const originalButtonText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving...';
+        
+        try {
+            const method = isEdit ? 'PUT' : 'POST';
+            const endpoint = isEdit 
+                ? `/investments/${investmentForm.dataset.editId}`
+                : '/investments';
+
+            const data = await apiCall(endpoint, method, formData, token);
+            console.log('Investment saved:', data);
+            
+            // Show success message
+            const successMessage = isEdit ? 'Investment updated successfully!' : 'Investment created successfully!';
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'alert alert-success';
+            messageDiv.textContent = successMessage;
+            investmentForm.insertBefore(messageDiv, investmentForm.firstChild);
+            
+            // Remove message after 3 seconds
+            setTimeout(() => messageDiv.remove(), 3000);
+            
+            // Reset form and refresh list
+            await loadInvestments();
+            investmentForm.reset();
+            investmentForm.classList.add('hidden');
+            addInvestmentBtn.classList.remove('hidden');
+            investmentForm.dataset.mode = '';
+            investmentForm.dataset.editId = '';
+        } catch (error) {
+            console.error('Error saving investment:', error);
+            const errorMessage = error.message || 'Failed to save investment. Please try again.';
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'alert alert-error';
+            messageDiv.textContent = errorMessage;
+            investmentForm.insertBefore(messageDiv, investmentForm.firstChild);
+            
+            // Remove error message after 5 seconds
+            setTimeout(() => messageDiv.remove(), 5000);
+        } finally {
+            // Re-enable form
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalButtonText;
+        }
     });
 
     // Edit investment
     function editInvestment(id) {
         console.log('Editing investment:', id);
-        apiCall(`/investments/${id}`, 'GET', null, token)
+        getInvestmentById(id)
             .then(investment => {
                 console.log('Investment details loaded:', investment);
-                document.getElementById('investmentTitle').value = investment.title;
-                document.getElementById('investmentDescription').value = investment.description;
-                document.getElementById('minimumInvestment').value = investment.minimumInvestment;
-                document.getElementById('totalFundSize').value = investment.totalFundSize;
-                document.getElementById('targetReturn').value = investment.targetReturn;
-                document.getElementById('duration').value = investment.duration;
-                document.getElementById('investmentType').value = investment.type;
-                document.getElementById('riskLevel').value = investment.riskLevel;
-                document.getElementById('investmentStatus').value = investment.status;
-                document.getElementById('highlights').value = investment.highlights ? investment.highlights.join('\n') : '';
+                
+                // Map investment data to form fields
+                const mappings = {
+                    'investmentTitle': investment.title || '',
+                    'investmentDescription': investment.description || '',
+                    'minimumInvestment': investment.minimumInvestment || 0,
+                    'totalFundSize': investment.totalFundSize || 0,
+                    'targetReturn': investment.targetReturn || 0,
+                    'duration': investment.duration || 1,
+                    'investmentType': investment.type || 'real_estate',
+                    'riskLevel': investment.riskLevel || 'low',
+                    'investmentStatus': investment.status || 'draft',
+                    'targetRaise': investment.targetRaise || 0,
+                    'currentRaise': investment.currentRaise || 0,
+                    'numberOfInvestors': investment.numberOfInvestors || 0,
+                    'percentageRaised': investment.percentageRaised || 0,
+                    'highlights': investment.highlights ? investment.highlights.join('\n') : ''
+                };
+
+                // Set form values with fallbacks
+                Object.entries(mappings).forEach(([fieldId, value]) => {
+                    const field = document.getElementById(fieldId);
+                    if (field) {
+                        field.value = value;
+                    } else {
+                        console.warn(`Field ${fieldId} not found in form`);
+                    }
+                });
                 
                 investmentForm.classList.remove('hidden');
                 addInvestmentBtn.classList.add('hidden');
@@ -180,7 +285,11 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Error loading investment:', error);
-                alert('Failed to load investment details. Please try again.');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'alert alert-error';
+                messageDiv.textContent = error.message || 'Failed to load investment details. Please try again.';
+                document.getElementById('adminContent').insertBefore(messageDiv, document.getElementById('adminContent').firstChild);
+                setTimeout(() => messageDiv.remove(), 5000);
             });
     }
 

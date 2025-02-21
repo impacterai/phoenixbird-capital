@@ -27,7 +27,7 @@ const investmentSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['real_estate', 'private_equity', 'venture_capital', 'other'],
+        enum: ['real_estate', 'private_equity', 'venture_capital', 'debt', 'hedge_fund'],
         required: true
     },
     duration: {
@@ -40,10 +40,26 @@ const investmentSchema = new mongoose.Schema({
         required: true,
         min: 0
     },
-    currentInvestment: {
+    targetRaise: {
+        type: Number,
+        required: true,
+        min: 0
+    },
+    currentRaise: {
         type: Number,
         default: 0,
         min: 0
+    },
+    numberOfInvestors: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
+    percentageRaised: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 100
     },
     riskLevel: {
         type: String,
@@ -62,6 +78,14 @@ const investmentSchema = new mongoose.Schema({
             enum: ['prospectus', 'financial_report', 'legal_document', 'other']
         }
     }],
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -73,16 +97,22 @@ const investmentSchema = new mongoose.Schema({
 
 // Virtual field for progress percentage
 investmentSchema.virtual('progressPercentage').get(function() {
-    return (this.currentInvestment / this.totalFundSize) * 100;
+    return (this.currentRaise / this.targetRaise) * 100;
 });
 
 // Virtual field for remaining investment needed
 investmentSchema.virtual('remainingInvestment').get(function() {
-    return this.totalFundSize - this.currentInvestment;
+    return this.targetRaise - this.currentRaise;
 });
 
 // Ensure virtuals are included in JSON output
 investmentSchema.set('toJSON', { virtuals: true });
 investmentSchema.set('toObject', { virtuals: true });
+
+// Update the updatedAt timestamp before saving
+investmentSchema.pre('save', function(next) {
+    this.updatedAt = Date.now();
+    next();
+});
 
 module.exports = mongoose.model('Investment', investmentSchema);

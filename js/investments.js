@@ -82,6 +82,11 @@ async function loadInvestments() {
             return;
         }
 
+        // Helper functions for number formatting
+        const formatCurrency = (value) => (value || 0).toLocaleString();
+        const formatPercentage = (value) => (value || 0).toString();
+        const formatNumber = (value) => (value || 0).toString();
+
         investments.forEach(investment => {
             const card = document.createElement('div');
             card.className = 'offerings-card';
@@ -92,11 +97,15 @@ async function loadInvestments() {
                     <div class="offerings-details">
                         <p>${investment.description}</p>
                         <ul class="investment-highlights">
-                            <li>Minimum Investment: $${investment.minimumInvestment.toLocaleString()}</li>
-                            <li>Target Return: ${investment.targetReturn}%</li>
-                            <li>Duration: ${investment.duration} months</li>
-                            <li>Risk Level: ${investment.riskLevel}</li>
-                            <li>Fund Size: $${investment.totalFundSize.toLocaleString()}</li>
+                            <li>Minimum Investment: $${formatCurrency(investment.minimumInvestment)}</li>
+                            <li>Target Return: ${formatPercentage(investment.targetReturn)}%</li>
+                            <li>Duration: ${formatNumber(investment.duration)} months</li>
+                            <li>Risk Level: ${investment.riskLevel || 'N/A'}</li>
+                            <li>Fund Size: $${formatCurrency(investment.totalFundSize)}</li>
+                            <li>Number of Investors: ${formatNumber(investment.numberOfInvestors)}</li>
+                            <li>Percentage Raised: ${formatPercentage(investment.percentageRaised)}%</li>
+                            <li>Target Raise: $${formatCurrency(investment.targetRaise)}</li>
+                            <li>Current Raise: $${formatCurrency(investment.currentRaise)}</li>
                         </ul>
                         ${investment.highlights ? `
                         <div class="highlights">
@@ -107,7 +116,7 @@ async function loadInvestments() {
                         </div>
                         ` : ''}
                     </div>
-                    <button class="invest-btn" onclick="showInvestmentModal('${investment._id}', '${investment.title}', ${investment.minimumInvestment})">
+                    <button class="invest-btn" onclick="showInvestmentModal('${investment._id}', '${investment.title}', ${investment.minimumInvestment || 0})">
                         Invest Now
                     </button>
                 </div>

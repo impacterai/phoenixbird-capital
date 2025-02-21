@@ -291,3 +291,49 @@ function updateUserName() {
         }
     }
 }
+
+// Get investment by ID (admin)
+async function getInvestmentById(id) {
+    try {
+        const response = await fetch(`${API_URL}/investments/${id}/details`, {
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
+            }
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to fetch investment');
+        }
+
+        // The API returns { investment, userInvestments }
+        // We only need the investment data for editing
+        return data.investment;
+    } catch (error) {
+        console.error('Error in getInvestmentById:', error);
+        throw error;
+    }
+}
+
+// Get all investments (admin)
+async function getAllInvestments() {
+    try {
+        const response = await fetch(`${API_URL}/investments`, {
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
+            }
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to fetch investments');
+        }
+
+        return data;
+    } catch (error) {
+        console.error('Error in getAllInvestments:', error);
+        throw error;
+    }
+}
