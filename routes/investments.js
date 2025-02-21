@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const Investment = require('../models/Investment');
 const UserInvestment = require('../models/UserInvestment');
+const adminAuth = require('../middleware/adminAuth');
 const router = express.Router();
 
 // Middleware to authenticate token
@@ -22,37 +23,160 @@ const authenticateToken = (req, res, next) => {
     }
 };
 
-// List all open investments
-router.get('/', async (req, res) => {
+// List all investments (public)
+router.get('/public', async (req, res) => {
     try {
-        const investments = await Investment.find({ status: 'open' })
+        const investments = await Investment.find({ status: 'active' })
+            .select('-documents') // Exclude private documents
             .sort('-createdAt');
-        res.json({ success: true, investments });
+        res.json(investments);
     } catch (error) {
         console.error('List investments error:', error);
         res.status(500).json({ error: 'Failed to fetch investments' });
     }
 });
 
-// Submit investment
+// Admin: List all investments
+router.get('/', adminAuth, async (req, res) => {
+    try {
+        const investments = await Investment.find()
+            .populate('createdBy', 'firstName lastName email')
+            .sort('-createdAt');
+        res.json(investments);
+    } catch (error) {
+        console.error('List investments error:', error);
+        res.status(500).json({ error: 'Failed to fetch investments' });
+    }
+});
+
+// Admin: Create new investment
+router.post('/', adminAuth, async (req, res) => {
+    try {
+        const {
+            title,
+            description,
+            minimumInvestment,
+            targetReturn,
+            status,
+            type,
+            duration,
+            totalFundSize,
+            riskLevel,
+            highlights,
+            documents
+        } = req.body;
+
+        const investment = new Investment({
+            title,
+            description,
+            minimumInvestment,
+            targetReturn,
+            status,
+            type,
+            duration,
+            totalFundSize,
+            riskLevel,
+            highlights,
+            documents,
+            createdBy: req.user._id
+        });
+
+        await investment.save();
+        res.status(201).json(investment);
+    } catch (error) {
+        console.error('Create investment error:', error);
+        res.status(500).json({ error: 'Failed to create investment' });
+    }
+});
+
+// Admin: Update investment
+router.put('/:id', adminAuth, async (req, res) => {
+    try {
+        const investment = await Investment.findByIdAndUpdate(
+            req.params.id,
+            { $set: req.body },
+            { new: true, runValidators: true }
+        );
+
+        if (!investment) {
+            return res.status(404).json({ error: 'Investment not found' });
+        }
+
+        res.json(investment);
+    } catch (error) {
+        console.error('Update investment error:', error);
+        res.status(500).json({ error: 'Failed to update investment' });
+    }
+});
+
+// Admin: Delete investment
+router.delete('/:id', adminAuth, async (req, res) => {
+    try {
+        const investment = await Investment.findByIdAndDelete(req.params.id);
+
+        if (!investment) {
+            return res.status(404).json({ error: 'Investment not found' });
+        }
+
+        // You might want to handle related records (e.g., user investments) here
+
+        res.json({ message: 'Investment deleted successfully' });
+    } catch (error) {
+        console.error('Delete investment error:', error);
+        res.status(500).json({ error: 'Failed to delete investment' });
+    }
+});
+
+// Admin: Get investment details with user investments
+router.get('/:id/details', adminAuth, async (req, res) => {
+    try {
+        const investment = await Investment.findById(req.params.id)
+            .populate('createdBy', 'firstName lastName email');
+        
+        if (!investment) {
+            return res.status(404).json({ error: 'Investment not found' });
+        }
+
+        const userInvestments = await UserInvestment.find({ investmentId: req.params.id })
+            .populate('userId', 'firstName lastName email');
+
+        res.json({
+            investment,
+            userInvestments
+        });
+    } catch (error) {
+        console.error('Get investment details error:', error);
+        res.status(500).json({ error: 'Failed to fetch investment details' });
+    }
+});
+
+// Submit investment (for users)
 router.post('/invest', authenticateToken, async (req, res) => {
     try {
         const { investmentId, amount } = req.body;
 
-        // Validate investment exists and is open
+        // Validate investment exists and is active
         const investment = await Investment.findOne({
             _id: investmentId,
-            status: 'open'
+            status: 'active'
         });
 
         if (!investment) {
-            return res.status(400).json({ error: 'Invalid investment' });
+            return res.status(400).json({ error: 'Invalid or inactive investment' });
         }
 
         // Check minimum investment amount
         if (amount < investment.minimumInvestment) {
             return res.status(400).json({
-                error: `Minimum investment amount is ${investment.minimumInvestment}`
+                error: `Minimum investment amount is $${investment.minimumInvestment}`
+            });
+        }
+
+        // Check if total investment would exceed fund size
+        const totalInvested = investment.currentInvestment + amount;
+        if (totalInvested > investment.totalFundSize) {
+            return res.status(400).json({
+                error: `Investment would exceed fund size. Maximum available: $${investment.remainingInvestment}`
             });
         }
 
@@ -65,9 +189,20 @@ router.post('/invest', authenticateToken, async (req, res) => {
 
         await userInvestment.save();
 
+        // Update current investment amount
+        investment.currentInvestment = totalInvested;
+        await investment.save();
+
         res.json({
             success: true,
-            message: 'Investment submitted successfully'
+            message: 'Investment submitted successfully',
+            investment: {
+                id: investment._id,
+                title: investment.title,
+                amount,
+                currentInvestment: investment.currentInvestment,
+                progressPercentage: investment.progressPercentage
+            }
         });
     } catch (error) {
         console.error('Submit investment error:', error);
@@ -90,11 +225,15 @@ router.get('/my-investments', authenticateToken, async (req, res) => {
             investment: {
                 id: ui.investmentId._id,
                 title: ui.investmentId.title,
-                description: ui.investmentId.description
+                description: ui.investmentId.description,
+                status: ui.investmentId.status,
+                type: ui.investmentId.type,
+                targetReturn: ui.investmentId.targetReturn,
+                progressPercentage: ui.investmentId.progressPercentage
             }
         }));
 
-        res.json({ success: true, investments });
+        res.json(investments);
     } catch (error) {
         console.error('Fetch user investments error:', error);
         res.status(500).json({ error: 'Failed to fetch investments' });

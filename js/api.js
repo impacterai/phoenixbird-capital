@@ -154,7 +154,7 @@ async function resetPassword(email) {
 // Get list of investments
 async function getInvestments() {
     try {
-        const response = await fetch(`${API_URL}/investments`, {
+        const response = await fetch(`${API_URL}/investments/public`, {
             headers: {
                 'Authorization': `Bearer ${getToken()}`
             }
@@ -166,8 +166,9 @@ async function getInvestments() {
             throw new Error(data.error || 'Failed to fetch investments');
         }
 
-        return data.investments;
+        return data; // Return the data directly since server returns array
     } catch (error) {
+        console.error('Error in getInvestments:', error);
         throw error;
     }
 }

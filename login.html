@@ -135,7 +135,15 @@
             try {
                 const result = await login(email, password);
                 if (result.success) {
-                    window.location.href = 'investments.html';
+                    // Store the token
+                    localStorage.setItem('token', result.token);
+                    
+                    // Redirect based on user role
+                    if (result.user.role === 'admin') {
+                        window.location.href = 'admin-dashboard.html';
+                    } else {
+                        window.location.href = 'investments.html';
+                    }
                 }
             } catch (error) {
                 alert('Invalid email or password. Please try again.');

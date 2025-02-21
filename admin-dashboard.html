@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - PhoenixBird Capital</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <nav class="admin-sidebar">
+            <div class="logo-container">
+                <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" class="admin-logo">
+            </div>
+            <ul class="admin-menu">
+                <li class="active"><a href="#dashboard"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="#investments"><i class="fas fa-money-bill-wave"></i> Investments</a></li>
+                <li><a href="#users"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="#settings"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>Admin Dashboard</h1>
+                <div class="admin-profile">
+                    <span id="adminName">Admin</span>
+                    <img src="images/default-avatar.png" alt="Admin Avatar" class="admin-avatar">
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <!-- Investment Management Section -->
+                <section id="investment-section" class="admin-section">
+                    <h2>Manage Investments</h2>
+                    <button id="addInvestmentBtn" class="admin-btn"><i class="fas fa-plus"></i> Add New Investment</button>
+                    
+                    <!-- Add Investment Form -->
+                    <form id="investmentForm" class="admin-form hidden">
+                        <div class="form-group">
+                            <label for="investmentTitle">Investment Title</label>
+                            <input type="text" id="investmentTitle" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="investmentDescription">Description</label>
+                            <textarea id="investmentDescription" name="description" required></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="minimumInvestment">Minimum Investment ($)</label>
+                                <input type="number" id="minimumInvestment" name="minimumInvestment" min="0" step="1000" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="totalFundSize">Total Fund Size ($)</label>
+                                <input type="number" id="totalFundSize" name="totalFundSize" min="0" step="1000" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="targetReturn">Target Return (%)</label>
+                                <input type="number" id="targetReturn" name="targetReturn" step="0.1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="duration">Duration (months)</label>
+                                <input type="number" id="duration" name="duration" min="1" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="investmentType">Type</label>
+                                <select id="investmentType" name="type" required>
+                                    <option value="real_estate">Real Estate</option>
+                                    <option value="private_equity">Private Equity</option>
+                                    <option value="venture_capital">Venture Capital</option>
+                                    <option value="debt">Debt</option>
+                                    <option value="hedge_fund">Hedge Fund</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="riskLevel">Risk Level</label>
+                                <select id="riskLevel" name="riskLevel" required>
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="investmentStatus">Status</label>
+                            <select id="investmentStatus" name="status" required>
+                                <option value="active">Active</option>
+                                <option value="coming_soon">Coming Soon</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="highlights">Highlights (one per line)</label>
+                            <textarea id="highlights" name="highlights" rows="4" placeholder="Enter each highlight on a new line"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <button type="submit" class="admin-btn">Save Investment</button>
+                            <button type="button" class="admin-btn cancel" id="cancelInvestmentBtn">Cancel</button>
+                        </div>
+                    </form>
+
+                    <!-- Investment List -->
+                    <div id="investmentList" class="admin-list">
+                        <!-- Investments will be loaded here dynamically -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

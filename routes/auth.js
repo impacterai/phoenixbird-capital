@@ -49,7 +49,10 @@ router.post('/register', async (req, res) => {
 
         // Generate token
         const token = jwt.sign(
-            { userId: user._id },
+            { 
+                userId: user._id,
+                role: user.role // Include role in JWT
+            },
             process.env.JWT_SECRET || 'your-secret-key', // Fallback secret for development
             { expiresIn: '24h' }
         );
@@ -62,7 +65,8 @@ router.post('/register', async (req, res) => {
                 email: user.email,
                 firstName: user.firstName,
                 lastName: user.lastName,
-                isAccredited: user.isAccredited
+                isAccredited: user.isAccredited,
+                role: user.role
             }
         });
     } catch (error) {
@@ -107,7 +111,10 @@ router.post('/login', async (req, res) => {
 
         // Generate token
         const token = jwt.sign(
-            { userId: user._id },
+            { 
+                userId: user._id,
+                role: user.role // Include role in JWT
+            },
             process.env.JWT_SECRET || 'your-secret-key', // Fallback secret for development
             { expiresIn: '24h' }
         );
@@ -120,12 +127,48 @@ router.post('/login', async (req, res) => {
                 email: user.email,
                 firstName: user.firstName,
                 lastName: user.lastName,
-                isAccredited: user.isAccredited
+                isAccredited: user.isAccredited,
+                role: user.role
             }
         });
     } catch (error) {
         console.error('Login error:', error);
-        res.status(500).json({ error: 'Login failed. Please try again.' });
+        res.status(500).json({ error: 'Login failed' });
+    }
+});
+
+// Check if user is admin
+router.get('/check-admin', async (req, res) => {
+    try {
+        const token = req.header('Authorization')?.replace('Bearer ', '');
+        
+        if (!token) {
+            return res.status(401).json({ error: 'No authentication token found' });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.userId);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        if (user.role !== 'admin') {
+            return res.status(403).json({ error: 'Access denied. Admin privileges required.' });
+        }
+
+        res.json({ 
+            user: {
+                id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                role: user.role
+            }
+        });
+    } catch (error) {
+        console.error('Admin check error:', error);
+        res.status(401).json({ error: 'Please authenticate as admin' });
     }
 });
 
