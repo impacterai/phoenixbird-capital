@@ -1,3 +1,7 @@
+body {
+    padding: 0;
+}
+
 .signup-container {
     min-height: 100vh;
     display: flex;
