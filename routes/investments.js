@@ -63,7 +63,11 @@ router.post('/', adminAuth, async (req, res) => {
             totalFundSize,
             riskLevel,
             highlights,
-            documents
+            documents,
+            targetRaise,
+            currentRaise,
+            numberOfInvestors,
+            percentageRaised
         } = req.body;
 
         const investment = new Investment({
@@ -76,8 +80,12 @@ router.post('/', adminAuth, async (req, res) => {
             duration,
             totalFundSize,
             riskLevel,
-            highlights,
-            documents,
+            highlights: highlights || [],
+            documents: documents || [],
+            targetRaise: targetRaise || 0,
+            currentRaise: currentRaise || 0,
+            numberOfInvestors: numberOfInvestors || 0,
+            percentageRaised: percentageRaised || 0,
             createdBy: req.user._id
         });
 
@@ -92,9 +100,34 @@ router.post('/', adminAuth, async (req, res) => {
 // Admin: Update investment
 router.put('/:id', adminAuth, async (req, res) => {
     try {
+        const allowedFields = [
+            'title',
+            'description',
+            'minimumInvestment',
+            'targetReturn',
+            'status',
+            'type',
+            'duration',
+            'totalFundSize',
+            'riskLevel',
+            'highlights',
+            'documents',
+            'targetRaise',
+            'currentRaise',
+            'numberOfInvestors',
+            'percentageRaised'
+        ];
+
+        const updateData = {};
+        Object.keys(req.body).forEach(key => {
+            if (allowedFields.includes(key)) {
+                updateData[key] = req.body[key];
+            }
+        });
+
         const investment = await Investment.findByIdAndUpdate(
             req.params.id,
-            { $set: req.body },
+            { $set: updateData },
             { new: true, runValidators: true }
         );
 
