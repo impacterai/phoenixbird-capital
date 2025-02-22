@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/investments.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="js/api.js"></script>
+    <script src="js/navigation.js"></script>
     <script src="js/investments.js"></script>
 </head>
 <body onload="checkAuth(); updateUserName();">
@@ -15,6 +17,9 @@
         <div class="logo">
             <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" class="logo-img">
         </div>
+        <button id="navToggle" class="nav-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
         <div class="nav-links">
             <a href="about.html">About</a>
             <a href="investments.html" class="active">Invest</a>

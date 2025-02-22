@@ -129,3 +129,21 @@ async function loadInvestments() {
         container.innerHTML = '<p class="error">Failed to load investments. Please try again later.</p>';
     }
 }
+
+// Mobile navigation toggle
+document.getElementById('navToggle').addEventListener('click', () => {
+    document.querySelector('.nav-links').classList.toggle('active');
+});
+
+// Close mobile nav when clicking outside
+document.addEventListener('click', (e) => {
+    const navLinks = document.querySelector('.nav-links');
+    const navToggle = document.getElementById('navToggle');
+    
+    if (window.innerWidth <= 768 && 
+        navLinks.classList.contains('active') && 
+        !navLinks.contains(e.target) && 
+        !navToggle.contains(e.target)) {
+        navLinks.classList.remove('active');
+    }
+});

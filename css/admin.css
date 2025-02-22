@@ -200,3 +200,52 @@ body {
 .hidden {
     display: none;
 }
+
+/* Mobile sidebar toggle button */
+.sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    background: #1a1a1a;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.sidebar-toggle i {
+    font-size: 20px;
+}
+
+/* Mobile styles */
+@media screen and (max-width: 768px) {
+    .admin-container {
+        position: relative;
+    }
+
+    .sidebar-toggle {
+        display: block;
+    }
+
+    .admin-sidebar {
+        position: fixed;
+        left: -250px;
+        top: 0;
+        bottom: 0;
+        transition: left 0.3s ease;
+        z-index: 999;
+    }
+
+    .admin-sidebar.active {
+        left: 0;
+    }
+
+    .admin-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px;
+    }
+}
