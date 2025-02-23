@@ -82,45 +82,8 @@ async function loadInvestments() {
             return;
         }
 
-        // Helper functions for number formatting
-        const formatCurrency = (value) => (value || 0).toLocaleString();
-        const formatPercentage = (value) => (value || 0).toString();
-        const formatNumber = (value) => (value || 0).toString();
-
         investments.forEach(investment => {
-            const card = document.createElement('div');
-            card.className = 'offerings-card';
-            card.innerHTML = `
-                <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Logo" class="investment-logo">
-                <div class="offerings-content">
-                    <h2 class="offerings-title">${investment.title}</h2>
-                    <div class="offerings-details">
-                        <p>${investment.description}</p>
-                        <ul class="investment-highlights">
-                            <li>Minimum Investment: $${formatCurrency(investment.minimumInvestment)}</li>
-                            <li>Target Return: ${formatPercentage(investment.targetReturn)}%</li>
-                            <li>Duration: ${formatNumber(investment.duration)} months</li>
-                            <li>Risk Level: ${investment.riskLevel || 'N/A'}</li>
-                            <li>Fund Size: $${formatCurrency(investment.totalFundSize)}</li>
-                            <li>Number of Investors: ${formatNumber(investment.numberOfInvestors)}</li>
-                            <li>Percentage Raised: ${formatPercentage(investment.percentageRaised)}%</li>
-                            <li>Target Raise: $${formatCurrency(investment.targetRaise)}</li>
-                            <li>Current Raise: $${formatCurrency(investment.currentRaise)}</li>
-                        </ul>
-                        ${investment.highlights ? `
-                        <div class="highlights">
-                            <h4>Highlights:</h4>
-                            <ul>
-                                ${investment.highlights.map(h => `<li>${h}</li>`).join('')}
-                            </ul>
-                        </div>
-                        ` : ''}
-                    </div>
-                    <button class="invest-btn" onclick="showInvestmentModal('${investment._id}', '${investment.title}', ${investment.minimumInvestment || 0})">
-                        Invest Now
-                    </button>
-                </div>
-            `;
+            const card = createInvestmentCard(investment);
             container.appendChild(card);
         });
     } catch (error) {
@@ -128,6 +91,74 @@ async function loadInvestments() {
         const container = document.querySelector('.offerings-grid');
         container.innerHTML = '<p class="error">Failed to load investments. Please try again later.</p>';
     }
+}
+
+function createInvestmentCard(investment) {
+    const card = document.createElement('div');
+    card.className = 'offerings-card';
+
+    // Format currency values
+    const formatCurrency = (value) => {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(value);
+    };
+
+    // Format percentage values
+    const formatPercentage = (value) => {
+        return value + '%';
+    };
+
+    const details = [
+        { label: 'Minimum Investment', value: formatCurrency(investment.minimumInvestment) },
+        { label: 'Target Return', value: formatPercentage(investment.targetReturn) },
+        { label: 'Duration', value: investment.duration + ' months' },
+        { label: 'Risk Level', value: investment.riskLevel },
+        { label: 'Fund Size', value: formatCurrency(investment.fundSize) },
+        { label: 'Number of Investors', value: investment.numberOfInvestors },
+        { label: 'Percentage Raised', value: formatPercentage(investment.percentageRaised) },
+        { label: 'Target Raise', value: formatCurrency(investment.targetRaise) },
+        { label: 'Current Raise', value: formatCurrency(investment.currentRaise) }
+    ];
+
+    card.innerHTML = `
+        <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Logo" class="investment-logo">    
+        <div class="offerings-content">
+        <h2 class="offerings-title">${investment.title}</h2>
+            <p class="offerings-description">${investment.description}</p>
+            <div class="investment-details">
+                ${details.map(detail => `
+                    <div class="investment-detail-item">
+                        <span class="detail-label">${detail.label}</span>
+                        <span class="detail-value">${detail.value}</span>
+                    </div>
+                `).join('')}
+            </div>
+            ${investment.highlights ? `
+                <div class="highlights">
+                    <h4>Highlights:</h4>
+                    <ul>
+                        ${investment.highlights.map(h => `<li>${h}</li>`).join('')}
+                    </ul>
+                </div>
+                ` : ''}
+            <div class="investment-footer">
+                <button onclick="viewInvestment('${investment._id}')" class="invest-btn">View Details</button>
+                ${investment.status === 'Open' ? 
+                    `<button onclick="showInvestmentModal('${investment._id}', '${investment.title}', ${investment.minimumInvestment || 0})" class="invest-btn">Invest Now</button>` : 
+                    ''}
+            </div>
+        </div>
+    `;
+
+    return card;
+}
+
+function viewInvestment(investmentId) {
+    window.location.href = `investment-details.html?id=${investmentId}`;
 }
 
 // Mobile navigation toggle

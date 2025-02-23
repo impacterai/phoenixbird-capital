@@ -6,6 +6,7 @@ const path = require('path');
 const authRoutes = require('./routes/auth');
 const investmentRoutes = require('./routes/investments');
 const documentRoutes = require('./routes/documents');
+const userRoutes = require('./routes/users');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(express.static(__dirname));
 app.use('/api/auth', authRoutes);
 app.use('/api/investments', investmentRoutes);
 app.use('/api/documents', documentRoutes);
+app.use('/api/users', userRoutes);
 
 // Serve index.html for root route
 app.get('/', (req, res) => {

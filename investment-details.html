@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Details - PhoenixBird Capital</title>
+    <link rel="icon" type="image/png" href="images/favicon.ico">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/investments.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="js/api.js"></script>
+    <script src="js/navigation.js"></script>
+</head>
+<body onload="loadInvestmentDetails()">
+    <nav class="navbar">
+        <a href="/">
+            <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" class="logo-img">
+        </a>
+        <button id="navToggle" class="nav-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="nav-links">
+            <a href="about.html">About</a>
+            <a href="investments.html">Invest</a>
+            <a href="documents.html">Documents</a>
+            <a href="faq.html">FAQ</a>
+            <a href="blog.html">Blog</a>
+            <a href="contact.html">Contact</a>
+            <div class="nav-account">
+                <span id="userAccountLink"></span>
+                <button onclick="logout()" class="logout-btn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="investment-details" class="investment-details-page">
+            <!-- Content will be loaded dynamically -->
+        </div>
+    </div>
+
+    <script>
+        async function loadInvestmentDetails() {
+            try {
+                // Get the investment ID from the URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const investmentId = urlParams.get('id');
+                
+                if (!investmentId) {
+                    window.location.href = '/investments.html';
+                    return;
+                }
+
+                // Fetch investment details
+                const investment = await getInvestmentById(investmentId);
+                
+                if (!investment) {
+                    window.location.href = '/investments.html';
+                    return;
+                }
+
+                // Format currency values
+                const formatCurrency = (value) => {
+                    return new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    }).format(value);
+                };
+
+                // Format percentage values
+                const formatPercentage = (value) => {
+                    return value + '%';
+                };
+
+                const detailsContainer = document.getElementById('investment-details');
+                detailsContainer.innerHTML = `
+                    <div class="investment-header">
+                        <h1>${investment.title}</h1>
+                        <span class="status-badge ${investment.status.toLowerCase()}">${investment.status}</span>
+                    </div>
+                    
+                    <div class="investment-content">
+                        <img src="${investment.image || 'images/phoenix-bird-logo.png'}" alt="${investment.title}" class="investment-detail-image">
+                        
+                        <div class="investment-description">
+                            <h2>Overview</h2>
+                            <p>${investment.description}</p>
+                        </div>
+
+                        <div class="investment-metrics">
+                            <h2>Investment Details</h2>
+                            <div class="metrics-grid">
+                                <div class="metric-item">
+                                    <span class="metric-label">Minimum Investment</span>
+                                    <span class="metric-value">${formatCurrency(investment.minimumInvestment)}</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Target Return</span>
+                                    <span class="metric-value">${formatPercentage(investment.targetReturn)}</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Duration</span>
+                                    <span class="metric-value">${investment.duration} months</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Risk Level</span>
+                                    <span class="metric-value">${investment.riskLevel}</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Fund Size</span>
+                                    <span class="metric-value">${formatCurrency(investment.fundSize)}</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Number of Investors</span>
+                                    <span class="metric-value">${investment.numberOfInvestors}</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Target Raise</span>
+                                    <span class="metric-value">${formatCurrency(investment.targetRaise)}</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Current Raise</span>
+                                    <span class="metric-value">${formatCurrency(investment.currentRaise)}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        ${investment.highlights ? `
+                        <div class="investment-highlights">
+                            <h2>Investment Highlights</h2>
+                            <ul>
+                                ${investment.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+
+                        ${investment.status === 'Open' ? `
+                        <div class="investment-action">
+                            <button onclick="showInvestmentModal('${investment._id}', '${investment.title}', ${investment.minimumInvestment})" class="invest-btn">
+                                Invest Now
+                            </button>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading investment details:', error);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - PhoenixBird Capital</title>
+    <link rel="icon" type="image/png" href="images/favicon.ico">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <button id="sidebarToggle" class="sidebar-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav class="admin-sidebar">
+            <div class="logo-container">
+                <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" class="admin-logo">
+            </div>
+            <ul class="admin-menu">
+                <li><a href="admin-dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li class="active"><a href="admin-users.html"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="#settings"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>User Management</h1>
+                <div class="admin-profile">
+                    <span id="adminName">Admin</span>
+                    <img src="images/favicon.ico" alt="Admin Avatar" class="admin-avatar">
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <section class="admin-section">
+                    <div class="users-header">
+                        <h2>All Users</h2>
+                        <div class="users-actions">
+                            <div class="search-box">
+                                <input type="text" id="userSearch" placeholder="Search users...">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <button id="exportUsersBtn" class="admin-btn"><i class="fas fa-download"></i> Export Users</button>
+                        </div>
+                    </div>
+
+                    <div class="users-table-container">
+                        <table class="users-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Joined Date</th>
+                                    <th>Last Login</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- Users will be loaded here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination">
+                        <button id="prevPage" class="page-btn" disabled><i class="fas fa-chevron-left"></i></button>
+                        <span id="pageInfo">Page 1 of 1</span>
+                        <button id="nextPage" class="page-btn" disabled><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- User Details Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>User Details</h2>
+            <div id="userDetails">
+                <!-- User details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/admin-users.js"></script>
+</body>
+</html>

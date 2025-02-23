@@ -25,9 +25,9 @@
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
-    height: 100%;
     display: flex;
     flex-direction: column;
+    height: fit-content; /* Let height adjust to content */
 }
 
 .offering-card:hover, .offerings-card:hover {
@@ -82,9 +82,9 @@
 
 .offering-content, .offerings-content {
     padding: 1.5rem;
-    flex-grow: 1;
     display: flex;
     flex-direction: column;
+    gap: 1rem;
 }
 
 .offering-title, .offerings-title {
@@ -107,7 +107,9 @@
 
 .offering-details, .offerings-details {
     margin: 1.5rem 0;
-    flex-grow: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
 }
 
 .detail-row {
@@ -120,11 +122,17 @@
 
 .detail-label {
     color: #6c757d;
+    font-size: 0.875rem;
+    color: #666;
+    font-weight: 500;
 }
 
 .detail-value {
     font-weight: 600;
     color: #1a1a1a;
+    font-size: 1rem;
+    color: #333;
+    font-weight: 600;
 }
 
 .view-offering-btn, button.view-offering-btn {
@@ -144,7 +152,16 @@
 }
 
 .view-offering-btn:hover, button.view-offering-btn:hover {
-    background: var(--gradient-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.investment-footer {
+    margin-top: auto;
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-start;
+    padding-top: 1rem;
 }
 
 /* Modal Styles */

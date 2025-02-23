@@ -81,41 +81,81 @@ router.post('/register', async (req, res) => {
     }
 });
 
+// Check admin status
+router.get('/check-admin', async (req, res) => {
+    try {
+        const token = req.header('Authorization')?.replace('Bearer ', '');
+        
+        if (!token) {
+            return res.status(401).json({ error: 'No authentication token found' });
+        }
+
+        // Verify token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+        
+        // Find user
+        const user = await User.findById(decoded.userId)
+            .select('-password -resetPasswordToken -resetPasswordExpires');
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        if (user.role !== 'admin') {
+            return res.status(403).json({ error: 'Access denied. Admin privileges required.' });
+        }
+
+        // Update last login
+        user.lastLogin = new Date();
+        await user.save();
+
+        res.json({
+            success: true,
+            user: {
+                id: user._id,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                role: user.role
+            }
+        });
+    } catch (error) {
+        console.error('Check admin error:', error);
+        if (error.name === 'JsonWebTokenError') {
+            return res.status(401).json({ error: 'Invalid token' });
+        }
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 // Login
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         
-        // Validate required fields
-        if (!email || !password) {
-            return res.status(400).json({ error: 'All required fields must be provided' });
-        }
-
-        // Validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            return res.status(400).json({ error: 'Please provide a valid email address' });
-        }
-
         // Find user
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            return res.status(401).json({ error: 'Invalid email or password' });
         }
 
         // Check password
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            return res.status(401).json({ error: 'Invalid email or password' });
         }
+
+        // Update last login
+        user.lastLogin = new Date();
+        await user.save();
 
         // Generate token
         const token = jwt.sign(
             { 
                 userId: user._id,
-                role: user.role // Include role in JWT
+                role: user.role
             },
-            process.env.JWT_SECRET || 'your-secret-key', // Fallback secret for development
+            process.env.JWT_SECRET || 'your-secret-key',
             { expiresIn: '24h' }
         );
 
@@ -127,48 +167,12 @@ router.post('/login', async (req, res) => {
                 email: user.email,
                 firstName: user.firstName,
                 lastName: user.lastName,
-                isAccredited: user.isAccredited,
                 role: user.role
             }
         });
     } catch (error) {
         console.error('Login error:', error);
-        res.status(500).json({ error: 'Login failed' });
-    }
-});
-
-// Check if user is admin
-router.get('/check-admin', async (req, res) => {
-    try {
-        const token = req.header('Authorization')?.replace('Bearer ', '');
-        
-        if (!token) {
-            return res.status(401).json({ error: 'No authentication token found' });
-        }
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await User.findById(decoded.userId);
-
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-
-        if (user.role !== 'admin') {
-            return res.status(403).json({ error: 'Access denied. Admin privileges required.' });
-        }
-
-        res.json({ 
-            user: {
-                id: user._id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                role: user.role
-            }
-        });
-    } catch (error) {
-        console.error('Admin check error:', error);
-        res.status(401).json({ error: 'Please authenticate as admin' });
+        res.status(500).json({ error: 'Login failed. Please try again.' });
     }
 });
 

@@ -99,6 +99,12 @@
         .signup-prompt a:hover {
             text-decoration: underline;
         }
+
+        .error-message {
+            color: red;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -118,25 +124,30 @@
     <div class="login-container">
         <div class="login-header">
             <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo">
-            <h2>Welcome Back</h2>
+            <h1>Welcome Back</h1>
         </div>
-        <form class="login-form" id="loginForm">
+
+        <div id="loginError" class="error-message" style="display: none;"></div>
+
+        <form id="loginForm" class="login-form">
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" required>
             </div>
+
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button type="submit" class="login-btn">Sign In</button>
+
+            <button type="submit" class="login-btn">Login</button>
+
+            <div class="form-links">
+                <a href="reset-password.html">Forgot Password?</a>
+                <span>|</span>
+                <a href="signup.html">Create Account</a>
+            </div>
         </form>
-        <div class="forgot-password">
-            <a href="reset-password.html">Forgot your password?</a>
-        </div>
-        <div class="signup-prompt">
-            Don't have an account? <a href="signup.html">Create one now</a>
-        </div>
     </div>
 
     <script src="js/api.js"></script>
@@ -162,7 +173,8 @@
                     }
                 }
             } catch (error) {
-                alert('Invalid email or password. Please try again.');
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('loginError').innerText = 'Invalid email or password. Please try again.';
                 console.error('Login error:', error);
             }
         });

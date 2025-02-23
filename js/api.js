@@ -337,3 +337,60 @@ async function getAllInvestments() {
         throw error;
     }
 }
+
+// User Management API Functions
+async function getUsers(page = 1, limit = 10, search = '') {
+    const token = getToken();
+    if (!token) {
+        throw new Error('Authentication required');
+    }
+
+    return await apiCall(`/users?page=${page}&limit=${limit}&search=${search}`, 'GET', null, token);
+}
+
+async function getUserById(userId) {
+    const token = getToken();
+    if (!token) {
+        throw new Error('Authentication required');
+    }
+
+    return await apiCall(`/users/${userId}`, 'GET', null, token);
+}
+
+async function activateUser(userId) {
+    const token = getToken();
+    if (!token) {
+        throw new Error('Authentication required');
+    }
+
+    return await apiCall(`/users/${userId}/activate`, 'POST', null, token);
+}
+
+async function deactivateUser(userId) {
+    const token = getToken();
+    if (!token) {
+        throw new Error('Authentication required');
+    }
+
+    return await apiCall(`/users/${userId}/deactivate`, 'POST', null, token);
+}
+
+async function exportUsers() {
+    const token = getToken();
+    if (!token) {
+        throw new Error('Authentication required');
+    }
+
+    const response = await fetch(`${API_URL}/users/export`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Export failed');
+    }
+
+    return await response.blob();
+}
