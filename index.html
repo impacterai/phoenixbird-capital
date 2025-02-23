@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PhoenixBird Capital - Real Estate Investments</title>
+    <link rel="icon" type="image/png" href="images/favicon.ico">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,7 +15,9 @@
     <header>
         <nav class="navbar">
             <div class="logo">
-                <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" class="logo-img">
+                <a href="/">
+                    <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" class="logo-img">
+                </a>
             </div>
             <button id="navToggle" class="nav-toggle">
                 <i class="fas fa-bars"></i>
@@ -25,7 +28,8 @@
                 <a href="#documents">Documents</a>
                 <a href="#about">About</a>
                 <a href="#contact">Contact</a>
-                <a href="/login.html" class="login-btn">Login</a>
+                <a href="/login.html" class="login-btn">Sign In</a>
+                <a href="/signup.html" class="login-btn">Join</a>
             </div>
         </nav>
     </header>
@@ -37,7 +41,6 @@
                 <p>INVEST WITH YOUR SELF-DIRECTED IRA OR 401K</p>
                 <div class="cta-buttons">
                     <a href="/signup.html" class="primary-btn">Start Investing</a>
-                    <a href="#learn" class="secondary-btn">Learn More</a>
                 </div>
             </div>
         </section>
@@ -58,105 +61,6 @@
                     <i class="fas fa-tools"></i>
                     <h3>Property Management</h3>
                     <p>Full-service property management and maintenance</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="investment-opportunities">
-            <h2>Featured Residential Properties</h2>
-            <div class="opportunities-grid">
-                <!-- Investment cards will be dynamically loaded -->
-            </div>
-            <div class="view-all-btn">
-                <button onclick="showAllInvestments()">View All Opportunities</button>
-            </div>
-        </section>
-
-        <section id="newsletter" class="newsletter-section">
-            <div class="newsletter-container">
-                <h2>Stay Updated</h2>
-                <p>Subscribe to our newsletter for exclusive residential property opportunities and market updates.</p>
-                <form id="newsletter-form" class="newsletter-form">
-                    <div class="newsletter-input-group">
-                        <input type="email" id="newsletter-email" required placeholder="Your Email Address">
-                        <button type="submit">Subscribe</button>
-                    </div>
-                </form>
-            </div>
-        </section>
-
-        <section id="dashboard" class="dashboard-section">
-            <div class="dashboard-header">
-                <h2>Investor Dashboard</h2>
-                <div class="dashboard-nav">
-                    <button class="dashboard-tab active" data-tab="overview">Overview</button>
-                    <button class="dashboard-tab" data-tab="investments">My Investments</button>
-                    <button class="dashboard-tab" data-tab="documents">Documents</button>
-                    <button class="dashboard-tab" data-tab="profile">Profile</button>
-                </div>
-            </div>
-            
-            <div class="dashboard-content">
-                <div class="dashboard-panel active" id="overview-panel">
-                    <div class="dashboard-stats">
-                        <div class="stat-card">
-                            <h3>Total Invested</h3>
-                            <p class="stat-value">$250,000</p>
-                            <p class="stat-change positive">+5.2% this month</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>Active Investments</h3>
-                            <p class="stat-value">3</p>
-                            <p class="stat-subtext">Across 2 properties</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>Total Returns</h3>
-                            <p class="stat-value">$32,450</p>
-                            <p class="stat-change positive">+12.3% YTD</p>
-                        </div>
-                    </div>
-                    <div class="recent-activity">
-                        <h3>Recent Activity</h3>
-                        <div class="activity-list">
-                            <!-- Activity items will be dynamically loaded -->
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="dashboard-panel" id="investments-panel">
-                    <div class="investment-portfolio">
-                        <!-- Portfolio items will be dynamically loaded -->
-                    </div>
-                </div>
-                
-                <div class="dashboard-panel" id="documents-panel">
-                    <div class="documents-list">
-                        <!-- Document items will be dynamically loaded -->
-                    </div>
-                </div>
-                
-                <div class="dashboard-panel" id="profile-panel">
-                    <div class="profile-info">
-                        <form id="profile-form">
-                            <div class="form-group">
-                                <label for="full-name">Full Name</label>
-                                <input type="text" id="full-name" value="John Doe">
-                            </div>
-                            <div class="form-group">
-                                <label for="phone">Phone Number</label>
-                                <input type="tel" id="phone" value="+1 (555) 123-4567">
-                            </div>
-                            <div class="form-group">
-                                <label for="investment-preferences">Investment Preferences</label>
-                                <select id="investment-preferences" multiple>
-                                    <option value="office" selected>Residential Properties</option>
-                                    <option value="residential">Residential Properties</option>
-                                    <option value="retail" selected>Residential Properties</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="save-profile-btn">Save Changes</button>
-                        </form>
-                    </div>
                 </div>
             </div>
         </section>
