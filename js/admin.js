@@ -481,19 +481,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         preview.innerHTML = `
                             <img src="${imageUrl}" alt="Investment Image ${index + 1}" onerror="this.src='/images/placeholder.png'; this.onerror=null;">
+                            <button type="button" class="btn-remove" data-id="${image._id || index}" data-index="${index}">
+                                <i class="fas fa-times"></i>
+                            </button>
                             <div class="image-preview-overlay">
+                                <input type="text" value="${image.caption || ''}" class="image-caption" placeholder="Add caption">
                             </div>
                         `;
                         
-                        // Create delete button with explicit styling
-                        const deleteButton = document.createElement('button');
-                        deleteButton.type = 'button';
-                        deleteButton.className = 'btn-remove';
-                        deleteButton.dataset.id = image._id || index;
-                        deleteButton.dataset.index = index;
-                        deleteButton.innerHTML = '<i class="fas fa-times"></i>';
-                        
-                        // Add event listener
+                        // Find the delete button and add click event
+                        const deleteButton = preview.querySelector('.btn-remove');
                         deleteButton.addEventListener('click', async function() {
                             if (confirm('Are you sure you want to remove this image?')) {
                                 try {
@@ -521,6 +518,18 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                             }
                         });
+                        
+                        // Add caption change event listener
+                        const captionInput = preview.querySelector('.image-caption');
+                        if (captionInput) {
+                            captionInput.addEventListener('input', function() {
+                                // We'll update captions when saving the form
+                                console.log('Caption changed for image', index, 'to', this.value);
+                            });
+                        }
+                        
+                        // Add delete button to preview
+                        preview.appendChild(deleteButton);
                         
                         // Add to preview grid
                         imageContainer.appendChild(preview);
@@ -654,7 +663,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         preview.innerHTML = `
                             <img src="${imageUrl}" alt="Investment Image ${index + 1}" onerror="this.src='/images/placeholder.png'; this.onerror=null;">
                             <div class="image-preview-overlay">
-                                <input type="text" class="image-caption" value="${image.caption || ''}" placeholder="Add caption">
                             </div>
                         `;
                         
@@ -663,7 +671,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         deleteButton.type = 'button';
                         deleteButton.className = 'btn-remove';
                         deleteButton.dataset.id = image._id || index;
-                        deleteButton.dataset.index = index; 
+                        deleteButton.dataset.index = index;
                         deleteButton.innerHTML = '<i class="fas fa-times"></i>';
                         
                         // Add event listener
@@ -818,24 +826,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 preview.innerHTML = `
                     <img src="${e.target.result}" alt="Preview Image">
+                    <button type="button" class="btn-remove" data-id="${imageId}">
+                        <i class="fas fa-times"></i>
+                    </button>
                     <div class="image-preview-overlay">
+                        <input type="text" placeholder="Add caption" class="image-caption">
                     </div>
                 `;
                 
-                // Create the delete button separately to ensure it's visible
-                const deleteButton = document.createElement('button');
-                deleteButton.type = 'button';
-                deleteButton.className = 'btn-remove';
-                deleteButton.dataset.id = imageId;
-                deleteButton.innerHTML = '<i class="fas fa-times"></i>';
-                
-                // Add event listener to delete button
+                // Find the delete button and add click event
+                const deleteButton = preview.querySelector('.btn-remove');
                 deleteButton.addEventListener('click', function() {
                     preview.remove();
                 });
-                
-                // Append delete button to the preview
-                preview.appendChild(deleteButton);
                 
                 // Add to preview grid
                 previewGrid.appendChild(preview);
@@ -930,25 +933,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 preview.innerHTML = `
                     <img src="${e.target.result}" alt="Preview Image">
+                    <button type="button" class="btn-remove" data-id="${imageId}">
+                        <i class="fas fa-times"></i>
+                    </button>
                     <div class="image-preview-overlay">
+                        <input type="text" placeholder="Add caption" class="image-caption">
                     </div>
                 `;
                 
-                // Create the delete button separately to ensure it's visible
-                const deleteButton = document.createElement('button');
-                deleteButton.type = 'button';
-                deleteButton.className = 'btn-remove';
-                deleteButton.dataset.id = imageId;
-                deleteButton.innerHTML = '<i class="fas fa-times"></i>';
-                
-                // Add event listener to delete button
+                // Find the delete button and add click event
+                const deleteButton = preview.querySelector('.btn-remove');
                 deleteButton.addEventListener('click', function() {
                     console.log('Delete button clicked for image ID:', imageId);
                     removeUploadedImage(preview);
                 });
-                
-                // Append delete button to the preview
-                preview.appendChild(deleteButton);
                 
                 // Add preview to grid
                 previewGrid.appendChild(preview);

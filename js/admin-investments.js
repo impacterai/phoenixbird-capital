@@ -151,10 +151,11 @@ async function handleImageUpload(event) {
             preview.className = 'image-preview';
             preview.innerHTML = `
                 <img src="${e.target.result}" alt="Property Image">
+                <button type="button" class="btn-remove" onclick="removePreview(this)">
+                    <i class="fas fa-times"></i>
+                </button>
                 <div class="image-preview-overlay">
-                    <button type="button" class="btn-remove" onclick="removePreview(this)">
-                        <i class="fas fa-times"></i>
-                    </button>
+                    <input type="text" placeholder="Add caption" class="image-caption">
                 </div>
             `;
             previewGrid.appendChild(preview);
@@ -173,7 +174,7 @@ async function handleInvestmentSubmit(event) {
         // Function to parse formatted number input
         function parseFormattedNumber(value) {
             // Remove all commas and convert periods to decimal separator
-            return parseFloat(value.replace(/,/g, '').replace(/\.(\d{3})/g, '$1'));
+            return parseFloat(value.replace(/,/g, '').replace(/\.(\d{3})+(?!\d)/g, '$1'));
         }
 
         // Format the numeric data
@@ -315,11 +316,11 @@ async function editInvestment(investmentId) {
             preview.className = 'image-preview';
             preview.innerHTML = `
                 <img src="${image.url}" alt="Property Image">
+                <button type="button" class="btn-remove" onclick="removeExistingImage('${currentInvestment._id}', '${image._id}')">
+                    <i class="fas fa-times"></i>
+                </button>
                 <div class="image-preview-overlay">
                     <input type="text" value="${image.caption || ''}" class="image-caption" readonly>
-                    <button type="button" class="btn-remove" onclick="removeExistingImage('${currentInvestment._id}', '${image._id}')">
-                        <i class="fas fa-times"></i>
-                    </button>
                 </div>
             `;
             previewGrid.appendChild(preview);

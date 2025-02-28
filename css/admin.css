@@ -656,17 +656,56 @@ body {
     margin-bottom: 1rem;
 }
 
+/* Image Preview Styling - Unified */
 .image-preview {
     position: relative;
     border: 1px solid #ddd;
     border-radius: 4px;
     overflow: hidden;
+    width: 200px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.image-preview:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 .image-preview img {
     width: 100%;
     height: 150px;
     object-fit: cover;
+}
+
+.btn-remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: #e53935;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.image-preview:hover .btn-remove {
+    opacity: 1;
+}
+
+.btn-remove:hover {
+    background-color: #c62828;
+    transform: scale(1.1);
 }
 
 .image-preview-overlay {
@@ -687,14 +726,6 @@ body {
     background: transparent;
     font-size: 12px;
     outline: none;
-}
-
-.btn-remove {
-    background: transparent;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
 }
 
 .upload-controls {
@@ -838,7 +869,7 @@ td.text-center p {
 }
 
 /* Image Management Modal */
-.image-manager-modal {
+.modal-images {
     max-width: 80%;
     width: 900px;
     max-height: 90vh;
@@ -848,68 +879,6 @@ td.text-center p {
 .existing-images-container,
 .new-images-container {
     margin-bottom: 2rem;
-}
-
-.image-preview {
-    position: relative;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    height: 150px;
-    transition: all 0.2s ease-in-out;
-}
-
-.image-preview:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.image-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.btn-remove {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: rgba(255, 0, 0, 0.7);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    opacity: 0.9;
-    transition: all 0.2s ease;
-}
-
-.btn-remove:hover {
-    background-color: rgba(255, 0, 0, 0.9);
-    transform: scale(1.1);
-}
-
-.image-preview-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 0.5rem;
-    z-index: 5;
-}
-
-.image-caption {
-    width: 100%;
-    padding: 0.25rem;
-    font-size: 0.85rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
 }
 
 .no-images {
