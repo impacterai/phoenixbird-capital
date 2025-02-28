@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - PhoenixBird Capital</title>
+    <link rel="icon" type="image/png" href="images/favicon.ico">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/about.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="js/api.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/about.js"></script>
+</head>
+<body onload="checkAuth(); updateUserName();">
+    <nav class="navbar">
+        <a href="index.html">
+            <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" class="logo-img">
+        </a>
+        <button id="navToggle" class="nav-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="nav-links">
+            <a href="about.html" class="active">About</a>
+            <a href="investments.html">Invest</a>
+            <a href="documents.html">Documents</a>
+            <a href="faq.html">FAQ</a>
+            <a href="blog.html">Blog</a>
+            <a href="contact.html">Contact</a>
+            <div class="nav-account">
+                <span id="userAccountLink"></span>
+                <button onclick="logout()" class="logout-btn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="about-container">
+        <!-- Team Section -->
+        <section class="team-section">
+            <div class="container">
+                <div class="section-heading">
+                    <h2>Meet Our Team</h2>
+                    <p>Our leadership team brings decades of experience from top technology companies, financial institutions, and successful startups.</p>
+                </div>
+                
+                <div class="team-grid">
+                    <!-- Team Member 1 -->
+                    <div class="team-member">
+                        <div class="member-photo">
+                            <img src="images/team/MannyFernandez.jpg" alt="Manny Fernandez" onerror="this.src='images/placeholder-person.jpg'">
+                        </div>
+                        <div class="member-info">
+                            <h3 class="member-name">Manny Fernandez</h3>
+                            <p class="member-title">Founder/CEO</p>
+                            <div class="member-bio">
+                                <p>Serial Entrepreneur with two successful startup exits</p>
+                                <p>Best-Selling Author</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Team Member 2 -->
+                    <div class="team-member">
+                        <div class="member-photo">
+                            <img src="images/team/Santosh_Gottipamula.jpeg" alt="Santosh Gottipamula" onerror="this.src='images/placeholder-person.jpg'">
+                        </div>
+                        <div class="member-info">
+                            <h3 class="member-name">Santosh Gottipamula</h3>
+                            <p class="member-title">Co-Founder/CTO</p>
+                            <div class="member-bio">
+                                <p>Former Googler with extensive expertise in (AI) and (ML)</p>
+                                <p>Visionary Engineering Leader</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Team Member 3 -->
+                    <div class="team-member">
+                        <div class="member-photo">
+                            <img src="images/team/Rajkiran_Panuganti.jpeg" alt="Rajkiran Panuganti" onerror="this.src='images/placeholder-person.jpg'">
+                        </div>
+                        <div class="member-info">
+                            <h3 class="member-name">Rajkiran Panuganti</h3>
+                            <p class="member-title">Advisor | Ph.D.</p>
+                            <div class="member-bio">
+                                <p>Former Principal Scientist at Microsoft</p>
+                                <p>Expert in Artificial Intelligence</p>
+                                <p>Led groundbreaking research on Co-Pilot tech</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 PhoenixBird Capital. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

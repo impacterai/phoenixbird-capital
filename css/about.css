@@ -1,0 +1,242 @@
+/* About Page Styles */
+
+:root {
+    --about-primary: #1a1a2e;
+    --about-accent: #FF4B2B;
+}
+
+/* About Container */
+.about-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Banner Section */
+.about-banner {
+    background: var(--gradient-primary);
+    padding: 60px 0;
+    margin-bottom: 40px;
+    text-align: center;
+    border-radius: 8px;
+    color: white;
+}
+
+.about-banner h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.about-banner p {
+    font-size: 1.1rem;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Content Sections */
+.about-content {
+    padding: 20px 0;
+}
+
+.content-block {
+    margin-bottom: 40px;
+}
+
+.content-block h2 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.content-block h2:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--accent-color);
+}
+
+.content-block p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-color);
+}
+
+/* Values Grid */
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.value-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow-soft);
+    padding: 25px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.value-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-strong);
+}
+
+.value-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 75, 43, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    color: var(--secondary-color);
+    font-size: 24px;
+}
+
+.value-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+.value-card p {
+    font-size: 0.95rem;
+    color: var(--text-color);
+}
+
+/* Team Section */
+.team-section {
+    background-color: var(--light-bg);
+    padding: 60px 0;
+    margin: 40px 0;
+    border-radius: 8px;
+}
+
+.section-heading {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.section-heading h2 {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    position: relative;
+    display: inline-block;
+}
+
+.section-heading h2:after {
+    content: '';
+    display: block;
+    width: 70px;
+    height: 3px;
+    background: var(--secondary-color);
+    margin: 15px auto 0;
+}
+
+.section-heading p {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.team-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+.team-member {
+    width: 300px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-member:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-strong);
+}
+
+.member-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin: 30px auto 20px;
+    overflow: hidden;
+    border: 5px solid #e1e8ed;
+}
+
+.member-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.member-info {
+    padding: 0 20px 30px;
+    text-align: center;
+}
+
+.member-name {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.member-title {
+    font-size: 1.1rem;
+    color: var(--secondary-color);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.member-bio p {
+    font-size: 0.95rem;
+    color: var(--text-color);
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .about-banner {
+        padding: 40px 0;
+    }
+    
+    .about-banner h1 {
+        font-size: 2rem;
+    }
+    
+    .values-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .team-member {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-banner h1 {
+        font-size: 1.8rem;
+    }
+    
+    .content-block h2 {
+        font-size: 1.5rem;
+    }
+}
