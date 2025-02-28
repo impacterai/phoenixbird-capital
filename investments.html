@@ -14,26 +14,7 @@
     <script src="js/investments.js"></script>
 </head>
 <body onload="checkAuth(); updateUserName();">
-    <nav class="navbar">
-        <a href="index.html">
-            <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" class="logo-img">
-        </a>
-        <button id="navToggle" class="nav-toggle">
-            <i class="fas fa-bars"></i>
-        </button>
-        <div class="nav-links">
-            <a href="about.html">About</a>
-            <a href="investments.html" class="active">Invest</a>
-            <a href="documents.html">Documents</a>
-            <a href="faq.html">FAQ</a>
-            <a href="blog.html">Blog</a>
-            <a href="contact.html">Contact</a>
-            <div class="nav-account">
-                <span id="userAccountLink"></span>
-                <button onclick="logout()" class="logout-btn">Logout</button>
-            </div>
-        </div>
-    </nav>
+    <div id="navbar-container"></div>
 
     <main class="investment-opportunities">
         <div class="offerings-grid">
@@ -66,12 +47,10 @@
         </div>
     </div>
 
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2025 PhoenixBird Capital. All rights reserved.</p>
-        </div>
-    </footer>
+    <div id="footer-container"></div>
 
     <script src="js/investments.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/components.js"></script>
 </body>
 </html>

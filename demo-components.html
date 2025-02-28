@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Component Demo - PhoenixBird Capital</title>
+    <link rel="icon" type="image/png" href="images/favicon.ico">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <!-- Navbar will be loaded here -->
+        <div id="navbar-container"></div>
+    </header>
+
+    <main>
+        <section class="container">
+            <h1>Component System Demo</h1>
+            <p>This page demonstrates the new component system for consistent layout across all PhoenixBird Capital pages.</p>
+            
+            <div class="info-box">
+                <h2>How It Works</h2>
+                <p>The navbar and footer are now stored as separate HTML components:</p>
+                <ul>
+                    <li><code>components/navbar.html</code> - Contains the navigation bar markup</li>
+                    <li><code>components/footer.html</code> - Contains the footer markup</li>
+                </ul>
+                <p>These components are loaded dynamically using JavaScript:</p>
+                <ul>
+                    <li><code>js/components.js</code> - Handles loading and displaying components</li>
+                </ul>
+            </div>
+            
+            <div class="info-box">
+                <h2>Implementation Steps</h2>
+                <p>To update existing pages to use this component system:</p>
+                <ol>
+                    <li>Replace navbar and footer sections with container divs</li>
+                    <li>Add the components.js script before closing body tag</li>
+                </ol>
+                
+                <h3>Example HTML Structure</h3>
+                <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;!-- Meta tags, title, CSS links --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;header&gt;
+        &lt;!-- Navbar will be loaded here --&gt;
+        &lt;div id="navbar-container"&gt;&lt;/div&gt;
+    &lt;/header&gt;
+    
+    &lt;main&gt;
+        &lt;!-- Page content here --&gt;
+    &lt;/main&gt;
+    
+    &lt;!-- Footer will be loaded here --&gt;
+    &lt;div id="footer-container"&gt;&lt;/div&gt;
+    
+    &lt;!-- Scripts --&gt;
+    &lt;script src="js/api.js"&gt;&lt;/script&gt;
+    &lt;script src="js/navigation.js"&gt;&lt;/script&gt;
+    &lt;script src="js/components.js"&gt;&lt;/script&gt;
+    &lt;script src="js/main.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+            
+            <div class="info-box">
+                <h2>Benefits</h2>
+                <ul>
+                    <li>Consistent navigation and footer across all pages</li>
+                    <li>Easier maintenance - update one file instead of every page</li>
+                    <li>Reduced code duplication</li>
+                    <li>Automatic highlighting of active navigation items</li>
+                    <li>Dynamic content based on authentication status</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer will be loaded here -->
+    <div id="footer-container"></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/components.js"></script>
+</body>
+</html>

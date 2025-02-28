@@ -108,11 +108,9 @@
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <a href="/">
-            <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" class="logo-img">
-        </a>
-    </nav>
+    <!-- Navbar will be loaded here -->
+    <div id="navbar-container"></div>
+    
     <div class="login-container">
         <div class="login-header">
             <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo">
@@ -142,8 +140,12 @@
         </form>
     </div>
 
+    <!-- Footer container -->
+    <div id="footer-container"></div>
+
     <script src="js/api.js"></script>
     <script src="js/navigation.js"></script>
+    <script src="js/components.js"></script>
     <script>
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
