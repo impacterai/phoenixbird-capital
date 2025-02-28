@@ -11,6 +11,380 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="js/api.js"></script>
     <script src="js/navigation.js"></script>
+    <style>
+        .investment-details-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .investment-flex-container {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .investment-main-content {
+            flex: 2;
+        }
+        
+        .investment-sidebar {
+            flex: 1;
+            max-width: 350px;
+        }
+        
+        .investment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        
+        .investment-title-container {
+            flex: 1;
+        }
+        
+        .investment-title-container h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+        
+        .prepared-by {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 0;
+        }
+        
+        .invest-button-container {
+            margin-left: 1rem;
+        }
+        
+        .invest-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        
+        .carousel-container {
+            position: relative;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .carousel-slides {
+            position: relative;
+            width: 100%;
+        }
+        
+        .carousel-slide {
+            display: none;
+            width: 100%;
+        }
+        
+        .carousel-slide.active {
+            display: block;
+        }
+        
+        .carousel-slide img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .carousel-thumbnails {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+        
+        .carousel-thumbnail {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        
+        .carousel-thumbnail.active {
+            opacity: 1;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 1rem;
+        }
+        
+        .carousel-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #333;
+            font-size: 1.2rem;
+            z-index: 10;
+        }
+        
+        .carousel-control.prev {
+            left: 15px;
+        }
+        
+        .carousel-control.next {
+            right: 15px;
+        }
+        
+        .card-section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card-section h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .offering-terms-table {
+            width: 100%;
+        }
+        
+        .offering-terms-table tr {
+            border-bottom: 1px solid #eee;
+        }
+        
+        .offering-terms-table tr:last-child {
+            border-bottom: none;
+        }
+        
+        .offering-terms-table td {
+            padding: 0.8rem 0;
+        }
+        
+        .offering-terms-table td:last-child {
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        .document-link {
+            display: block;
+            padding: 0.8rem 0;
+            color: var(--link-color);
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .document-link:last-child {
+            border-bottom: none;
+        }
+        
+        .document-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .document-link i {
+            margin-right: 0.5rem;
+        }
+        
+        .links-section a {
+            display: block;
+            color: var(--link-color);
+            text-decoration: none;
+            padding: 0.5rem 0;
+        }
+        
+        .links-section a i {
+            margin-left: 0.3rem;
+        }
+        
+        .documents-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .document-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .document-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .document-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .document-info {
+            padding: 1.5rem 1.5rem 1rem;
+        }
+        
+        .document-info h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .document-description {
+            font-size: 1rem;
+            color: var(--primary-color);
+            margin: 0 0 0.75rem;
+            font-weight: 500;
+        }
+        
+        .document-meta {
+            font-size: 0.8rem;
+            color: #888;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .document-date {
+            margin-right: 1rem;
+        }
+        
+        .document-preview {
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f8f8;
+            overflow: hidden;
+            border-bottom: 1px solid #eee;
+            position: relative;
+        }
+        
+        .document-preview iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+        
+        .document-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .document-preview .pdf-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(rgba(255,255,255,0), rgba(0,0,0,0.3));
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 10px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .document-preview:hover .pdf-overlay {
+            opacity: 1;
+        }
+        
+        .document-preview .pdf-message {
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .download-btn {
+            background-color: #ff3b30;
+            color: white;
+            border: none;
+            padding: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            width: 100%;
+            text-align: center;
+            margin-top: auto;
+            transition: background-color 0.3s;
+        }
+        
+        .download-btn:hover {
+            background-color: #e0352b;
+        }
+        
+        @media (max-width: 768px) {
+            .investment-flex-container {
+                flex-direction: column;
+            }
+            
+            .investment-main-content {
+                width: 100%;
+            }
+            
+            .investment-sidebar {
+                width: 100%;
+                margin: 1rem 0 0 0;
+                align-self: flex-start;
+            }
+            
+            .document-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .document-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
 </head>
 <body onload="loadInvestmentDetails()">
     <nav class="navbar">
@@ -53,7 +427,7 @@
                 }
 
                 // Fetch investment details
-                const investment = await getInvestmentById(investmentId);
+                const investment = await getPublicInvestmentById(investmentId);
                 
                 if (!investment) {
                     window.location.href = '/investments.html';
@@ -74,81 +448,445 @@
                 const formatPercentage = (value) => {
                     return value + '%';
                 };
+                
+                // Get status badge class
+                function getStatusBadgeClass(status) {
+                    switch(status.toLowerCase()) {
+                        case 'active':
+                            return 'status-active';
+                        case 'draft':
+                            return 'status-draft';
+                        case 'funding':
+                            return 'status-funding';
+                        case 'closed':
+                            return 'status-closed';
+                        default:
+                            return 'status-default';
+                    }
+                }
+
+                // Prepare document links
+                const documents = investment.documents || [];
+                let documentLinks = '';
+                
+                // Real documents from the documents.html page
+                const fundDocuments = [
+                    {
+                        title: "Private Placement Memorandum (PPM)",
+                        description: "PhoenixBird Capital Fund 1, LLC",
+                        date: "Feb 15, 2025",
+                        size: "2.4 MB",
+                        filename: "PRIVATE PLACEMENT MEMORANDUM PBC DRAFT 2-19-25.pdf"
+                    },
+                    {
+                        title: "Operating Agreement",
+                        description: "PhoenixBird Capital Fund 1, LLC",
+                        date: "Feb 15, 2025",
+                        size: "1.8 MB",
+                        filename: "PRIVATE PLACEMENT MEMORANDUM PBC DRAFT 2-19-25.pdf"
+                    },
+                    {
+                        title: "Subscription Agreement",
+                        description: "PhoenixBird Capital Fund 1, LLC",
+                        date: "Feb 15, 2025",
+                        size: "1.2 MB",
+                        filename: "PRIVATE PLACEMENT MEMORANDUM PBC DRAFT 2-19-25.pdf"
+                    }
+                ];
+
+                const reportDocuments = [
+                    {
+                        title: "Q4 2024 Report",
+                        description: "Quarterly Performance Report",
+                        date: "Jan 15, 2025",
+                        size: "3.1 MB",
+                        filename: "PRIVATE PLACEMENT MEMORANDUM PBC DRAFT 2-19-25.pdf"
+                    },
+                    {
+                        title: "2024 Annual Report",
+                        description: "Annual Performance & Strategy Report",
+                        date: "Jan 31, 2025",
+                        size: "2.8 MB",
+                        filename: "PRIVATE PLACEMENT MEMORANDUM PBC DRAFT 2-19-25.pdf"
+                    }
+                ];
+                
+                // Build the document section HTML
+                documentLinks = `
+                    <div class="documents-grid">
+                        <h2 style="font-size: 1.5rem; color: var(--primary-color); border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 1rem;">Fund Documents</h2>
+                        <div class="document-cards">
+                            ${fundDocuments.map(doc => `
+                                <div class="document-card">
+                                    <div class="document-preview">
+                                        <iframe src="documents/${doc.filename}#toolbar=0&view=FitH" title="${doc.title}"></iframe>
+                                        <div class="pdf-overlay" onclick="event.preventDefault(); handleDocumentDownload('${doc.filename}')">
+                                            <div class="pdf-message">Click to download</div>
+                                        </div>
+                                    </div>
+                                    <div class="document-info">
+                                        <h4>${doc.title}</h4>
+                                        <p class="document-description">${doc.description}</p>
+                                        <div class="document-meta">
+                                            <span class="document-date">Updated: ${doc.date}</span>
+                                            <span class="document-size">${doc.size}</span>
+                                        </div>
+                                    </div>
+                                    <button class="download-btn" onclick="handleDocumentDownload('${doc.filename}')">
+                                        View Document
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <h2 style="font-size: 1.5rem; color: var(--primary-color); border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 1rem;">Reports & Updates</h2>
+                        <div class="document-cards">
+                            ${reportDocuments.map(doc => `
+                                <div class="document-card">
+                                    <div class="document-preview">
+                                        <iframe src="documents/${doc.filename}#toolbar=0&view=FitH" title="${doc.title}"></iframe>
+                                        <div class="pdf-overlay" onclick="event.preventDefault(); handleDocumentDownload('${doc.filename}')">
+                                            <div class="pdf-message">Click to download</div>
+                                        </div>
+                                    </div>
+                                    <div class="document-info">
+                                        <h4>${doc.title}</h4>
+                                        <p class="document-description">${doc.description}</p>
+                                        <div class="document-meta">
+                                            <span class="document-date">Updated: ${doc.date}</span>
+                                            <span class="document-size">${doc.size}</span>
+                                        </div>
+                                    </div>
+                                    <button class="download-btn" onclick="handleDocumentDownload('${doc.filename}')">
+                                        View Document
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                
+                // Add investment-specific documents if they exist
+                if (documents.length > 0) {
+                    documentLinks += `
+                        <h2 style="font-size: 1.5rem; color: var(--primary-color); border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 1rem;">Investment-Specific Documents</h2>
+                        <div class="document-links">
+                            ${documents.map(doc => `
+                                <a href="#" class="document-link" onclick="handleDocumentDownload('${doc.filename}'); return false;">
+                                    <i class="fas fa-file-pdf"></i> ${doc.title}
+                                </a>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                // Create carousel HTML if images exist
+                let carouselHtml = '';
+                let thumbnailsHtml = '';
+                
+                if (investment.images && investment.images.length > 0) {
+                    const slides = investment.images.map((image, index) => `
+                        <div class="carousel-slide ${index === 0 ? 'active' : ''}">
+                            <img src="${image.url}" alt="${image.caption || investment.title}">
+                        </div>
+                    `).join('');
+                    
+                    thumbnailsHtml = investment.images.map((image, index) => `
+                        <img src="${image.url}" alt="Thumbnail" class="carousel-thumbnail ${index === 0 ? 'active' : ''}" 
+                            onclick="changeSlide(${index})">
+                    `).join('');
+                    
+                    carouselHtml = `
+                    <div class="carousel">
+                        <div class="carousel-container">
+                            <div class="carousel-slides">
+                                ${slides}
+                            </div>                            
+                            <button class="carousel-control prev" onclick="prevSlide()">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="carousel-control next" onclick="nextSlide()">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>                           
+                        </div>
+                        </div>
+                        <div class="carousel-thumbnails">
+                            ${thumbnailsHtml}
+                        </div>
+                    `;
+                } else {
+                    // Create a placeholder image that looks like a real estate/investment property
+                    carouselHtml = `
+                        <div class="carousel-container">
+                            <div class="carousel-slides">
+                                <div class="carousel-slide active">
+                                    <img src="https://via.placeholder.com/800x400.png?text=Investment+Property" 
+                                         alt="${investment.title}">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
 
                 const detailsContainer = document.getElementById('investment-details');
                 detailsContainer.innerHTML = `
                     <div class="investment-header">
-                        <h1>${investment.title}</h1>
-                        <span class="status-badge ${investment.status.toLowerCase()}">${investment.status}</span>
+                        <div class="investment-title-container">
+                            <h1>${investment.title}</h1>
+                            <span class="status-badge ${getStatusBadgeClass(investment.status)}">${investment.status}</span>
+                        </div>
+                        ${(investment.status.toLowerCase() === 'active' || investment.status.toLowerCase() === 'funding') ? `
+                        <div class="invest-button-container">
+                            <button onclick="showInvestmentModal('${investment._id}', '${investment.title}', ${investment.minimumInvestment || 0})" class="invest-button">Invest</button>
+                        </div>
+                        ` : ''}
                     </div>
                     
-                    <div class="investment-content">
-                        <img src="${investment.image || 'images/phoenix-bird-logo.png'}" alt="${investment.title}" class="investment-detail-image">
-                        
-                        <div class="investment-description">
-                            <h2>Overview</h2>
-                            <p>${investment.description}</p>
+                    <div class="investment-flex-container">
+                        <div class="investment-main-content">
+                            ${carouselHtml}
+                            
+                            <div class="card-section">
+                                <h2>Documents</h2>
+                                ${documentLinks}
+                            </div>
+                            
+                            <div class="card-section">
+                                <h2>Overview</h2>
+                                <p>${investment.description}</p>
+                            </div>
+                            
+                            ${investment.highlights ? `
+                            <div class="card-section">
+                                <h2>Investment Highlights</h2>
+                                <ul>
+                                    ${investment.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
+                                </ul>
+                            </div>
+                            ` : ''}
                         </div>
-
-                        <div class="investment-metrics">
-                            <h2>Investment Details</h2>
-                            <div class="metrics-grid">
-                                <div class="metric-item">
-                                    <span class="metric-label">Minimum Investment</span>
-                                    <span class="metric-value">${formatCurrency(investment.minimumInvestment)}</span>
-                                </div>
-                                <div class="metric-item">
-                                    <span class="metric-label">Target Return</span>
-                                    <span class="metric-value">${formatPercentage(investment.targetReturn)}</span>
-                                </div>
-                                <div class="metric-item">
-                                    <span class="metric-label">Duration</span>
-                                    <span class="metric-value">${investment.duration} months</span>
-                                </div>
-                                <div class="metric-item">
-                                    <span class="metric-label">Risk Level</span>
-                                    <span class="metric-value">${investment.riskLevel}</span>
-                                </div>
-                                <div class="metric-item">
-                                    <span class="metric-label">Fund Size</span>
-                                    <span class="metric-value">${formatCurrency(investment.fundSize)}</span>
-                                </div>
-                                <div class="metric-item">
-                                    <span class="metric-label">Number of Investors</span>
-                                    <span class="metric-value">${investment.numberOfInvestors}</span>
-                                </div>
-                                <div class="metric-item">
-                                    <span class="metric-label">Target Raise</span>
-                                    <span class="metric-value">${formatCurrency(investment.targetRaise)}</span>
-                                </div>
-                                <div class="metric-item">
-                                    <span class="metric-label">Current Raise</span>
-                                    <span class="metric-value">${formatCurrency(investment.currentRaise)}</span>
+                        
+                        <div class="investment-sidebar">
+                            <div class="card-section">
+                                <h2>Offering Terms</h2>
+                                <table class="offering-terms-table">
+                                    <tr>
+                                        <td>Target Raise</td>
+                                        <td>${formatCurrency(investment.targetRaise)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Minimum Investment</td>
+                                        <td>${formatCurrency(investment.minimumInvestment)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Investment Period</td>
+                                        <td>${investment.duration ? investment.duration + ' months' : '7-10 years'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Distribution Schedule</td>
+                                        <td>Quarterly</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Target Return</td>
+                                        <td>${formatPercentage(investment.targetReturn)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Risk Level</td>
+                                        <td>${investment.riskLevel}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Current Raise</td>
+                                        <td>${formatCurrency(investment.currentRaise)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Number of Investors</td>
+                                        <td>${investment.numberOfInvestors}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <div class="card-section">
+                                <h2>Links</h2>
+                                <div class="links-section">
+                                    <a href="#" target="_blank">Please click here to view all of this Fund's SEC filings to date <i class="fas fa-external-link-alt"></i></a>
                                 </div>
                             </div>
                         </div>
-
-                        ${investment.highlights ? `
-                        <div class="investment-highlights">
-                            <h2>Investment Highlights</h2>
-                            <ul>
-                                ${investment.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
-                            </ul>
-                        </div>
-                        ` : ''}
-
-                        ${investment.status === 'Open' ? `
-                        <div class="investment-action">
-                            <button onclick="showInvestmentModal('${investment._id}', '${investment.title}', ${investment.minimumInvestment})" class="invest-btn">
-                                Invest Now
-                            </button>
-                        </div>
-                        ` : ''}
                     </div>
                 `;
+                
+                // Initialize carousel variables
+                window.currentSlide = 0;
+                window.totalSlides = investment.images ? investment.images.length : 0;
+                
+                // Set active slide for loaded content
+                if (window.totalSlides > 0) {
+                    const slides = document.querySelectorAll('.carousel-slide');
+                    const thumbnails = document.querySelectorAll('.carousel-thumbnail');
+                    
+                    if (slides.length > 0) slides[0].classList.add('active');
+                    if (thumbnails.length > 0) thumbnails[0].classList.add('active');
+                }
+                
             } catch (error) {
                 console.error('Error loading investment details:', error);
+                const detailsContainer = document.getElementById('investment-details');
+                detailsContainer.innerHTML = `
+                    <div class="error-message" style="text-align: center; margin: 3rem auto; max-width: 600px; padding: 2rem; background-color: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                        <h2 style="color: var(--primary-color); margin-bottom: 1rem;">Unable to Load Investment</h2>
+                        <p style="margin-bottom: 1.5rem;">${error.message === 'Investment not found' ? 
+                            'This investment could not be found or might not be available to view.' : 
+                            'We encountered an error while loading the investment details. Please try again later.'}</p>
+                        <a href="investments.html" class="invest-btn">Back to Investments</a>
+                    </div>
+                `;
             }
+        }
+        
+        // Carousel functions
+        function changeSlide(index) {
+            if (index < 0 || index >= window.totalSlides) return;
+            
+            // Hide all slides and deactivate thumbnails
+            const slides = document.querySelectorAll('.carousel-slide');
+            const thumbnails = document.querySelectorAll('.carousel-thumbnail');
+            
+            slides.forEach(slide => slide.classList.remove('active'));
+            thumbnails.forEach(thumb => thumb.classList.remove('active'));
+            
+            // Show selected slide and activate thumbnail
+            slides[index].classList.add('active');
+            thumbnails[index].classList.add('active');
+            
+            window.currentSlide = index;
+        }
+        
+        function nextSlide() {
+            if (!window.totalSlides) return;
+            const newIndex = (window.currentSlide + 1) % window.totalSlides;
+            changeSlide(newIndex);
+        }
+        
+        function prevSlide() {
+            if (!window.totalSlides) return;
+            const newIndex = (window.currentSlide - 1 + window.totalSlides) % window.totalSlides;
+            changeSlide(newIndex);
+        }
+        
+        // Function to check if PDF is loaded properly
+        function checkPdfLoaded() {
+            const iframes = document.querySelectorAll('.document-preview iframe');
+            
+            iframes.forEach(iframe => {
+                // Add a fallback for browsers that don't support PDF embedding
+                iframe.onerror = () => {
+                    const preview = iframe.parentElement;
+                    const filename = iframe.src.split('/').pop().split('#')[0];
+                    preview.innerHTML = `
+                        <img src="images/pdf-preview.svg" alt="Document Preview">
+                        <div class="pdf-overlay" onclick="event.preventDefault(); handleDocumentDownload('${filename}')">
+                            <div class="pdf-message">Click to download</div>
+                        </div>
+                    `;
+                };
+                
+                // Try to detect if PDF loaded successfully
+                setTimeout(() => {
+                    try {
+                        // If iframe is empty, replace with fallback
+                        if (iframe.contentDocument && 
+                            (!iframe.contentDocument.body || 
+                             iframe.contentDocument.body.innerHTML === '')) {
+                            const preview = iframe.parentElement;
+                            const filename = iframe.src.split('/').pop().split('#')[0];
+                            preview.innerHTML = `
+                                <img src="images/pdf-preview.svg" alt="Document Preview">
+                                <div class="pdf-overlay" onclick="event.preventDefault(); handleDocumentDownload('${filename}')">
+                                    <div class="pdf-message">Click to download</div>
+                                </div>
+                            `;
+                        }
+                    } catch (e) {
+                        // Security error means cross-origin, fallback to image
+                        const preview = iframe.parentElement;
+                        const filename = iframe.src.split('/').pop().split('#')[0];
+                        preview.innerHTML = `
+                            <img src="images/pdf-preview.svg" alt="Document Preview">
+                            <div class="pdf-overlay" onclick="event.preventDefault(); handleDocumentDownload('${filename}')">
+                                <div class="pdf-message">Click to download</div>
+                            </div>
+                        `;
+                    }
+                }, 1000);
+            });
+        }
+        
+        window.addEventListener('load', checkPdfLoaded);
+        
+        // Completely separate function for document downloads to avoid recursion
+        function handleDocumentDownload(filename) {
+            try {
+                // For demonstration purposes in development, provide direct access to local files
+                if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    // Directly open/download the local file
+                    const url = `documents/${filename}`;
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.target = '_blank'; // Open in new tab instead of downloading
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    return;
+                }
+                
+                // Production version using API
+                const token = localStorage.getItem('token');
+                
+                if (!token) {
+                    alert('You need to log in to download documents');
+                    return;
+                }
+                
+                // Use the correct API_URL from api.js
+                const apiUrl = window.API_URL || (window.location.origin + '/api');
+                
+                fetch(`${apiUrl}/documents/download/${filename}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to download document');
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    console.error('Download error:', error);
+                    alert(`Unable to download document: ${error.message}`);
+                });
+            } catch (error) {
+                console.error('Error handling document download:', error);
+                alert(`Unable to download document: ${error.message}`);
+            }
+        }
+        
+        // Investment modal
+        function showInvestmentModal(investmentId, title, minAmount) {
+            // This function should open a modal for investment
+            // You can implement this or integrate with your existing modal system
+            alert(`You're about to invest in ${title}. Minimum investment: $${minAmount}. Coming soon!`);
         }
     </script>
 </body>

@@ -66,7 +66,7 @@ const upload = multer({
 // List all investments (public)
 router.get('/public', async (req, res) => {
     try {
-        const investments = await Investment.find({ status: 'active' })
+        const investments = await Investment.find()
             .select('-documents') // Exclude private documents
             .sort('-createdAt');
         res.json(investments);

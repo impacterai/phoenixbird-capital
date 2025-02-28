@@ -1306,3 +1306,41 @@ hr {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+/* Status badges */
+.offerings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: white;
+}
+
+.status-active {
+    background-color: #10b981; /* Green */
+}
+
+.status-draft {
+    background-color: #6b7280; /* Gray */
+}
+
+.status-funding {
+    background-color: #3b82f6; /* Blue */
+}
+
+.status-closed {
+    background-color: #ef4444; /* Red */
+}
+
+.status-default {
+    background-color: #8b5cf6; /* Purple */
+}

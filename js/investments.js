@@ -78,7 +78,7 @@ async function loadInvestments() {
         container.innerHTML = ''; // Clear existing content
 
         if (investments.length === 0) {
-            container.innerHTML = '<p class="no-investments">No active investments available at this time.</p>';
+            container.innerHTML = '<p class="no-investments">No investments available at this time.</p>';
             return;
         }
 
@@ -111,6 +111,22 @@ function createInvestmentCard(investment) {
     const formatPercentage = (value) => {
         return value + '%';
     };
+
+    // Get status badge color
+    function getStatusBadgeClass(status) {
+        switch(status.toLowerCase()) {
+            case 'active':
+                return 'status-active';
+            case 'draft':
+                return 'status-draft';
+            case 'funding':
+                return 'status-funding';
+            case 'closed':
+                return 'status-closed';
+            default:
+                return 'status-default';
+        }
+    }
 
     const details = [
         { label: 'Minimum Investment', value: formatCurrency(investment.minimumInvestment) },
@@ -161,7 +177,10 @@ function createInvestmentCard(investment) {
     card.innerHTML = `
         ${carouselHtml}
         <div class="offerings-content">
-        <h2 class="offerings-title">${investment.title}</h2>
+            <div class="offerings-header">
+                <h2 class="offerings-title">${investment.title}</h2>
+                <div class="status-badge ${getStatusBadgeClass(investment.status)}">${investment.status}</div>
+            </div>
             <p class="offerings-description">${investment.description}</p>
             <div class="investment-details">
                 ${details.map(detail => `
@@ -181,7 +200,7 @@ function createInvestmentCard(investment) {
                 ` : ''}
             <div class="investment-footer">
                 <button onclick="viewInvestment('${investment._id}')" class="invest-btn">View Details</button>
-                ${investment.status === 'Open' ? 
+                ${(investment.status.toLowerCase() === 'active' || investment.status.toLowerCase() === 'funding') ? 
                     `<button onclick="showInvestmentModal('${investment._id}', '${investment.title}', ${investment.minimumInvestment || 0})" class="invest-btn">Invest Now</button>` : 
                     ''}
             </div>

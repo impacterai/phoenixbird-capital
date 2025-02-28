@@ -308,6 +308,25 @@ async function getInvestmentById(id) {
     }
 }
 
+// Get investment by ID (public)
+async function getPublicInvestmentById(id) {
+    try {
+        // First try to find the investment in the list of all public investments
+        const allInvestments = await getInvestments();
+        const investment = allInvestments.find(inv => inv._id === id);
+        
+        if (investment) {
+            return investment;
+        }
+        
+        // If not found, throw an error
+        throw new Error('Investment not found');
+    } catch (error) {
+        console.error('Error in getPublicInvestmentById:', error);
+        throw error;
+    }
+}
+
 // Get all investments (admin)
 async function getAllInvestments() {
     try {
