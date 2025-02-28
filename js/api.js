@@ -319,16 +319,25 @@ async function getInvestmentById(id) {
 // Get all investments (admin)
 async function getAllInvestments() {
     try {
+        const token = getToken();
         const response = await fetch(`${API_URL}/investments`, {
             headers: {
-                'Authorization': `Bearer ${getToken()}`
+                'Authorization': `Bearer ${token}`
             }
         });
 
-        const data = await response.json();
+        // First try to parse as JSON
+        let data;
+        const responseText = await response.text();
+        try {
+            data = JSON.parse(responseText);
+        } catch (e) {
+            console.error('Failed to parse JSON:', responseText.substring(0, 150));
+            throw new Error(`Failed to parse response as JSON: ${e.message}`);
+        }
         
         if (!response.ok) {
-            throw new Error(data.error || 'Failed to fetch investments');
+            throw new Error(data.error || `Failed to fetch investments: ${response.status}`);
         }
 
         return data;

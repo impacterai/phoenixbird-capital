@@ -124,8 +124,42 @@ function createInvestmentCard(investment) {
         { label: 'Current Raise', value: formatCurrency(investment.currentRaise) }
     ];
 
+    // Create carousel HTML if images exist
+    let carouselHtml = '';
+    if (investment.images && investment.images.length > 0) {
+        const slides = investment.images.map((image, index) => `
+            <div class="carousel-slide ${index === 0 ? 'active' : ''}">
+                <img src="${image.url}" alt="${image.caption || investment.title}">
+                ${image.caption ? `<div class="carousel-caption">${image.caption}</div>` : ''}
+            </div>
+        `).join('');
+
+        const indicators = investment.images.map((_, index) => `
+            <div class="carousel-indicator ${index === 0 ? 'active' : ''}" data-slide="${index}"></div>
+        `).join('');
+
+        carouselHtml = `
+            <div class="carousel">
+                <div class="carousel-container">
+                    ${slides}
+                </div>
+                <button class="carousel-control prev" aria-label="Previous slide">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-control next" aria-label="Next slide">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <div class="carousel-indicators">
+                    ${indicators}
+                </div>
+            </div>
+        `;
+    } else {
+        carouselHtml = `<img src="images/phoenix-bird-logo.png" alt="PhoenixBird Logo" class="investment-logo">`;
+    }
+
     card.innerHTML = `
-        <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Logo" class="investment-logo">    
+        ${carouselHtml}
         <div class="offerings-content">
         <h2 class="offerings-title">${investment.title}</h2>
             <p class="offerings-description">${investment.description}</p>
@@ -153,6 +187,67 @@ function createInvestmentCard(investment) {
             </div>
         </div>
     `;
+
+    // Add carousel functionality
+    if (investment.images && investment.images.length > 0) {
+        const carousel = card.querySelector('.carousel');
+        const slides = carousel.querySelectorAll('.carousel-slide');
+        const prevBtn = carousel.querySelector('.prev');
+        const nextBtn = carousel.querySelector('.next');
+        const indicators = carousel.querySelectorAll('.carousel-indicator');
+        
+        // Initialize current slide index
+        let currentSlide = 0;
+        
+        // Function to show a specific slide
+        const showSlide = (index) => {
+            // Hide all slides
+            slides.forEach(slide => slide.classList.remove('active'));
+            indicators.forEach(indicator => indicator.classList.remove('active'));
+            
+            // Show the selected slide
+            slides[index].classList.add('active');
+            indicators[index].classList.add('active');
+            currentSlide = index;
+        };
+        
+        // Event listeners for controls
+        prevBtn.addEventListener('click', () => {
+            const newIndex = (currentSlide - 1 + slides.length) % slides.length;
+            showSlide(newIndex);
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            const newIndex = (currentSlide + 1) % slides.length;
+            showSlide(newIndex);
+        });
+        
+        // Event listeners for indicators
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                showSlide(index);
+            });
+        });
+        
+        // Auto-advance slides every 5 seconds
+        let slideInterval = setInterval(() => {
+            const newIndex = (currentSlide + 1) % slides.length;
+            showSlide(newIndex);
+        }, 5000);
+        
+        // Pause auto-advance on hover
+        carousel.addEventListener('mouseenter', () => {
+            clearInterval(slideInterval);
+        });
+        
+        // Resume auto-advance when mouse leaves
+        carousel.addEventListener('mouseleave', () => {
+            slideInterval = setInterval(() => {
+                const newIndex = (currentSlide + 1) % slides.length;
+                showSlide(newIndex);
+            }, 5000);
+        });
+    }
 
     return card;
 }

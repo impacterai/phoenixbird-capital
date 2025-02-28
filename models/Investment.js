@@ -78,6 +78,10 @@ const investmentSchema = new mongoose.Schema({
             enum: ['prospectus', 'financial_report', 'legal_document', 'other']
         }
     }],
+    images: [{
+        url: String,
+        order: Number
+    }],
     createdAt: {
         type: Date,
         default: Date.now

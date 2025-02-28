@@ -1,5 +1,8 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const Investment = require('../models/Investment');
 const UserInvestment = require('../models/UserInvestment');
 const adminAuth = require('../middleware/adminAuth');
@@ -22,6 +25,43 @@ const authenticateToken = (req, res, next) => {
         res.status(401).json({ error: 'Invalid token' });
     }
 };
+
+// Configure multer for image uploads
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        const uploadPath = path.join(__dirname, '../uploads/investments');
+        
+        // Ensure upload directory exists
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+        }
+        
+        cb(null, uploadPath);
+    },
+    filename: function(req, file, cb) {
+        // Add prefix for better organization and unique timestamp
+        const fileName = `investment-${Date.now()}-${Math.floor(Math.random() * 1000000000)}.${file.originalname.split('.').pop()}`;
+        cb(null, fileName);
+    }
+});
+
+// Filter function to only allow image files
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Invalid file type. Only JPEG, PNG and WebP are allowed.'), false);
+    }
+};
+
+const upload = multer({ 
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB limit
+    }
+});
 
 // List all investments (public)
 router.get('/public', async (req, res) => {
@@ -160,6 +200,25 @@ router.delete('/:id', adminAuth, async (req, res) => {
     }
 });
 
+// Admin: Get a single investment by ID
+router.get('/:id', adminAuth, async (req, res) => {
+    try {
+        console.log(`Fetching investment with ID: ${req.params.id}`);
+        const investment = await Investment.findById(req.params.id);
+        
+        if (!investment) {
+            console.log(`Investment not found with ID: ${req.params.id}`);
+            return res.status(404).json({ error: 'Investment not found' });
+        }
+
+        console.log(`Successfully found investment: ${investment.title}`);
+        res.json(investment);
+    } catch (error) {
+        console.error('Get investment error:', error);
+        res.status(500).json({ error: 'Failed to fetch investment' });
+    }
+});
+
 // Admin: Get investment details with user investments
 router.get('/:id/details', adminAuth, async (req, res) => {
     try {
@@ -180,6 +239,197 @@ router.get('/:id/details', adminAuth, async (req, res) => {
     } catch (error) {
         console.error('Get investment details error:', error);
         res.status(500).json({ error: 'Failed to fetch investment details' });
+    }
+});
+
+// Admin: Upload images for an investment
+router.post('/:id/images', adminAuth, upload.array('images', 10), async (req, res) => {
+  try {
+    const investmentId = req.params.id;
+    
+    console.log(`Adding images to investment ${investmentId}`);
+    console.log(`Request files: ${req.files ? req.files.length : 0}`);
+    
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: 'No images uploaded' });
+    }
+    
+    // Get the investment
+    const investment = await Investment.findById(investmentId);
+    if (!investment) {
+      return res.status(404).json({ error: 'Investment not found' });
+    }
+    
+    // Process uploaded files
+    const newImages = req.files.map((file) => {
+      // Create path that will work with static middleware
+      const relativePath = `/uploads/investments/${file.filename}`;
+      
+      return {
+        url: relativePath
+      };
+    });
+    
+    // Add new images to the investment
+    if (!investment.images) {
+      investment.images = [];
+    }
+    
+    investment.images = [...investment.images, ...newImages];
+    await investment.save();
+    
+    res.json({
+      success: true,
+      images: newImages,
+      investment: investment
+    });
+  } catch (error) {
+    console.error('Error uploading images:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Admin: Delete an image from an investment
+router.delete('/:investmentId/images/:imageIndex', adminAuth, async (req, res) => {
+    try {
+        const { investmentId, imageIndex } = req.params;
+        console.log(`Deleting image at index ${imageIndex} from investment ${investmentId}`);
+        
+        const investment = await Investment.findById(investmentId);
+        
+        if (!investment) {
+            return res.status(404).json({ error: 'Investment not found' });
+        }
+        
+        if (!investment.images || !investment.images.length) {
+            return res.status(404).json({ error: 'No images found for this investment' });
+        }
+        
+        const index = parseInt(imageIndex, 10);
+        if (isNaN(index) || index < 0 || index >= investment.images.length) {
+            return res.status(400).json({ error: 'Invalid image index' });
+        }
+        
+        // Get the image to delete
+        const imageToDelete = investment.images[index];
+        console.log('Image to delete:', imageToDelete);
+        
+        // If the image has a URL that points to a file in our system, delete it
+        if (imageToDelete && imageToDelete.url) {
+            try {
+                // Convert URL to file path
+                let imagePath = imageToDelete.url;
+                
+                // Remove leading slash if present
+                if (imagePath.startsWith('/')) {
+                    imagePath = imagePath.substring(1);
+                }
+                
+                // Try different paths if the image is from the old or new format
+                const possiblePaths = [
+                    path.join(__dirname, '..', imagePath),
+                    path.join(__dirname, '..', 'uploads', 'investments', path.basename(imagePath))
+                ];
+                
+                let fileDeleted = false;
+                
+                // Try each possible path
+                for (const filePath of possiblePaths) {
+                    console.log('Checking path:', filePath);
+                    
+                    if (fs.existsSync(filePath)) {
+                        console.log('File found, deleting:', filePath);
+                        fs.unlinkSync(filePath);
+                        fileDeleted = true;
+                        break;
+                    }
+                }
+                
+                if (fileDeleted) {
+                    console.log('File deleted successfully');
+                } else {
+                    console.log('File not found in any expected location');
+                }
+            } catch (fileError) {
+                console.error('Error deleting image file:', fileError);
+                // Continue with database update even if file deletion fails
+            }
+        }
+        
+        // Remove the image from the array
+        investment.images.splice(index, 1);
+        
+        // Save the investment with updated images
+        await investment.save();
+        console.log('Investment saved with updated images array');
+        
+        res.json({ 
+            success: true,
+            message: 'Image deleted successfully' 
+        });
+    } catch (error) {
+        console.error('Error deleting image:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Admin: Update image order
+router.put('/:id/images', adminAuth, async (req, res) => {
+    try {
+        const investment = await Investment.findById(req.params.id);
+        
+        if (!investment) {
+            return res.status(404).json({ error: 'Investment not found' });
+        }
+        
+        const { images } = req.body;
+        
+        if (!Array.isArray(images)) {
+            return res.status(400).json({ error: 'Invalid images data' });
+        }
+        
+        // Update images with new order
+        investment.images = images;
+        await investment.save();
+        
+        res.status(200).json({ 
+            message: 'Images updated successfully',
+            images: investment.images
+        });
+    } catch (error) {
+        console.error('Update images error:', error);
+        res.status(500).json({ error: 'Failed to update images' });
+    }
+});
+
+// Admin: Reorder images
+router.put('/:investmentId/images/reorder', adminAuth, async (req, res) => {
+    try {
+        const { investmentId } = req.params;
+        const { images } = req.body;
+        
+        if (!images || !Array.isArray(images)) {
+            return res.status(400).json({ error: 'Invalid request: images array is required' });
+        }
+        
+        const investment = await Investment.findById(investmentId);
+        
+        if (!investment) {
+            return res.status(404).json({ error: 'Investment not found' });
+        }
+        
+        // Update the images array with new order
+        investment.images = images;
+        
+        await investment.save();
+        
+        res.status(200).json({ 
+            message: 'Images updated successfully',
+            images: investment.images
+        });
+    } catch (error) {
+        console.error('Update images error:', error);
+        res.status(500).json({ error: 'Failed to update images' });
     }
 });
 

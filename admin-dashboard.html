@@ -9,6 +9,285 @@
     <link rel="stylesheet" href="css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Additional styles for image upload */
+        .image-upload-container {
+            margin-top: 10px;
+        }
+        
+        .image-preview-grid {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .image-preview {
+            position: relative;
+            height: 200px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+            flex: 0 0 auto;
+        }
+        
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .btn-remove {
+            position: absolute !important;
+            top: 5px !important;
+            right: 5px !important;
+            width: 25px !important;
+            height: 25px !important;
+            background-color: red !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            z-index: 1000 !important;
+            opacity: 0.8 !important;
+        }
+        
+        .btn-remove:hover {
+            opacity: 1 !important;
+            transform: scale(1.1) !important;
+        }
+        
+        .image-preview-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 5px;
+            display: flex;
+            justify-content: flex-end;
+            z-index: 5;
+        }
+        
+        .upload-controls {
+            border: 2px dashed #c8c8c8;
+            padding: 15px;
+            text-align: center;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        
+        .upload-info {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        #investment-images-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+        
+        .close-modal {
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .existing-images-container,
+        .new-images-container {
+            margin-bottom: 20px;
+        }
+        
+        .existing-images-container h3,
+        .new-images-container h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .no-images {
+            color: #888;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .image-manager-modal .image-preview-grid {
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        }
+        
+        .manage-images-note {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            text-align: center;
+            font-style: italic;
+            color: #666;
+        }
+
+        /* Investment list styles */
+        .investment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .investment-item:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .investment-details {
+            flex: 1;
+            padding-right: 15px;
+        }
+
+        .investment-details h3 {
+            margin: 0 0 8px 0;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .investment-description {
+            color: #666;
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .investment-meta {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .investment-type {
+            background-color: #f1f1f1;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .investment-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .status-active {
+            background-color: #e6f7e6;
+            color: #28a745;
+        }
+
+        .status-inactive {
+            background-color: #f8eaea;
+            color: #dc3545;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #ffc107;
+        }
+
+        .status-unknown {
+            background-color: #f1f1f1;
+            color: #6c757d;
+        }
+
+        .investment-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .investment-actions .admin-btn {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .investment-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .investment-details {
+                width: 100%;
+                padding-right: 0;
+                margin-bottom: 15px;
+            }
+
+            .investment-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="admin-container">
@@ -124,6 +403,22 @@
                             <label for="highlights">Highlights (one per line)</label>
                             <textarea id="highlights" name="highlights" rows="4" placeholder="Enter each highlight on a new line"></textarea>
                         </div>
+                        <section class="admin-section investment-image-upload-section">
+                            <h3>Investment Images</h3>
+                            <p>Upload images to showcase this investment to potential investors.</p>
+                            
+                            <div class="image-upload-container">
+                                <div class="image-preview-grid" id="imagePreviewGrid"></div>
+                                <div class="upload-controls">
+                                    <input type="file" id="imageUpload" accept="image/*" multiple style="display: none">
+                                    <button type="button" class="admin-btn" onclick="document.getElementById('imageUpload').click()">
+                                        <i class="fas fa-upload"></i> Upload Images
+                                    </button>
+                                    <p class="upload-info">Upload up to 10 images (JPEG, PNG, WebP). Max 5MB each.</p>
+                                    <p class="note">Images will be saved when you submit the investment form.</p>
+                                </div>
+                            </div>
+                        </section>
                         <div class="form-row">
                             <button type="submit" class="admin-btn">Save Investment</button>
                             <button type="button" class="admin-btn cancel" id="cancelInvestmentBtn">Cancel</button>
