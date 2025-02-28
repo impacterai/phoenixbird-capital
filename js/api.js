@@ -173,8 +173,8 @@ async function getInvestments() {
     }
 }
 
-// Submit investment
-async function submitInvestment(investmentId, amount) {
+// Submit investment and send confirmation email
+async function submitInvestment(investmentId, amount, paymentMethod = 'bank_transfer') {
     try {
         const response = await fetch(`${API_URL}/investments/invest`, {
             method: 'POST',
@@ -182,7 +182,7 @@ async function submitInvestment(investmentId, amount) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${getToken()}`
             },
-            body: JSON.stringify({ investmentId, amount })
+            body: JSON.stringify({ investmentId, amount, paymentMethod })
         });
 
         const data = await response.json();
@@ -194,6 +194,42 @@ async function submitInvestment(investmentId, amount) {
         return data;
     } catch (error) {
         throw error;
+    }
+}
+
+// Send investment confirmation email
+async function sendInvestmentConfirmationEmail(investmentDetails) {
+    try {
+        const user = getUserData();
+        if (!user || !user.email) {
+            console.error('User email not found');
+            return { success: false, error: 'User email not found' };
+        }
+        
+        // Make an API call to send the email
+        const response = await fetch(`${API_URL}/email/send-confirmation`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+            },
+            body: JSON.stringify({
+                email: user.email,
+                investmentDetails: investmentDetails
+            })
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+            console.error('Failed to send confirmation email:', data.error);
+            return { success: false, error: data.error };
+        }
+
+        return { success: true, data };
+    } catch (error) {
+        console.error('Error sending confirmation email:', error);
+        return { success: false, error: error.message };
     }
 }
 
@@ -275,11 +311,6 @@ async function updateUserName(name) {
 
 // Update user name display
 function updateUserNameDisplay() {
-    // No longer needed since IRA link is always displayed as "IRA"
-    return;
-}
-
-function updateUserName() {
     // No longer needed since IRA link is always displayed as "IRA"
     return;
 }
@@ -414,3 +445,35 @@ async function exportUsers() {
 
     return await response.blob();
 }
+
+// We're not using modules, so no need for export statements
+/* export {
+    apiCall,
+    setToken,
+    getToken,
+    removeToken,
+    downloadDocument,
+    setUserData,
+    getUserData,
+    removeUserData,
+    register,
+    login,
+    resetPassword,
+    getInvestments,
+    submitInvestment,
+    sendInvestmentConfirmationEmail,
+    getMyInvestments,
+    logout,
+    isAuthenticated,
+    getCurrentUser,
+    updateUserName,
+    updateUserNameDisplay,
+    getInvestmentById,
+    getPublicInvestmentById,
+    getAllInvestments,
+    getUsers,
+    getUserById,
+    activateUser,
+    deactivateUser,
+    exportUsers
+}; */

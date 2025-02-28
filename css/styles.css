@@ -1347,3 +1347,92 @@ hr {
 .status-default {
     background-color: #8b5cf6; /* Purple */
 }
+
+/* Investment Email Notification */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    max-width: 400px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slide-in 0.3s ease-out forwards;
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.notification.success {
+    background-color: #f5fffa;
+    border-left: 4px solid #00a86b;
+    color: #2e3d48;
+}
+
+.notification i {
+    font-size: 24px;
+    color: #00a86b;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-content p {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.notification-content p:first-child {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.email-message {
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border-left: 3px solid #00a86b;
+    font-style: italic;
+    color: #555;
+}
+
+.close-notification {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #aaa;
+    line-height: 1;
+    padding: 0;
+    margin-left: 5px;
+    transition: color 0.2s;
+}
+
+.close-notification:hover {
+    color: #555;
+}
+
+.notification.error {
+    background-color: #fff5f5;
+    border-left: 4px solid #e53e3e;
+    color: #2e3d48;
+}
+
+.notification.error i {
+    color: #e53e3e;
+}
