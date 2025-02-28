@@ -275,21 +275,13 @@ async function updateUserName(name) {
 
 // Update user name display
 function updateUserNameDisplay() {
-    const userData = getUserData();
-    const accountLink = document.getElementById('userAccountLink');
-    if (userData && userData.name) {
-        accountLink.textContent = `${userData.name}'s Account`;
-    }
+    // No longer needed since IRA link is always displayed as "IRA"
+    return;
 }
 
 function updateUserName() {
-    const userAccountLink = document.getElementById('userAccountLink');
-    if (userAccountLink) {
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
-        if (user.firstName) {
-            userAccountLink.textContent = `${user.firstName}`;
-        }
-    }
+    // No longer needed since IRA link is always displayed as "IRA"
+    return;
 }
 
 // Get investment by ID (admin)

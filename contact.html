@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - PhoenixBird Capital</title>
+    <link rel="icon" type="image/png" href="images/favicon.ico">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .contact-container {
+            max-width: 800px;
+            margin: 80px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .contact-heading {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-group input, 
+        .form-group select,
+        .form-group textarea {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background-color: #192440;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background-color: #121a30;
+        }
+        
+        .contact-info {
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .contact-method {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-width: 200px;
+        }
+        
+        .contact-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #192440;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar will be loaded here -->
+    <div id="navbar-container"></div>
+    
+    <main>
+        <div class="contact-container">
+            <div class="contact-heading">
+                <h1>Get in Touch</h1>
+                <p>Ready to start your investment journey? Contact us today.</p>
+            </div>
+            
+            <form id="contactForm" class="contact-form">
+                <div class="form-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Your Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="interest">Investment Interest</label>
+                    <select id="interest" name="interest">
+                        <option value="">Select an option</option>
+                        <option value="real-estate">Real Estate</option>
+                        <option value="mortgage-notes">Mortgage Notes</option>
+                        <option value="tax-liens">Tax Liens</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="amount">Intended Investment Amount ($)</label>
+                    <input type="number" id="amount" name="amount" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Your Message</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+            
+            <div class="contact-info">
+                <div class="contact-method">
+                    <i class="fas fa-envelope contact-icon"></i>
+                    <h3>Email</h3>
+                    <p>info@phoenixbirdcapital.com</p>
+                </div>
+                
+                <div class="contact-method">
+                    <i class="fas fa-phone contact-icon"></i>
+                    <h3>Phone</h3>
+                    <p>+1 (555) 123-4567</p>
+                </div>
+                
+                <div class="contact-method">
+                    <i class="fas fa-map-marker-alt contact-icon"></i>
+                    <h3>Office</h3>
+                    <p>Los Angeles, CA</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer will be loaded here -->
+    <div id="footer-container"></div>
+    
+    <script src="js/api.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/components.js"></script>
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Form data collection
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                interest: document.getElementById('interest').value,
+                amount: document.getElementById('amount').value,
+                message: document.getElementById('message').value
+            };
+            
+            // Here you would typically send the data to your backend
+            console.log('Form submitted:', formData);
+            
+            // Show success message
+            alert('Thank you for your message! We will get back to you soon.');
+            
+            // Clear form
+            this.reset();
+        });
+    </script>
+</body>
+</html>

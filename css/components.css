@@ -1,0 +1,43 @@
+/**
+ * Components CSS
+ * Styling for reusable components such as the navbar and footer
+ */
+
+/* IRA link styling */
+.ira-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    /* background-color: var(--primary-color, #0056b3); */
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 600;
+    margin-right: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.ira-link:hover {
+    /* background-color: var(--primary-color-dark, #004494); */
+    text-decoration: none;
+    color: white;
+}
+
+/* IRA link specific styling */
+/* .ira-link[href*="midlandtrust"] {
+    background-color: var(--accent-color, #ff6b00);
+} */
+
+/* .ira-link[href*="midlandtrust"]:hover {
+    background-color: var(--accent-color-dark, #e05f00);
+} */
+
+/* Navbar component styling */
+.navbar .nav-account {
+    display: flex;
+    align-items: center;
+}
+
+/* Footer component styling */
+#footer-container {
+    margin-top: 2rem;
+}
