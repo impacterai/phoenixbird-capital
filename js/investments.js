@@ -179,8 +179,8 @@ function createInvestmentCard(investment) {
         <div class="offerings-content">
             <div class="offerings-header">
                 <h2 class="offerings-title">${investment.title}</h2>
-                <div class="status-badge ${getStatusBadgeClass(investment.status)}">${investment.status}</div>
             </div>
+            <div class="status-badge ${getStatusBadgeClass(investment.status)}">${investment.status}</div>
             <p class="offerings-description">${investment.description}</p>
             <div class="investment-details">
                 ${details.map(detail => `
