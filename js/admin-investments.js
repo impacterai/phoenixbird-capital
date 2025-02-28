@@ -26,6 +26,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('investmentForm').addEventListener('submit', handleInvestmentSubmit);
         document.querySelector('.close-modal').addEventListener('click', closeInvestmentModal);
         
+        // Setup numeric input fields for auto-formatting
+        setupNumericInputFormatting();
+        
         // Image upload event listener
         document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
         console.log('Added event listener for image upload');
@@ -167,9 +170,15 @@ async function handleInvestmentSubmit(event) {
         const formData = new FormData(event.target);
         const investment = Object.fromEntries(formData.entries());
 
-        // Format the data
-        investment.targetAmount = parseFloat(investment.targetAmount);
-        investment.minimumInvestment = parseFloat(investment.minimumInvestment);
+        // Function to parse formatted number input
+        function parseFormattedNumber(value) {
+            // Remove all commas and convert periods to decimal separator
+            return parseFloat(value.replace(/,/g, '').replace(/\.(\d{3})/g, '$1'));
+        }
+
+        // Format the numeric data
+        investment.targetAmount = parseFormattedNumber(investment.targetAmount);
+        investment.minimumInvestment = parseFormattedNumber(investment.minimumInvestment);
         investment.expectedReturn = parseFloat(investment.expectedReturn);
         investment.location = {
             address: investment['location.address'],
@@ -248,43 +257,54 @@ function openNewInvestmentModal() {
 
 async function editInvestment(investmentId) {
     try {
-        console.log('Editing investment:', investmentId);
-        const token = localStorage.getItem('token');
-        const response = await fetch(`/api/investments/${investmentId}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Failed to fetch investment');
+        // Fetch investment details
+        const investment = await getInvestmentById(investmentId);
+        if (!investment) {
+            console.error('Investment not found');
+            return;
         }
         
-        currentInvestment = await response.json();
-        console.log('Current investment data:', currentInvestment);
+        currentInvestment = investment;
         
-        // Fill form with current values
+        // Clear previous form data and images
+        document.getElementById('investmentForm').reset();
+        uploadedImages = [];
+        clearImagePreviews();
+        
+        // Set modal title
         document.getElementById('modalTitle').textContent = 'Edit Investment';
-        document.getElementById('title').value = currentInvestment.title;
-        document.getElementById('description').value = currentInvestment.description;
-        document.getElementById('propertyType').value = currentInvestment.propertyType;
-        document.getElementById('status').value = currentInvestment.status;
-        document.getElementById('address').value = currentInvestment.location.address;
-        document.getElementById('city').value = currentInvestment.location.city;
-        document.getElementById('state').value = currentInvestment.location.state;
-        document.getElementById('zipCode').value = currentInvestment.location.zipCode;
-        document.getElementById('targetAmount').value = currentInvestment.targetAmount;
-        document.getElementById('minimumInvestment').value = currentInvestment.minimumInvestment;
-        document.getElementById('expectedReturn').value = currentInvestment.expectedReturn;
-        document.getElementById('riskLevel').value = currentInvestment.riskLevel;
+        
+        // Function to format number with commas
+        function formatWithCommas(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+        
+        // Populate form
+        document.getElementById('title').value = investment.title || '';
+        document.getElementById('status').value = investment.status || 'Draft';
+        document.getElementById('propertyType').value = investment.propertyType || '';
+        document.getElementById('description').value = investment.description || '';
+        
+        // Location fields
+        if (investment.location) {
+            document.getElementById('address').value = investment.location.address || '';
+            document.getElementById('city').value = investment.location.city || '';
+            document.getElementById('state').value = investment.location.state || '';
+            document.getElementById('zipCode').value = investment.location.zipCode || '';
+        }
+        
+        // Financial details - use formatted values
+        document.getElementById('targetAmount').value = investment.targetAmount ? formatWithCommas(investment.targetAmount) : '';
+        document.getElementById('minimumInvestment').value = investment.minimumInvestment ? formatWithCommas(investment.minimumInvestment) : '';
+        document.getElementById('expectedReturn').value = investment.expectedReturn || '';
+        document.getElementById('riskLevel').value = investment.riskLevel || '';
         
         // Format dates
-        if (currentInvestment.startDate) {
-            document.getElementById('startDate').value = new Date(currentInvestment.startDate).toISOString().split('T')[0];
+        if (investment.startDate) {
+            document.getElementById('startDate').value = new Date(investment.startDate).toISOString().split('T')[0];
         }
-        if (currentInvestment.endDate) {
-            document.getElementById('endDate').value = new Date(currentInvestment.endDate).toISOString().split('T')[0];
+        if (investment.endDate) {
+            document.getElementById('endDate').value = new Date(investment.endDate).toISOString().split('T')[0];
         }
         
         // Display current images
@@ -707,4 +727,35 @@ async function getInvestmentById(id) {
         console.error('Error fetching investment:', error);
         throw error;
     }
+}
+
+// Setup auto-formatting for number inputs
+function setupNumericInputFormatting() {
+    const numericInputs = [
+        'targetAmount', 
+        'minimumInvestment'
+    ];
+    
+    numericInputs.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            // Add input event listener for auto-formatting
+            input.addEventListener('input', function(e) {
+                // Get input value and remove all non-numeric characters except commas and periods
+                let value = e.target.value.replace(/[^\d,.]/g, '');
+                
+                // Format the number with commas
+                if (value) {
+                    // Remove all commas first
+                    value = value.replace(/,/g, '');
+                    
+                    // Format with commas for thousand separators
+                    value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                }
+                
+                // Update the input value
+                e.target.value = value;
+            });
+        }
+    });
 }

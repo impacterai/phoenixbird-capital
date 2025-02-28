@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
+    // Setup numeric input fields for auto-formatting
+    setupNumericInputFormatting();
+
     // Check if user is admin
     apiCall('/api/auth/check-admin', 'GET', null, token)
         .then(data => {
@@ -158,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Validate form
         const requiredFields = ['investmentTitle', 'investmentDescription', 'minimumInvestment', 
-            'totalFundSize', 'targetReturn', 'duration', 'investmentType', 'riskLevel', 'investmentStatus'];
+            'totalFundSize', 'targetReturn', 'investmentType', 'riskLevel', 'investmentStatus'];
         
         const invalidFields = requiredFields.filter(field => {
             const input = document.getElementById(field);
@@ -183,27 +186,56 @@ document.addEventListener('DOMContentLoaded', function() {
             'percentageRaised': 'Percentage Raised'
         };
 
+        // Function to parse formatted number input
+        function parseFormattedNumber(value) {
+            // Remove all commas and convert periods to decimal separator
+            return parseFloat(value.replace(/,/g, '').replace(/\.(\d{3})/g, '$1'));
+        }
+
         for (const [fieldId, fieldName] of Object.entries(numericFields)) {
-            const value = parseFloat(document.getElementById(fieldId).value);
-            if (isNaN(value) || value <= 0) {
-                alert(`${fieldName} must be a positive number`);
-                document.getElementById(fieldId).focus();
+            const input = document.getElementById(fieldId);
+            const rawValue = input.value.trim();
+            
+            if (fieldId !== 'duration' && !rawValue) {
+                alert(`${fieldName} is required`);
+                input.focus();
                 return;
             }
+            
+            // If the user did enter a value for 'duration', validate it
+            if (fieldId === 'duration' && rawValue) {
+                const value = parseFormattedNumber(rawValue);
+                if (isNaN(value) || value <= 0) {
+                  alert(`${fieldName} must be a positive number`);
+                  input.focus();
+                  return;
+                }
+              }
+        }
+
+        const durationElement = document.getElementById('duration');
+        const durationValue = durationElement ? durationElement.value.trim() : '';
+        let parsedDuration;
+        if (durationValue && durationValue.toLowerCase() !== "null") {
+        parsedDuration = parseInt(durationValue, 10);
+        // Only set duration if it's a valid number
+        if (isNaN(parsedDuration)) {
+            parsedDuration = null;
+        }
         }
         
         const formData = {
             title: document.getElementById('investmentTitle').value.trim(),
             description: document.getElementById('investmentDescription').value.trim(),
-            minimumInvestment: parseFloat(document.getElementById('minimumInvestment').value),
-            totalFundSize: parseFloat(document.getElementById('totalFundSize').value),
+            minimumInvestment: parseFormattedNumber(document.getElementById('minimumInvestment').value),
+            totalFundSize: parseFormattedNumber(document.getElementById('totalFundSize').value),
             targetReturn: parseFloat(document.getElementById('targetReturn').value),
-            duration: parseInt(document.getElementById('duration').value),
+            ...(parsedDuration ? { duration: parsedDuration } : {}),
             type: document.getElementById('investmentType').value,
             riskLevel: document.getElementById('riskLevel').value,
             status: document.getElementById('investmentStatus').value,
-            targetRaise: parseFloat(document.getElementById('targetRaise').value),
-            currentRaise: parseFloat(document.getElementById('currentRaise').value),
+            targetRaise: parseFormattedNumber(document.getElementById('targetRaise').value),
+            currentRaise: parseFormattedNumber(document.getElementById('currentRaise').value),
             numberOfInvestors: parseInt(document.getElementById('numberOfInvestors').value),
             percentageRaised: parseFloat(document.getElementById('percentageRaised').value),
             highlights: document.getElementById('highlights').value
@@ -489,9 +521,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                             }
                         });
-                        
-                        // Add delete button to the preview
-                        preview.appendChild(deleteButton);
                         
                         // Add to preview grid
                         imageContainer.appendChild(preview);
@@ -793,19 +822,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `;
                 
-                // Create delete button
+                // Create the delete button separately to ensure it's visible
                 const deleteButton = document.createElement('button');
                 deleteButton.type = 'button';
                 deleteButton.className = 'btn-remove';
                 deleteButton.dataset.id = imageId;
                 deleteButton.innerHTML = '<i class="fas fa-times"></i>';
                 
-                // Add event listener
+                // Add event listener to delete button
                 deleteButton.addEventListener('click', function() {
                     preview.remove();
                 });
                 
-                // Add delete button to preview
+                // Append delete button to the preview
                 preview.appendChild(deleteButton);
                 
                 // Add to preview grid
@@ -933,6 +962,39 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Reset input
         event.target.value = '';
+    }
+
+    // Setup auto-formatting for number inputs
+    function setupNumericInputFormatting() {
+        const numericInputs = [
+            'minimumInvestment', 
+            'totalFundSize', 
+            'targetRaise', 
+            'currentRaise'
+        ];
+        
+        numericInputs.forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                // Add input event listener for auto-formatting
+                input.addEventListener('input', function(e) {
+                    // Get input value and remove all non-numeric characters except commas and periods
+                    let value = e.target.value.replace(/[^\d,.]/g, '');
+                    
+                    // Format the number with commas
+                    if (value) {
+                        // Remove all commas first
+                        value = value.replace(/,/g, '');
+                        
+                        // Format with commas for thousand separators
+                        value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                    }
+                    
+                    // Update the input value
+                    e.target.value = value;
+                });
+            }
+        });
     }
 
     // Mobile sidebar toggle

@@ -115,7 +115,7 @@ function createInvestmentCard(investment) {
     const details = [
         { label: 'Minimum Investment', value: formatCurrency(investment.minimumInvestment) },
         { label: 'Target Return', value: formatPercentage(investment.targetReturn) },
-        { label: 'Duration', value: investment.duration + ' months' },
+        ...(investment.duration ? [{ label: 'Duration', value: investment.duration + ' months' }] : []),
         { label: 'Risk Level', value: investment.riskLevel },
         { label: 'Fund Size', value: formatCurrency(investment.fundSize) },
         { label: 'Number of Investors', value: investment.numberOfInvestors },

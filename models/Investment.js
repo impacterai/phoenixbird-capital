@@ -32,7 +32,7 @@ const investmentSchema = new mongoose.Schema({
     },
     duration: {
         type: Number, // in months
-        required: true,
+        required: false,
         min: 1
     },
     totalFundSize: {
