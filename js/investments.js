@@ -259,7 +259,7 @@ function createInvestmentCard(investment) {
         { label: 'Target Return', value: formatPercentage(investment.targetReturn) },
         ...(investment.duration ? [{ label: 'Duration', value: investment.duration + ' months' }] : []),
         { label: 'Risk Level', value: investment.riskLevel },
-        { label: 'Fund Size', value: formatCurrency(investment.fundSize) },
+        { label: 'Total Fund Size', value: formatCurrency(investment.totalFundSize) },
         { label: 'Number of Investors', value: investment.numberOfInvestors },
         { label: 'Percentage Raised', value: formatPercentage(investment.percentageRaised) },
         { label: 'Target Raise', value: formatCurrency(investment.targetRaise) },
@@ -318,7 +318,7 @@ function createInvestmentCard(investment) {
             </div>
             ${investment.highlights ? `
                 <div class="highlights">
-                    <h4>Highlights:</h4>
+                    <h4>Investment Highlights:</h4>
                     <ul>
                         ${investment.highlights.map(h => `<li>${h}</li>`).join('')}
                     </ul>

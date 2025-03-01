@@ -75,7 +75,7 @@ body {
 }
 
 .login-btn {
-    background: var(--gradient-primary);
+    background-color: #4a90e2;
     color: var(--white) !important;
     padding: 0.8rem 1.8rem;
     border-radius: 8px;
@@ -84,6 +84,9 @@ body {
     letter-spacing: 0.5px;
     box-shadow: var(--shadow-soft);
     transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+    min-width: fit-content;
 }
 
 .login-btn:hover {
@@ -186,6 +189,14 @@ body {
 
     .nav-account button {
         width: 100%;
+    }
+
+    .nav-links .login-btn {
+        width: 100%;
+        max-width: 200px;
+        margin: 5px auto;
+        display: block;
+        box-sizing: border-box; /* Ensure padding is included in width calculation */
     }
 }
 
@@ -898,7 +909,7 @@ footer {
     }
 
     .nav-links a {
-        padding: 10px 0;
+        padding: 10px;
         width: 100%;
         border-bottom: 1px solid #eee;
     }
@@ -1060,23 +1071,6 @@ footer {
 .form-group input:focus {
     border-color: var(--accent-color);
     outline: none;
-}
-
-.login-btn {
-    background: var(--gradient-primary);
-    color: var(--white);
-    padding: 0.75rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.login-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-soft);
 }
 
 .forgot-password {
