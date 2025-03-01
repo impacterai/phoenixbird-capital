@@ -97,7 +97,23 @@
 </head>
 <body>
     <!-- Navbar will be loaded here -->
-    <div id="navbar-container"></div>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/">
+                <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" class="logo-img">
+            </a>
+        </div>
+        <button id="navToggle" class="nav-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="nav-links">
+            <a href="investments.html">Invest</a>
+            <div class="nav-account">
+                <span id="IRAlink"></span>
+                <button onclick="logout()" class="logout-btn">Logout</button>
+            </div>
+        </div>
+    </nav>
     
     <main>
         <div class="contact-container">
