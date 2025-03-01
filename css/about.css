@@ -122,6 +122,14 @@
     flex-shrink: 0;
 }
 
+.feature-list li strong {
+    margin-bottom: 8px;
+    margin-right: 25px;
+    font-size: 1.05rem;
+    min-width: 162.6px; /* Set a minimum width equal to the widest element */
+    width: 162.6px; /* Fixed width for all strong elements */
+}
+
 @media (max-width: 768px) {
     .feature-list li {
         padding: 12px 0;
@@ -146,7 +154,7 @@
     .feature-list li strong {
         margin-bottom: 8px;
         font-size: 1.05rem;
-        color: #1d3557;
+        color: #571d53;
         min-width: 162.6px; /* Set a minimum width equal to the widest element */
         width: 162.6px; /* Fixed width for all strong elements */
     }

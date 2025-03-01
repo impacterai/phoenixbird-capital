@@ -116,7 +116,7 @@
 .invest-btn {
     width: 100%;
     padding: 1rem;
-    background: var(--gradient-primary);
+    background: #4a90e2;
     color: white;
     border: none;
     border-radius: 8px;
@@ -127,7 +127,7 @@
 }
 
 .invest-btn:hover {
-    background: var(--gradient-primary);
+    background: #192440;
 }
 
 /* Modal styles */

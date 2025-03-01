@@ -92,6 +92,7 @@ body {
 .login-btn:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-strong);
+    background: #192440;
 }
 
 .mobile-menu {
@@ -110,7 +111,7 @@ body {
 }
 
 .logout-btn {
-    background: var(--gradient-primary);
+    background: #4a90e2;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -124,6 +125,7 @@ body {
 .logout-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: #192440;
 }
 
 /* Mobile nav toggle button */
@@ -815,7 +817,7 @@ body {
 }
 
 .submit-btn {
-    background-color: var(--primary-color);
+    background-color: #4a90e2;
     color: var(--white);
     padding: 1rem 2rem;
     border: none;
@@ -827,7 +829,7 @@ body {
 }
 
 .submit-btn:hover {
-    background-color: var(--secondary-color);
+    background-color: #192440;
 }
 
 #resetPasswordForm .login-btn {
@@ -934,6 +936,7 @@ footer {
         grid-template-columns: 1fr;
         text-align: center;
         padding: 0 1rem;
+        font-size: 0.9rem;
     }
 
     .footer-section {
