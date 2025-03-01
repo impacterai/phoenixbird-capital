@@ -183,7 +183,6 @@ body {
 
     .nav-account {
         width: 100%;
-        padding: 10px 0;
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
@@ -922,7 +921,6 @@ footer {
 
     .nav-account {
         width: 100%;
-        padding: 10px 0;
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
@@ -1208,7 +1206,6 @@ hr {
     .nav-links {
         display: none;
         position: fixed;
-        top: 80px;
         left: 0;
         right: 0;
         background: var(--white);

@@ -38,16 +38,19 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 1.5rem;
+            flex-wrap: wrap;
         }
         
         .investment-title-container {
             flex: 1;
+            min-width: 200px;
         }
         
         .investment-title-container h1 {
             margin: 0 0 0.5rem 0;
             font-size: 2rem;
             color: var(--primary-color);
+            word-wrap: break-word;
         }
         
         .prepared-by {
@@ -58,6 +61,7 @@
         
         .invest-button-container {
             margin-left: 1rem;
+            margin-top: 0.5rem;
         }
         
         .invest-button {
@@ -106,6 +110,8 @@
             margin-top: 0.5rem;
             overflow-x: auto;
             padding-bottom: 0.5rem;
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
         }
         
         .carousel-thumbnail {
@@ -116,6 +122,7 @@
             cursor: pointer;
             opacity: 0.7;
             transition: opacity 0.3s;
+            flex-shrink: 0;
         }
         
         .carousel-thumbnail.active {
@@ -149,6 +156,7 @@
             color: #333;
             font-size: 1.2rem;
             z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         
         .carousel-control.prev {
@@ -281,6 +289,7 @@
             margin: 0;
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
         }
         
         .document-date {
@@ -359,9 +368,15 @@
             background-color: #e0352b;
         }
         
+        /* Mobile Styles */
         @media (max-width: 768px) {
+            .investment-details-page {
+                padding: 1rem;
+            }
+            
             .investment-flex-container {
                 flex-direction: column;
+                gap: 1rem;
             }
             
             .investment-main-content {
@@ -370,18 +385,89 @@
             
             .investment-sidebar {
                 width: 100%;
-                margin: 1rem 0 0 0;
-                align-self: flex-start;
+                max-width: 100%;
+                margin: 0;
+            }
+            
+            .investment-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .invest-button-container {
+                margin-left: 0;
+                margin-top: 1rem;
+                width: 100%;
+            }
+            
+            .invest-button {
+                width: 100%;
+                padding: 0.8rem;
+            }
+            
+            .investment-title-container h1 {
+                font-size: 1.5rem;
+            }
+            
+            .card-section {
+                padding: 1rem;
+            }
+            
+            .card-section h2 {
+                font-size: 1.3rem;
             }
             
             .document-cards {
                 grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .carousel-slide img {
+                height: 250px;
+            }
+            
+            .carousel-thumbnail {
+                width: 60px;
+                height: 45px;
+            }
+            
+            .carousel-control {
+                width: 36px;
+                height: 36px;
+            }
+            
+            .offering-terms-table td {
+                padding: 0.6rem 0;
+                font-size: 0.95rem;
+            }
+            
+            /* Touch-friendly improvements */
+            .document-preview .pdf-overlay {
+                opacity: 1;
+                background: linear-gradient(rgba(255,255,255,0), rgba(0,0,0,0.5));
+            }
+            
+            .document-card {
+                transform: none !important;
+            }
+            
+            .document-card:active {
+                opacity: 0.9;
             }
         }
         
+        /* Tablet Styles */
         @media (max-width: 1024px) and (min-width: 769px) {
+            .investment-details-page {
+                padding: 1.5rem;
+            }
+            
             .document-cards {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .investment-sidebar {
+                max-width: 300px;
             }
         }
     </style>
@@ -397,9 +483,6 @@
         <div class="nav-links">
             <a href="about.html">About</a>
             <a href="investments.html">Invest</a>
-            <a href="documents.html">Documents</a>
-            <a href="faq.html">FAQ</a>
-            <a href="blog.html">Blog</a>
             <a href="contact.html">Contact</a>
             <div class="nav-account">
                 <span id="IRAlink"></span>
@@ -703,13 +786,6 @@
                                         <td>${investment.numberOfInvestors}</td>
                                     </tr>
                                 </table>
-                            </div>
-                            
-                            <div class="card-section">
-                                <h2>Links</h2>
-                                <div class="links-section">
-                                    <a href="#" target="_blank">Please click here to view all of this Fund's SEC filings to date <i class="fas fa-external-link-alt"></i></a>
-                                </div>
                             </div>
                         </div>
                     </div>

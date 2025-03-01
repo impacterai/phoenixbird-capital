@@ -17,10 +17,54 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             };
         }
+
+        // Wait for navbar to be loaded before adding event listeners
+        const navbarContainer = document.getElementById('navbar-container');
+        if (navbarContainer) {
+            // Check if navbar is already loaded
+            if (navbarContainer.innerHTML) {
+                setupMobileNavigation();
+            } else {
+                // If not loaded yet, set up a mutation observer to detect when it's loaded
+                const observer = new MutationObserver((mutations) => {
+                    if (navbarContainer.innerHTML) {
+                        setupMobileNavigation();
+                        observer.disconnect();
+                    }
+                });
+                observer.observe(navbarContainer, { childList: true });
+            }
+        }
     } catch (error) {
         console.error('Error during page initialization:', error);
     }
 });
+
+// Function to set up mobile navigation
+function setupMobileNavigation() {
+    const navToggle = document.getElementById('navToggle');
+    if (navToggle) {
+        navToggle.addEventListener('click', () => {
+            const navLinks = document.querySelector('.nav-links');
+            if (navLinks) {
+                navLinks.classList.toggle('active');
+            }
+        });
+    }
+
+    // Close mobile nav when clicking outside
+    document.addEventListener('click', (e) => {
+        const navLinks = document.querySelector('.nav-links');
+        const navToggle = document.getElementById('navToggle');
+        
+        if (window.innerWidth <= 768 && 
+            navLinks && navLinks.classList.contains('active') && 
+            !navLinks.contains(e.target) && 
+            navToggle && !navToggle.contains(e.target)) {
+            navLinks.classList.remove('active');
+        }
+    });
+}
 
 let currentInvestment = null;
 
@@ -400,27 +444,3 @@ function createInvestmentCard(investment) {
 function viewInvestment(investmentId) {
     window.location.href = `investment-details.html?id=${investmentId}`;
 }
-
-// Mobile navigation toggle - Check if element exists first
-const navToggle = document.getElementById('navToggle');
-if (navToggle) {
-    navToggle.addEventListener('click', () => {
-        const navLinks = document.querySelector('.nav-links');
-        if (navLinks) {
-            navLinks.classList.toggle('active');
-        }
-    });
-}
-
-// Close mobile nav when clicking outside
-document.addEventListener('click', (e) => {
-    const navLinks = document.querySelector('.nav-links');
-    const navToggle = document.getElementById('navToggle');
-    
-    if (window.innerWidth <= 768 && 
-        navLinks && navLinks.classList.contains('active') && 
-        !navLinks.contains(e.target) && 
-        navToggle && !navToggle.contains(e.target)) {
-        navLinks.classList.remove('active');
-    }
-});
