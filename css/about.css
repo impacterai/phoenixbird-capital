@@ -119,6 +119,53 @@
     font-size: 1.5rem;
     margin-right: 15px;
     line-height: 1.2;
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .feature-list li {
+        padding: 12px 0;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    
+    .feature-list li::before {
+        margin-top: 4px;
+        align-self: flex-start;
+        position: absolute;
+    }
+    
+    .feature-list li strong, 
+    .feature-list li .feature-text {
+        display: block;
+        margin-left: 25px;
+        box-sizing: border-box;
+        width: calc(100% - 25px); /* Make sure all text spans use the same width calculation */
+    }
+    
+    .feature-list li strong {
+        margin-bottom: 8px;
+        font-size: 1.05rem;
+        color: #1d3557;
+        min-width: 162.6px; /* Set a minimum width equal to the widest element */
+        width: 162.6px; /* Fixed width for all strong elements */
+    }
+    
+    .feature-list li .feature-text {
+        display: block;
+        margin-left: 25px;
+        box-sizing: border-box;
+        width: calc(100% - 25px);
+        text-indent: 0;
+        padding-left: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .feature-list li {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
 }
 
 .process-steps {
@@ -341,6 +388,13 @@
     background-color: #fff;
 }
 
+.president {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin-top: 30px;
+}
+
 .president-profile {
     display: flex;
     flex-wrap: wrap;
@@ -409,25 +463,51 @@
 }
 
 @media (max-width: 768px) {
+    .about-banner {
+        padding: 60px 0;
+    }
+
+    .about-banner-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .company-overview {
+        padding: 50px 0;
+    }
+
+    .overview-content {
+        flex-direction: column;
+    }
+
+    .overview-left,
+    .overview-right {
+        width: 100%;
+    }
+
+    .overview-right {
+        margin-top: 30px;
+    }
+
+    .team-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+
+    /* Additional responsive improvements for president profile */
     .president-profile {
         flex-direction: column;
     }
-    
+
     .president-left {
-        margin: 0 auto;
+        flex: none;
+        max-width: 280px;
+        margin: 0 auto 30px;
+    }
+    
+    .president-bio {
+        padding: 0 15px;
     }
 }
 
-.president {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 40px;
-    margin-top: 30px;
-}
-
-/* End of President Profile Styles */
-
-/* Responsive */
 @media (max-width: 768px) {
     .about-banner {
         padding: 40px 0;
