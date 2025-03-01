@@ -208,9 +208,13 @@ body {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5); /* Dark semi-transparent background */
-    display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/* When popup is active */
+.popup.active {
+    display: flex;
 }
 
 /* Popup content */

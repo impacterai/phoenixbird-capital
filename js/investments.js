@@ -1,12 +1,41 @@
 // Check authentication and load investments on page load
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // Authentication check moved to navigation.js
+        // Check if user is authenticated
+        if (typeof isAuthenticated === 'function' && !isAuthenticated()) {
+            // Redirect to login page if not authenticated
+            window.location.href = 'login.html?redirect=investments.html';
+            return;
+        }
+        
+        // Create a promise to track when all components are loaded
+        const componentsLoaded = new Promise(resolve => {
+            // Check if navbar and footer are loaded
+            const checkComponentsLoaded = () => {
+                const navbarLoaded = document.getElementById('navbar-container').innerHTML !== '';
+                const footerLoaded = document.getElementById('footer-container').innerHTML !== '';
+                
+                if (navbarLoaded && footerLoaded) {
+                    resolve();
+                } else {
+                    setTimeout(checkComponentsLoaded, 100);
+                }
+            };
+            
+            setTimeout(checkComponentsLoaded, 100);
+        });
+        
+        // Load investments data
+        let investmentsLoaded;
         if (typeof loadInvestments === 'function') {
-            await loadInvestments();
+            investmentsLoaded = loadInvestments();
         } else {
             console.error('loadInvestments function not defined');
+            investmentsLoaded = Promise.resolve();
         }
+        
+        // Wait for both components and investments to load
+        await Promise.all([componentsLoaded, investmentsLoaded]);
         
         // Set up event listeners for the investment modal
         const modal = document.getElementById('investmentModal');
@@ -35,8 +64,33 @@ document.addEventListener('DOMContentLoaded', async () => {
                 observer.observe(navbarContainer, { childList: true });
             }
         }
+        
+        // Hide loader and show content
+        setTimeout(() => {
+            const pageLoader = document.getElementById('page-loader');
+            if (pageLoader) {
+                pageLoader.style.opacity = '0';
+                setTimeout(() => {
+                    pageLoader.style.display = 'none';
+                    document.body.classList.remove('loading');
+                    document.body.classList.add('loaded');
+                }, 300);
+            }
+        }, 500);
     } catch (error) {
         console.error('Error during page initialization:', error);
+        // Even on error, hide the loader after a timeout
+        setTimeout(() => {
+            const pageLoader = document.getElementById('page-loader');
+            if (pageLoader) {
+                pageLoader.style.opacity = '0';
+                setTimeout(() => {
+                    pageLoader.style.display = 'none';
+                    document.body.classList.remove('loading');
+                    document.body.classList.add('loaded');
+                }, 300);
+            }
+        }, 1000);
     }
 });
 
@@ -225,6 +279,13 @@ function showError(message) {
 // Load and display all available investments
 async function loadInvestments() {
     try {
+        // Check if user is authenticated
+        if (typeof isAuthenticated === 'function' && !isAuthenticated()) {
+            // Redirect to login page if not authenticated
+            window.location.href = 'login.html?redirect=investments.html';
+            return Promise.resolve(); // Return resolved promise for redirection
+        }
+        
         // Check if getInvestments exists
         if (typeof getInvestments !== 'function') {
             console.error('getInvestments function not available');
@@ -232,7 +293,7 @@ async function loadInvestments() {
             if (container) {
                 container.innerHTML = '<p class="no-investments">Unable to load investments at this time.</p>';
             }
-            return;
+            return Promise.resolve(); // Return resolved promise for error case
         }
         
         const investments = await getInvestments();
@@ -240,26 +301,29 @@ async function loadInvestments() {
         
         if (!container) {
             console.error('Offerings grid container not found');
-            return;
+            return Promise.resolve(); // Return resolved promise for error case
         }
         
         container.innerHTML = ''; // Clear existing content
 
         if (!investments || investments.length === 0) {
             container.innerHTML = '<p class="no-investments">No investments available at this time.</p>';
-            return;
+            return Promise.resolve(); // Return resolved promise for empty case
         }
 
         investments.forEach(investment => {
             const card = createInvestmentCard(investment);
             container.appendChild(card);
         });
+        
+        return Promise.resolve(); // Return resolved promise when done
     } catch (error) {
         console.error('Error loading investments:', error);
         const container = document.querySelector('.offerings-grid');
         if (container) {
             container.innerHTML = '<p class="no-investments">Error loading investments. Please try again later.</p>';
         }
+        return Promise.resolve(); // Return resolved promise for error case
     }
 }
 

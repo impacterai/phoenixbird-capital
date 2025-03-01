@@ -82,26 +82,27 @@ document.addEventListener("DOMContentLoaded", function () {
     const closeBtn = document.querySelector(".close-btn");
 
     if (link && popup) {
-        popup.style.display = "none";
+        // Make sure popup is hidden initially
+        popup.classList.remove("active");
+        
         // Open the popup
         link.addEventListener("click", function (event) {
             event.preventDefault();
-            popup.style.display = "flex";
+            popup.classList.add("active");
         });
 
         // Close the popup when clicking the close button
         if (closeBtn) {
             closeBtn.addEventListener("click", function () {
-                popup.style.display = "none";
+                popup.classList.remove("active");
             });
         }
 
         // Close popup when clicking outside the content area
         window.addEventListener("click", function (event) {
             if (event.target === popup) {
-                popup.style.display = "none";
+                popup.classList.remove("active");
             }
         });
     }
 });
-

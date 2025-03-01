@@ -154,9 +154,14 @@ async function resetPassword(email) {
 // Get list of investments
 async function getInvestments() {
     try {
+        const token = getToken();
+        if (!token) {
+            throw new Error('Authentication required');
+        }
+        
         const response = await fetch(`${API_URL}/investments/public`, {
             headers: {
-                'Authorization': `Bearer ${getToken()}`
+                'Authorization': `Bearer ${token}`
             }
         });
 

@@ -3,6 +3,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginForm) {
         loginForm.addEventListener('submit', handleLogin);
     }
+    
+    // Check if there's a redirect parameter in the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectParam = urlParams.get('redirect');
+    
+    if (redirectParam) {
+        const messageElement = document.createElement('div');
+        messageElement.className = 'login-message';
+        messageElement.textContent = 'Please log in to access the investments page.';
+        
+        const loginBox = document.querySelector('.login-box');
+        if (loginBox && loginBox.firstChild) {
+            loginBox.insertBefore(messageElement, loginBox.firstChild);
+        }
+    }
 });
 
 async function handleLogin(event) {
@@ -37,8 +52,14 @@ async function handleLogin(event) {
             isAuthenticated: true
         }));
 
-        // Redirect based on role
-        if (data.user.role === 'admin') {
+        // Check if there's a redirect parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectParam = urlParams.get('redirect');
+        
+        // Redirect based on role or redirect parameter
+        if (redirectParam) {
+            window.location.href = redirectParam;
+        } else if (data.user.role === 'admin') {
             window.location.href = '/admin-dashboard.html';
         } else {
             window.location.href = '/dashboard.html';
