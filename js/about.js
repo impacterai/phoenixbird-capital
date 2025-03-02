@@ -17,3 +17,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for components to load
+    setTimeout(function() {
+        // Set up mobile navigation toggle
+        const navToggle = document.getElementById('navToggle');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (navToggle && navLinks) {
+            // Toggle menu when clicking the button
+            navToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                navLinks.classList.toggle('active');
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768 && 
+                    navLinks.classList.contains('active') && 
+                    !navLinks.contains(e.target) && 
+                    !navToggle.contains(e.target)) {
+                    navLinks.classList.remove('active');
+                }
+            });
+        }
+    }, 500); // Give components time to load
+});

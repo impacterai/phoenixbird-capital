@@ -99,6 +99,22 @@ body {
     display: none;
 }
 
+/* Navigation toggle button for mobile */
+.nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.nav-toggle:hover {
+    color: var(--accent-color);
+}
+
 .nav-account {
     display: flex;
     align-items: center;

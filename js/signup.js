@@ -39,6 +39,25 @@ async function handleSignup(event) {
             throw new Error('Please enter your phone number');
         }
 
+        // Check if user is an accredited investor
+        if (!formData.isAccredited) {
+            // Show the non-accredited investor modal
+            const nonAccreditedPopup = document.getElementById('nonAccreditedPopup');
+            if (nonAccreditedPopup) {
+                nonAccreditedPopup.classList.add('active');
+                
+                // Register the user but don't redirect to investments page
+                const result = await register(formData);
+                
+                if (result.success) {
+                    // Log the user in but don't redirect
+                    await login(formData.email, formData.password);
+                }
+                
+                return; // Stop execution here
+            }
+        }
+
         // Show loading state
         const submitButton = form.querySelector('button[type="submit"]');
         const originalButtonText = submitButton.textContent;
@@ -77,31 +96,68 @@ async function handleSignup(event) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    const popup = document.getElementById("accreditedPopup");
-    const link = document.getElementById("accreditedInfoLink");
-    const closeBtn = document.querySelector(".close-btn");
+    // Accredited investor popup
+    const accreditedPopup = document.getElementById("accreditedPopup");
+    const accreditedInfoLink = document.getElementById("accreditedInfoLink");
+    const accreditedCloseBtn = document.querySelector("#accreditedPopup .close-btn");
 
-    if (link && popup) {
+    if (accreditedInfoLink && accreditedPopup) {
         // Make sure popup is hidden initially
-        popup.classList.remove("active");
+        accreditedPopup.classList.remove("active");
         
         // Open the popup
-        link.addEventListener("click", function (event) {
+        accreditedInfoLink.addEventListener("click", function (event) {
             event.preventDefault();
-            popup.classList.add("active");
+            accreditedPopup.classList.add("active");
         });
 
         // Close the popup when clicking the close button
-        if (closeBtn) {
-            closeBtn.addEventListener("click", function () {
-                popup.classList.remove("active");
+        if (accreditedCloseBtn) {
+            accreditedCloseBtn.addEventListener("click", function () {
+                accreditedPopup.classList.remove("active");
             });
         }
 
         // Close popup when clicking outside the content area
         window.addEventListener("click", function (event) {
-            if (event.target === popup) {
-                popup.classList.remove("active");
+            if (event.target === accreditedPopup) {
+                accreditedPopup.classList.remove("active");
+            }
+        });
+    }
+    
+    // Non-accredited investor popup
+    const nonAccreditedPopup = document.getElementById("nonAccreditedPopup");
+    const nonAccreditedCloseBtn = document.getElementById("nonAccreditedCloseBtn");
+    const nonAccreditedOkBtn = document.getElementById("nonAccreditedOkBtn");
+    
+    if (nonAccreditedPopup) {
+        // Make sure popup is hidden initially
+        nonAccreditedPopup.classList.remove("active");
+        
+        // Close the popup when clicking the close button or OK button
+        if (nonAccreditedCloseBtn) {
+            nonAccreditedCloseBtn.addEventListener("click", function () {
+                nonAccreditedPopup.classList.remove("active");
+                // Redirect to home page
+                window.location.href = 'index.html';
+            });
+        }
+        
+        if (nonAccreditedOkBtn) {
+            nonAccreditedOkBtn.addEventListener("click", function () {
+                nonAccreditedPopup.classList.remove("active");
+                // Redirect to home page
+                window.location.href = 'index.html';
+            });
+        }
+        
+        // Close popup when clicking outside the content area
+        window.addEventListener("click", function (event) {
+            if (event.target === nonAccreditedPopup) {
+                nonAccreditedPopup.classList.remove("active");
+                // Redirect to home page
+                window.location.href = 'index.html';
             }
         });
     }

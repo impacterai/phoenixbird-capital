@@ -107,11 +107,7 @@
             <i class="fas fa-bars"></i>
         </button>
         <div class="nav-links">
-            <a href="investments.html">Invest</a>
-            <div class="nav-account">
-                <span id="IRAlink"></span>
-                <button onclick="logout()" class="logout-btn">Logout</button>
-            </div>
+            <!-- Links will be dynamically added here -->
         </div>
     </nav>
     
@@ -155,19 +151,19 @@
                 <div class="contact-method">
                     <i class="fas fa-envelope contact-icon"></i>
                     <h3>Email</h3>
-                    <p>info@phoenixbirdcapital.com</p>
+                    <!-- <p>info@phoenixbirdcapital.com</p> -->
                 </div>
                 
                 <div class="contact-method">
                     <i class="fas fa-phone contact-icon"></i>
                     <h3>Phone</h3>
-                    <p>+1 (555) 123-4567</p>
+                    <!-- <p>+1 (555) 123-4567</p> -->
                 </div>
                 
                 <div class="contact-method">
                     <i class="fas fa-map-marker-alt contact-icon"></i>
                     <h3>Office</h3>
-                    <p>Los Angeles, CA</p>
+                    <p>San Francisco, CA</p>
                 </div>
             </div>
         </div>
@@ -200,6 +196,29 @@
             
             // Clear form
             this.reset();
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+          // Check if the user is signed in (e.g., a token exists in localStorage)
+          const token = localStorage.getItem('token');
+          const navLinks = document.querySelector('.nav-links');
+
+          if (!navLinks) return; // Safety check
+
+          if (token) {
+              // If signed in, display "Invest" link and a logout button
+              navLinks.innerHTML = `
+                  <a href="/investments.html">Invest</a>
+                  <a href="https://midlandtrust.com/phoenixbird" target="_blank">IRA</a>
+                  <button onclick="logout()" class="logout-btn">Logout</button>
+              `;
+          } else {
+              // If not signed in, display "Home" and "About" links
+              navLinks.innerHTML = `
+                  <a href="/index.html">Home</a>
+                  <a href="/about.html">About</a>
+              `;
+          }
         });
     </script>
 </body>

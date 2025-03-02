@@ -275,6 +275,40 @@ body {
     padding-left: 20px;
 }
 
+/* Non-accredited investor modal specific styles */
+.non-accredited-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    border-left: 4px solid var(--accent-color);
+}
+
+.non-accredited-message i {
+    color: var(--accent-color);
+    font-size: 24px;
+    margin-top: 2px;
+}
+
+.non-accredited-message p {
+    margin: 0;
+    line-height: 1.5;
+    color: var(--text-color);
+}
+
+.popup-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.popup-actions .submit-btn {
+    max-width: 200px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .popup-content {
