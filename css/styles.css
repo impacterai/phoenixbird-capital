@@ -228,7 +228,6 @@ body {
     justify-content: center;
     text-align: center;
     color: var(--white);
-    padding-top: 80px;
     position: relative;
 }
 
@@ -245,6 +244,7 @@ body {
 .hero-content {
     max-width: 800px;
     padding: 0 2rem;
+    margin-top: -80px;
 }
 
 .hero-content h1 {
@@ -1486,7 +1486,7 @@ hr {
     overflow: hidden;
     box-shadow: var(--shadow-soft);
     width: 100%;
-    max-width: 800px;
+    max-width: 400px;
     display: flex;
     flex-direction: column;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -1547,23 +1547,4 @@ hr {
 
 .deal-description a:hover {
     color: var(--accent-color);
-}
-
-@media (min-width: 768px) {
-    .deal-card {
-        flex-direction: row;
-    }
-    
-    .deal-image {
-        width: 50%;
-        height: auto;
-    }
-    
-    .deal-content {
-        width: 50%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        text-align: left;
-    }
 }
