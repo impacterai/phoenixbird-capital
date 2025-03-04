@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email - PhoenixBird Capital</title>
+    <link rel="icon" type="image/png" href="images/favicon.ico">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="js/navigation.js" defer></script>
+    <style>
+        .verification-container {
+            max-width: 800px;
+            margin: 80px auto;
+            padding: 40px;
+            background-color: #F8F9FA;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .verification-icon {
+            font-size: 64px;
+            color: #EFB700;
+            margin-bottom: 20px;
+        }
+
+        .verification-title {
+            font-size: 28px;
+            color: #0A2540;
+            margin-bottom: 20px;
+        }
+
+        .verification-message {
+            font-size: 18px;
+            color: #3A3A3A;
+            margin-bottom: 30px;
+        }
+
+        .verification-error {
+            color: #D72638;
+            font-weight: 500;
+        }
+
+        .verification-success {
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .verification-btn {
+            background-color: #EFB700;
+            color: #0A2540;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .verification-btn:hover {
+            background-color: #d9a600;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #EFB700;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+          <div class="logo">
+            <a href="/"><img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" class="logo-img"></a>
+          </div>
+          <!-- Desktop navbar links -->
+          <div class="desktop-nav-links">
+            <!-- These will be updated via JS -->
+          </div>
+          <button id="navToggle" class="nav-toggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          <!-- Mobile navbar links -->
+          <div class="nav-links">
+            <button id="navClose" class="nav-close">
+              <i class="fas fa-times"></i>
+            </button>
+            <div class="mobile-nav-links">
+              <!-- These will be updated via JS -->
+            </div>
+          </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="verification-container">
+            <div id="loading">
+                <div class="loading-spinner"></div>
+                <p class="verification-message">Verifying your email...</p>
+            </div>
+            
+            <div id="success" style="display: none;">
+                <i class="fas fa-check-circle verification-icon"></i>
+                <h1 class="verification-title">Email Verified!</h1>
+                <p class="verification-message verification-success">Your email has been successfully verified.</p>
+                <p class="verification-message">Thank you for confirming your email address. You can now access all features of your PhoenixBird Capital account.</p>
+                <a href="/login.html" class="verification-btn">Log In to Your Account</a>
+            </div>
+            
+            <div id="error" style="display: none;">
+                <i class="fas fa-exclamation-circle verification-icon" style="color: #D72638;"></i>
+                <h1 class="verification-title">Verification Failed</h1>
+                <p id="error-message" class="verification-message verification-error">The verification link is invalid or has expired.</p>
+                <p class="verification-message">Please try again or request a new verification email.</p>
+                <a href="/login.html" class="verification-btn">Return to Login</a>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer will be loaded here -->
+    <div id="footer-container"></div>
+    
+    <script src="js/api.js"></script>
+    <script src="js/components.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Get token from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            
+            if (!token) {
+                showError('No verification token provided');
+                return;
+            }
+            
+            try {
+                // Call the API to verify email
+                const response = await fetch(`/api/auth/verify-email?token=${token}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Update userData in localStorage if user is logged in
+                    const token = localStorage.getItem('token');
+                    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+                    
+                    if (token && userData.email) {
+                        userData.emailVerified = true;
+                        localStorage.setItem('userData', JSON.stringify(userData));
+                    }
+                    
+                    showSuccess();
+                } else {
+                    showError(data.error || 'Verification failed');
+                }
+            } catch (error) {
+                console.error('Verification error:', error);
+                showError('An error occurred during verification');
+            }
+        });
+        
+        function showSuccess() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('success').style.display = 'block';
+            document.getElementById('error').style.display = 'none';
+        }
+        
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('success').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            
+            if (message) {
+                document.getElementById('error-message').textContent = message;
+            }
+        }
+    </script>
+</body>
+</html>
