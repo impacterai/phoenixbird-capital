@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="js/api.js"></script>
-    <script src="js/about.js"></script>
+    <script src="js/about.js" defer></script>
 </head>
 <body onload="checkAuth(); updateUserName();">
     <header>
@@ -161,35 +161,6 @@
 
     <script src="js/components.js"></script>
     <script src="js/navigation.js"></script>
-    
-    <!-- Add script to initialize mobile navigation after navbar is loaded -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Wait for components to load
-            setTimeout(function() {
-                // Set up mobile navigation toggle
-                const navToggle = document.getElementById('navToggle');
-                const navLinks = document.querySelector('.nav-links');
-                
-                if (navToggle && navLinks) {
-                    // Toggle menu when clicking the button
-                    navToggle.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        navLinks.classList.toggle('active');
-                    });
-                    
-                    // Close menu when clicking outside
-                    document.addEventListener('click', function(e) {
-                        if (window.innerWidth <= 768 && 
-                            navLinks.classList.contains('active') && 
-                            !navLinks.contains(e.target) && 
-                            !navToggle.contains(e.target)) {
-                            navLinks.classList.remove('active');
-                        }
-                    });
-                }
-            }, 500); // Give components time to load
-        });
-    </script>
+    <script src="js/about.js"></script>
 </body>
 </html>

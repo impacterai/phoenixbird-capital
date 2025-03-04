@@ -13,9 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
         messageElement.className = 'login-message';
         messageElement.textContent = 'Please log in to access the investments page.';
         
-        const loginBox = document.querySelector('.login-box');
-        if (loginBox && loginBox.firstChild) {
-            loginBox.insertBefore(messageElement, loginBox.firstChild);
+        // Make sure the message is inserted into the appropriate container
+        const loginContainer = document.querySelector('.login-container');
+        if (loginContainer) {
+            loginContainer.insertBefore(messageElement, loginContainer.firstChild);
         }
     }
 });
@@ -62,7 +63,7 @@ async function handleLogin(event) {
         } else if (data.user.role === 'admin') {
             window.location.href = '/admin-dashboard.html';
         } else {
-            window.location.href = '/dashboard.html';
+            window.location.href = '/investments.html';
         }
     } catch (error) {
         console.error('Login error:', error);
