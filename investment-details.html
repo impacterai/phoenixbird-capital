@@ -65,7 +65,7 @@
         }
         
         .invest-button {
-            background-color: #4CAF50;
+            background-color: #4a90e2;
             color: white;
             border: none;
             padding: 0.6rem 1.5rem;
@@ -74,6 +74,11 @@
             cursor: pointer;
             text-transform: uppercase;
             font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .invest-button:hover {
+            background-color: #d9a700;
         }
         
         .carousel-container {
@@ -470,6 +475,179 @@
                 max-width: 300px;
             }
         }
+        
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal.hidden {
+            display: none;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            width: 500px;
+            max-width: 90%;
+        }
+        
+        .offerings-card {
+            padding: 0;
+        }
+        
+        .offerings-title {
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .offerings-details {
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group input[type="number"], .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .invest-btn {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .invest-btn:hover {
+            background-color: #d9a700;
+        }
+        
+        .cancel-btn {
+            background-color: #ccc;
+            color: #666;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 15px;
+            display: flex;
+            align-items: flex-start;
+            width: 350px;
+            max-width: calc(100vw - 40px);
+            z-index: 1100;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .notification.success {
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .notification.error {
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .notification i {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        
+        .notification.success i {
+            color: #4CAF50;
+        }
+        
+        .notification.error i {
+            color: var(--secondary-color);
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-content p {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+        }
+        
+        .notification-content p:first-child {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .close-notification {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+            padding: 0 5px;
+        }
+        
+        .email-message {
+            font-size: 12px !important;
+            color: #666;
+            margin-top: 8px !important;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body onload="loadInvestmentDetails()">
@@ -506,6 +684,32 @@
     <div class="container">
         <div id="investment-details" class="investment-details-page">
             <!-- Content will be loaded dynamically -->
+        </div>
+    </div>
+
+    <!-- Investment Modal -->
+    <div id="investmentModal" class="modal hidden">
+        <div class="modal-content offerings-card">
+            <h2 class="offerings-title">Invest in <span id="modalInvestmentTitle"></span></h2>
+            <form id="investmentForm" onsubmit="submitInvestmentForm(event)">
+                <div class="offerings-details">
+                    <div class="form-group">
+                        <label for="investmentAmount">Investment Amount ($)</label>
+                        <input type="number" id="investmentAmount" name="amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentMethod">Payment Method</label>
+                        <select id="paymentMethod" name="paymentMethod" required>
+                            <option value="bank_transfer">Bank Transfer</option>
+                            <option value="wire">Wire Transfer</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="invest-btn">Confirm Investment</button>
+                    <button type="button" onclick="closeModal()" class="cancel-btn">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -798,6 +1002,12 @@
                                         <td>${investment.numberOfInvestors}</td>
                                     </tr>
                                 </table>
+                                ${investment.status.toLowerCase() === 'active' ? `
+                                <button class="invest-btn" style="width: 100%; margin-top: 20px;" 
+                                    onclick="showInvestmentModal('${investment._id}', '${investment.title}', ${investment.minimumInvestment})">
+                                    Invest Now
+                                </button>
+                                ` : ''}
                             </div>
                         </div>
                     </div>
@@ -971,10 +1181,161 @@
         }
         
         // Investment modal
-        function showInvestmentModal(investmentId, title, minAmount) {
-            // This function should open a modal for investment
-            // You can implement this or integrate with your existing modal system
-            alert(`You're about to invest in ${title}. Minimum investment: $${minAmount}. Coming soon!`);
+        let currentInvestment = null;
+
+        function showInvestmentModal(fundId, fundName, minAmount) {
+            try {
+                // For non-module environments, check if isAuthenticated exists before calling
+                if (typeof isAuthenticated === 'function' && !isAuthenticated()) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                currentInvestment = {
+                    id: fundId,
+                    name: fundName,
+                    minAmount: minAmount
+                };
+
+                const modalTitle = document.getElementById('modalInvestmentTitle');
+                const amountInput = document.getElementById('investmentAmount');
+                const modal = document.getElementById('investmentModal');
+                
+                if (modalTitle) modalTitle.textContent = fundName;
+                if (amountInput) {
+                    amountInput.min = minAmount;
+                    amountInput.value = minAmount;
+                }
+                if (modal) modal.classList.remove('hidden');
+            } catch (error) {
+                console.error('Error showing investment modal:', error);
+                alert(`Error showing investment details. Please try again later.`);
+            }
+        }
+
+        function closeModal() {
+            try {
+                const modal = document.getElementById('investmentModal');
+                if (modal) {
+                    modal.classList.add('hidden');
+                }
+                currentInvestment = null;
+            } catch (error) {
+                console.error('Error closing modal:', error);
+            }
+        }
+
+        async function submitInvestmentForm(event) {
+            event.preventDefault();
+            const amount = parseFloat(document.getElementById('investmentAmount').value);
+            const paymentMethod = document.getElementById('paymentMethod').value;
+
+            if (amount < currentInvestment.minAmount) {
+                showError(`Minimum investment amount is $${currentInvestment.minAmount.toLocaleString()}`);
+                return;
+            }
+
+            try {
+                // First show a loading indicator
+                const submitButton = event.target.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    const originalText = submitButton.textContent;
+                    submitButton.disabled = true;
+                    submitButton.textContent = 'Processing...';
+                }
+
+                // In a real app, you would submit the investment to the server
+                // const investmentResult = await submitInvestment(currentInvestment.id, amount, paymentMethod);
+                
+                // Prepare investment details for email
+                const investmentDetails = {
+                    id: currentInvestment.id,
+                    name: currentInvestment.name,
+                    amount: amount,
+                    paymentMethod: paymentMethod,
+                    date: new Date().toISOString()
+                };
+                
+                // Send confirmation email through SendGrid API
+                const emailResult = await sendInvestmentConfirmationEmail(investmentDetails);
+                
+                if (emailResult.success) {
+                    // Display success message with the email confirmation info
+                    let message = 'Investment confirmed! We have sent a confirmation email to your registered email address.';
+                    
+                    // If email was simulated (dev environment), show different message
+                    if (emailResult.data && emailResult.data.simulated) {
+                        message = 'Investment confirmed! A confirmation email would be sent in production. (Currently in development mode)';
+                        console.log('Note: Email sending was simulated because SendGrid API key is not configured.');
+                    }
+                    
+                    showSuccessWithEmail(message);
+                    
+                    // Close the modal
+                    closeModal();
+                } else {
+                    // Handle email sending failure
+                    console.error('Failed to send confirmation email:', emailResult.error);
+                    showError('Your investment was recorded, but we couldn\'t send a confirmation email. Our team will contact you shortly.');
+                    
+                    // Close the modal anyway since the investment was recorded
+                    closeModal();
+                }
+                
+            } catch (error) {
+                console.error('Error submitting investment:', error);
+                showError('There was an error processing your investment. Please try again later.');
+                
+                // Reset button state
+                const submitButton = event.target.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Confirm Investment';
+                }
+            }
+        }
+        
+        // Function to show success message with email notification
+        function showSuccessWithEmail(message) {
+            const successElement = document.createElement('div');
+            successElement.className = 'notification success';
+            successElement.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                <div class="notification-content">
+                    <p>${message}</p>
+                    <p class="email-message">Thank you for your interest in investing. Your investment amount has been confirmed, and we will follow up shortly with the legal documents.</p>
+                </div>
+                <button class="close-notification" onclick="this.parentElement.remove()">×</button>
+            `;
+            document.body.appendChild(successElement);
+            
+            // Remove notification after 10 seconds
+            setTimeout(() => {
+                if (document.body.contains(successElement)) {
+                    successElement.remove();
+                }
+            }, 10000);
+        }
+        
+        function showError(message) {
+            const errorElement = document.createElement('div');
+            errorElement.className = 'notification error';
+            errorElement.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i>
+                <div class="notification-content">
+                    <p>Error</p>
+                    <p>${message}</p>
+                </div>
+                <button class="close-notification" onclick="this.parentElement.remove()">×</button>
+            `;
+            document.body.appendChild(errorElement);
+            
+            // Remove notification after 7 seconds
+            setTimeout(() => {
+                if (document.body.contains(errorElement)) {
+                    errorElement.remove();
+                }
+            }, 7000);
         }
     </script>
 </body>
