@@ -78,7 +78,7 @@
         }
         
         .invest-button:hover {
-            background-color: #d9a700;
+            background-color: #20284b;
         }
         
         .carousel-container {
@@ -504,7 +504,7 @@
         }
         
         .offerings-card {
-            padding: 0;
+            padding: 20px;
         }
         
         .offerings-title {
@@ -1002,12 +1002,6 @@
                                         <td>${investment.numberOfInvestors}</td>
                                     </tr>
                                 </table>
-                                ${investment.status.toLowerCase() === 'active' ? `
-                                <button class="invest-btn" style="width: 100%; margin-top: 20px;" 
-                                    onclick="showInvestmentModal('${investment._id}', '${investment.title}', ${investment.minimumInvestment})">
-                                    Invest Now
-                                </button>
-                                ` : ''}
                             </div>
                         </div>
                     </div>
