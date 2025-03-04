@@ -98,13 +98,8 @@
     .phone-link {
         font-size: 1.1rem;
         padding: 8px 12px;
-        background-color: #f0f7ff;
         border-radius: 20px;
         display: inline-block;
         margin-top: 5px;
-    }
-    
-    .phone-link:active {
-        background-color: #e0f0ff;
     }
 }
