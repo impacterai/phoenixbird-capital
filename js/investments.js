@@ -384,24 +384,32 @@ function createInvestmentCard(investment) {
             `;
         }).join('');
 
-        const indicators = investment.images.map((_, index) => `
+        // Only show indicators if there's more than one image
+        const indicators = investment.images.length > 1 ? investment.images.map((_, index) => `
             <div class="carousel-indicator ${index === 0 ? 'active' : ''}" data-slide="${index}"></div>
-        `).join('');
+        `).join('') : '';
+
+        // Only show navigation controls if there's more than one image
+        const showControls = investment.images.length > 1;
 
         carouselHtml = `
             <div class="carousel">
                 <div class="carousel-container">
                     ${slides}
                 </div>
+                ${showControls ? `
                 <button class="carousel-control prev" aria-label="Previous slide">
                     <i class="fas fa-chevron-left"></i>
                 </button>
                 <button class="carousel-control next" aria-label="Next slide">
                     <i class="fas fa-chevron-right"></i>
                 </button>
+                ` : ''}
+                ${indicators ? `
                 <div class="carousel-indicators">
                     ${indicators}
                 </div>
+                ` : ''}
             </div>
         `;
     } else {
@@ -442,7 +450,7 @@ function createInvestmentCard(investment) {
     `;
 
     // Add carousel functionality
-    if (investment.images && investment.images.length > 0) {
+    if (investment.images && investment.images.length > 1) {
         const carousel = card.querySelector('.carousel');
         const slides = carousel.querySelectorAll('.carousel-slide');
         const prevBtn = carousel.querySelector('.prev');

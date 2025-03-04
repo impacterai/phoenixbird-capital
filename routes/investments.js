@@ -248,6 +248,16 @@ router.post('/:id/images', adminAuth, express.json({ limit: '50mb' }), async (re
       return res.status(404).json({ error: 'Investment not found' });
     }
     
+    // Validate image data
+    for (let i = 0; i < imageData.length; i++) {
+      if (!imageData[i] || typeof imageData[i] !== 'string') {
+        return res.status(400).json({ 
+          error: 'Invalid image data format', 
+          details: `Image at index ${i} has invalid data`
+        });
+      }
+    }
+    
     // Process image data
     const newImages = imageData.map((data, index) => {
       return {
@@ -264,7 +274,16 @@ router.post('/:id/images', adminAuth, express.json({ limit: '50mb' }), async (re
     }
     
     investment.images = [...investment.images, ...newImages];
-    await investment.save();
+    
+    try {
+      await investment.save();
+    } catch (saveError) {
+      console.error('Error saving investment with images:', saveError);
+      return res.status(500).json({ 
+        error: 'Failed to save images to database', 
+        details: saveError.message 
+      });
+    }
     
     res.json({
       success: true,
@@ -282,7 +301,7 @@ router.post('/:id/images', adminAuth, express.json({ limit: '50mb' }), async (re
     });
   } catch (error) {
     console.error('Error uploading images:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: 'Something went wrong!', details: error.message });
   }
 });
 

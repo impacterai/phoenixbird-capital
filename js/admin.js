@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         const deleteBtn = item.querySelector('.delete-btn');
-        deleteBtn.addEventListener('click', function() {
+        deleteBtn.addEventListener('click', async function() {
             if (confirm('Are you sure you want to delete this investment?')) {
                 deleteInvestment(this.dataset.id);
             }
@@ -333,6 +333,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const url = `/api/investments/${investmentId}/images`;
             console.log('Calling API at:', url);
             
+            // Check if we have valid data before sending
+            if (!imageData.length) {
+                console.log('No image data to upload');
+                return { success: true, message: 'No new images to upload' };
+            }
+            
+            // Ensure we're not sending too much data at once
+            if (JSON.stringify({ imageData, contentType, captions }).length > 10000000) {
+                console.error('Image data too large, try uploading fewer or smaller images');
+                throw new Error('Image data too large, try uploading fewer or smaller images');
+            }
+            
             const response = await fetch(url, {
                 method: 'POST',
                 body: JSON.stringify({
@@ -348,7 +360,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (!response.ok) {
                 console.error('Error uploading images:', response.status, response.statusText);
-                const errorText = await response.text();
+                let errorText;
+                try {
+                    const errorData = await response.json();
+                    errorText = JSON.stringify(errorData);
+                } catch (e) {
+                    errorText = await response.text();
+                }
                 console.error('Error response:', errorText);
                 throw new Error(`Upload failed with status ${response.status}`);
             }
@@ -361,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             return result;
         } catch (error) {
-            console.error('Error uploading images:', error);
+            console.error('Error in uploadInvestmentImages:', error);
             throw error;
         }
     }
@@ -475,7 +493,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         preview.dataset.index = index;
                         
                         // Convert URL to absolute if needed
-                        const imageUrl = image.url.startsWith('http') ? image.url : `${window.location.origin}${image.url}`;
+                        const imageUrl = image.url && image.url.startsWith('http') ? image.url : 
+                                         image.url ? `${window.location.origin}${image.url}` : 
+                                         '/images/placeholder.png';
                         
                         preview.innerHTML = `
                             <img src="${imageUrl}" alt="Investment Image ${index + 1}" onerror="this.src='/images/placeholder.png'; this.onerror=null;">
@@ -656,7 +676,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         preview.dataset.index = index;
                         
                         // Convert URL to absolute if needed
-                        const imageUrl = image.url.startsWith('http') ? image.url : `${window.location.origin}${image.url}`;
+                        const imageUrl = image.url && image.url.startsWith('http') ? image.url : 
+                                         image.url ? `${window.location.origin}${image.url}` : 
+                                         '/images/placeholder.png';
                         
                         preview.innerHTML = `
                             <img src="${imageUrl}" alt="Investment Image ${index + 1}" onerror="this.src='/images/placeholder.png'; this.onerror=null;">
@@ -770,6 +792,198 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Function to compress an image
+    function compressImage(base64String, quality = 0.7, maxWidth = 1200) {
+        return new Promise((resolve, reject) => {
+            try {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    // Calculate new dimensions if the image is too large
+                    if (width > maxWidth) {
+                        height = Math.round(height * maxWidth / width);
+                        width = maxWidth;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Get the compressed image as base64
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+                    
+                    // Extract just the base64 data part
+                    const compressedData = compressedBase64.split(',')[1];
+                    
+                    console.log(`Image compressed: ${Math.round((base64String.length - compressedBase64.length) / 1024)}KB saved`);
+                    
+                    resolve({
+                        fullDataUrl: compressedBase64,
+                        data: compressedData
+                    });
+                };
+                
+                img.onerror = function() {
+                    reject(new Error('Failed to load image for compression'));
+                };
+                
+                img.src = base64String;
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    // Handle image upload
+    async function handleImageUpload(event) {
+        console.log('Image upload triggered');
+        const files = Array.from(event.target.files);
+        
+        if (files.length === 0) return;
+        
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        
+        // Validate files
+        const invalidFiles = files.filter(file => {
+            if (!validTypes.includes(file.type)) {
+                alert(`Invalid file type: ${file.name}. Only JPEG, PNG, and WebP are allowed.`);
+                return true;
+            }
+            if (file.size > maxSize) {
+                alert(`File too large: ${file.name}. Maximum size is 5MB.`);
+                return true;
+            }
+            return false;
+        });
+        
+        if (invalidFiles.length > 0) {
+            // Reset input
+            event.target.value = '';
+            return;
+        }
+        
+        // Get the preview grid
+        const previewGrid = document.getElementById('imagePreviewGrid');
+        if (!previewGrid) {
+            console.error('Preview grid not found');
+            return;
+        }
+        
+        // Process valid files
+        const validFiles = files.filter(file => !invalidFiles.includes(file));
+        console.log('Valid files:', validFiles);
+        
+        // Add to uploaded images array
+        validFiles.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    // Create a unique ID for this image
+                    const imageId = `img-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+                    
+                    // Get the Base64 data
+                    const base64String = e.target.result;
+                    
+                    // Compress the image
+                    let finalData;
+                    let displayUrl;
+                    
+                    try {
+                        // Determine compression quality based on file size
+                        let compressionQuality = 0.7; // Default quality
+                        if (file.size > 3 * 1024 * 1024) { // If larger than 3MB
+                            compressionQuality = 0.5;
+                        } else if (file.size > 1 * 1024 * 1024) { // If larger than 1MB
+                            compressionQuality = 0.6;
+                        }
+                        
+                        // Compress the image
+                        const compressed = await compressImage(base64String, compressionQuality);
+                        finalData = compressed.data;
+                        displayUrl = compressed.fullDataUrl;
+                        console.log(`Image compressed successfully: ${file.name}`);
+                    } catch (compressError) {
+                        console.error('Error compressing image:', compressError);
+                        // Fall back to original data if compression fails
+                        const originalData = base64String.split(',')[1];
+                        if (!originalData) {
+                            throw new Error('Failed to extract base64 data from image');
+                        }
+                        finalData = originalData;
+                        displayUrl = base64String;
+                    }
+                    
+                    // Add to uploadedImages array
+                    uploadedImages.push({
+                        id: imageId,
+                        file: file,
+                        data: finalData,
+                        contentType: 'image/jpeg', // We're converting to JPEG during compression
+                        url: displayUrl, // Keep for preview
+                        caption: ''
+                    });
+                    
+                    // Create preview element
+                    const preview = document.createElement('div');
+                    preview.className = 'image-preview';
+                    preview.dataset.id = imageId;
+                    
+                    preview.innerHTML = `
+                        <img src="${displayUrl}" alt="Preview Image">
+                        <button type="button" class="btn-remove" data-id="${imageId}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <div class="image-preview-overlay">
+                            <input type="text" placeholder="Add caption" class="image-caption">
+                        </div>
+                    `;
+                    
+                    // Find the delete button and add click event
+                    const deleteButton = preview.querySelector('.btn-remove');
+                    deleteButton.addEventListener('click', async function() {
+                        console.log('Delete button clicked for image ID:', imageId);
+                        removeUploadedImage(preview);
+                    });
+                    
+                    // Find caption input and add change event
+                    const captionInput = preview.querySelector('.image-caption');
+                    captionInput.addEventListener('change', function() {
+                        // Update caption in uploadedImages array
+                        const imageIndex = uploadedImages.findIndex(img => img.id === imageId);
+                        if (imageIndex !== -1) {
+                            uploadedImages[imageIndex].caption = captionInput.value;
+                        }
+                    });
+                    
+                    // Add preview to grid
+                    previewGrid.appendChild(preview);
+                    
+                    console.log('Added image preview with ID:', imageId);
+                } catch (error) {
+                    console.error('Error processing image:', error);
+                    alert('Failed to process image. Please try another image.');
+                }
+            };
+            
+            reader.onerror = function() {
+                console.error('Error reading file');
+                alert('Failed to read image file. Please try again.');
+            };
+            
+            // Read the file as data URL
+            reader.readAsDataURL(file);
+        });
+        
+        // Reset input
+        event.target.value = '';
+    }
+
     // Handle modal image upload
     function handleModalImageUpload(event, gridId) {
         console.log('Modal image upload triggered');
@@ -867,102 +1081,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Remove preview element from DOM
         previewElement.remove();
-    }
-
-    // Handle image upload
-    async function handleImageUpload(event) {
-        console.log('Image upload triggered');
-        const files = Array.from(event.target.files);
-        
-        if (files.length === 0) return;
-        
-        const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
-        const maxSize = 5 * 1024 * 1024; // 5MB
-        
-        // Validate files
-        const invalidFiles = files.filter(file => {
-            if (!validTypes.includes(file.type)) {
-                alert(`Invalid file type: ${file.name}. Only JPEG, PNG, and WebP are allowed.`);
-                return true;
-            }
-            if (file.size > maxSize) {
-                alert(`File too large: ${file.name}. Maximum size is 5MB.`);
-                return true;
-            }
-            return false;
-        });
-        
-        if (invalidFiles.length > 0) {
-            // Reset input
-            event.target.value = '';
-            return;
-        }
-        
-        // Get the preview grid
-        const previewGrid = document.getElementById('imagePreviewGrid');
-        if (!previewGrid) {
-            console.error('Preview grid not found');
-            return;
-        }
-        
-        // Process valid files
-        const validFiles = files.filter(file => !invalidFiles.includes(file));
-        console.log('Valid files:', validFiles);
-        
-        // Add to uploaded images array
-        validFiles.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                // Create a unique ID for this image
-                const imageId = `img-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
-                
-                // Get the Base64 data
-                const base64Data = e.target.result.split(',')[1]; // Remove the data:image/jpeg;base64, part
-                
-                // Add to uploadedImages array
-                uploadedImages.push({
-                    id: imageId,
-                    file: file,
-                    data: base64Data,
-                    contentType: file.type,
-                    url: e.target.result, // Keep for preview
-                    caption: ''
-                });
-                
-                // Create preview element
-                const preview = document.createElement('div');
-                preview.className = 'image-preview';
-                preview.dataset.id = imageId;
-                
-                preview.innerHTML = `
-                    <img src="${e.target.result}" alt="Preview Image">
-                    <button type="button" class="btn-remove" data-id="${imageId}">
-                        <i class="fas fa-times"></i>
-                    </button>
-                    <div class="image-preview-overlay">
-                        <input type="text" placeholder="Add caption" class="image-caption">
-                    </div>
-                `;
-                
-                // Find the delete button and add click event
-                const deleteButton = preview.querySelector('.btn-remove');
-                deleteButton.addEventListener('click', function() {
-                    console.log('Delete button clicked for image ID:', imageId);
-                    removeUploadedImage(preview);
-                });
-                
-                // Add preview to grid
-                previewGrid.appendChild(preview);
-                
-                console.log('Added image preview with ID:', imageId);
-            };
-            
-            // Read the file as data URL
-            reader.readAsDataURL(file);
-        });
-        
-        // Reset input
-        event.target.value = '';
     }
 
     // Setup auto-formatting for number inputs
