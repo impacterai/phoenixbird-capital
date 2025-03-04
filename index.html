@@ -5,11 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PhoenixBird Capital - Real Estate Investments</title>
     <link rel="icon" type="image/png" href="images/favicon.ico">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Preload hero background image -->
+    <link rel="preload" href="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3" as="image">
+    <!-- Critical CSS first for immediate rendering -->
+    <link rel="stylesheet" href="css/critical.css">
+    <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Non-critical CSS loaded after -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <header>

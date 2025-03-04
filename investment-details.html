@@ -884,16 +884,52 @@
                 let thumbnailsHtml = '';
                 
                 if (investment.images && investment.images.length > 0) {
-                    const slides = investment.images.map((image, index) => `
-                        <div class="carousel-slide ${index === 0 ? 'active' : ''}">
-                            <img src="${image.url}" alt="${image.caption || investment.title}">
-                        </div>
-                    `).join('');
+                    const slides = investment.images.map((image, index) => {
+                        // Process image source properly
+                        let imageUrl;
+                        
+                        if (image.data && image.contentType) {
+                            // Use Base64 data directly from the database
+                            imageUrl = `data:${image.contentType};base64,${image.data}`;
+                        } else if (image.url) {
+                            // Fallback for legacy images that might still use URL
+                            imageUrl = image.url.startsWith('http') || image.url.startsWith('/') 
+                                ? image.url 
+                                : '/' + image.url;
+                        } else {
+                            // Default image if no data is available
+                            imageUrl = 'images/phoenix-bird-logo.png';
+                        }
+                        
+                        return `
+                            <div class="carousel-slide ${index === 0 ? 'active' : ''}">
+                                <img src="${imageUrl}" alt="${image.caption || investment.title}" onerror="this.src='images/phoenix-bird-logo.png'; this.onerror=null;">
+                            </div>
+                        `;
+                    }).join('');
                     
-                    thumbnailsHtml = investment.images.map((image, index) => `
-                        <img src="${image.url}" alt="Thumbnail" class="carousel-thumbnail ${index === 0 ? 'active' : ''}" 
-                            onclick="changeSlide(${index})">
-                    `).join('');
+                    thumbnailsHtml = investment.images.map((image, index) => {
+                        // Process thumbnail image source properly
+                        let imageUrl;
+                        
+                        if (image.data && image.contentType) {
+                            // Use Base64 data directly from the database
+                            imageUrl = `data:${image.contentType};base64,${image.data}`;
+                        } else if (image.url) {
+                            // Fallback for legacy images that might still use URL
+                            imageUrl = image.url.startsWith('http') || image.url.startsWith('/') 
+                                ? image.url 
+                                : '/' + image.url;
+                        } else {
+                            // Default image if no data is available
+                            imageUrl = 'images/phoenix-bird-logo.png';
+                        }
+                        
+                        return `
+                            <img src="${imageUrl}" alt="Thumbnail" class="carousel-thumbnail ${index === 0 ? 'active' : ''}" 
+                                onclick="changeSlide(${index})" onerror="this.src='images/phoenix-bird-logo.png'; this.onerror=null;">
+                        `;
+                    }).join('');
                     
                     carouselHtml = `
                     <div class="carousel">
