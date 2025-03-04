@@ -315,25 +315,19 @@ document.addEventListener('DOMContentLoaded', function() {
     async function uploadInvestmentImages(investmentId) {
         console.log('Uploading investment images', investmentId);
         try {
-            // Create a FormData object for the files
-            const formData = new FormData();
+            // Prepare the image data
+            const imageData = [];
+            const contentType = [];
+            const captions = [];
             
-            // Add each image file to the form data
-            uploadedImages.forEach((image, index) => {
-                console.log(`Adding image to form: ${index}`, image.file);
-                if (image && image.file) {
-                    // Append with unique identifiers
-                    formData.append('images', image.file, `investment_${Date.now()}_${index}.${image.file.name.split('.').pop()}`);
-                    
-                    // Add caption if available
-                    if (image.caption) {
-                        formData.append(`captions[${index}]`, image.caption);
-                    }
-                }
+            // Extract data from uploadedImages
+            uploadedImages.forEach(image => {
+                imageData.push(image.data);
+                contentType.push(image.contentType);
+                captions.push(image.caption || '');
             });
             
-            // Log form data for debugging
-            console.log('FormData created with ' + uploadedImages.length + ' images');
+            console.log(`Preparing to upload ${imageData.length} images`);
             
             // Make the API call
             const url = `/api/investments/${investmentId}/images`;
@@ -341,10 +335,14 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const response = await fetch(url, {
                 method: 'POST',
-                body: formData,
+                body: JSON.stringify({
+                    imageData,
+                    contentType,
+                    captions
+                }),
                 headers: {
+                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
-                    // Don't set Content-Type header, browser will set it with boundary
                 }
             });
             
@@ -918,11 +916,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Create a unique ID for this image
                 const imageId = `img-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
                 
+                // Get the Base64 data
+                const base64Data = e.target.result.split(',')[1]; // Remove the data:image/jpeg;base64, part
+                
                 // Add to uploadedImages array
                 uploadedImages.push({
                     id: imageId,
                     file: file,
-                    url: e.target.result,
+                    data: base64Data,
+                    contentType: file.type,
+                    url: e.target.result, // Keep for preview
                     caption: ''
                 });
                 

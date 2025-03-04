@@ -22,8 +22,8 @@ const investmentSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['active', 'coming_soon', 'closed'],
-        default: 'coming_soon'
+        enum: ['active', 'coming soon', 'closed'],
+        default: 'coming soon'
     },
     type: {
         type: String,
@@ -79,7 +79,9 @@ const investmentSchema = new mongoose.Schema({
         }
     }],
     images: [{
-        url: String,
+        data: String, // Base64 encoded image data
+        contentType: String, // MIME type of the image
+        caption: String,
         order: Number
     }],
     createdAt: {

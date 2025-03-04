@@ -16,7 +16,7 @@ CREATE TABLE investments (
     description TEXT,
     minimum_investment DECIMAL(10,2) NOT NULL,
     target_return DECIMAL(5,2),
-    status ENUM('open', 'closed', 'coming_soon') DEFAULT 'coming_soon',
+    status ENUM('open', 'closed', 'coming soon') DEFAULT 'coming soon',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

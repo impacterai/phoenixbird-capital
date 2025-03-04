@@ -27,23 +27,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 // Configure multer for image uploads
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        const uploadPath = path.join(__dirname, '../uploads/investments');
-        
-        // Ensure upload directory exists
-        if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, { recursive: true });
-        }
-        
-        cb(null, uploadPath);
-    },
-    filename: function(req, file, cb) {
-        // Add prefix for better organization and unique timestamp
-        const fileName = `investment-${Date.now()}-${Math.floor(Math.random() * 1000000000)}.${file.originalname.split('.').pop()}`;
-        cb(null, fileName);
-    }
-});
+const storage = multer.memoryStorage(); // Use memory storage instead of disk storage
 
 // Filter function to only allow image files
 const fileFilter = (req, file, cb) => {
@@ -51,7 +35,7 @@ const fileFilter = (req, file, cb) => {
     if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
     } else {
-        cb(new Error('Invalid file type. Only JPEG, PNG and WebP are allowed.'), false);
+        cb(new Error('Only image files are allowed'), false);
     }
 };
 
@@ -243,15 +227,19 @@ router.get('/:id/details', adminAuth, async (req, res) => {
 });
 
 // Admin: Upload images for an investment
-router.post('/:id/images', adminAuth, upload.array('images', 10), async (req, res) => {
+router.post('/:id/images', adminAuth, express.json({ limit: '50mb' }), async (req, res) => {
   try {
     const investmentId = req.params.id;
     
     console.log(`Adding images to investment ${investmentId}`);
-    console.log(`Request files: ${req.files ? req.files.length : 0}`);
     
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ error: 'No images uploaded' });
+    // Get image data from request body
+    const imageData = req.body.imageData || [];
+    const contentTypes = req.body.contentType || [];
+    const captions = req.body.captions || [];
+    
+    if (!Array.isArray(imageData) || imageData.length === 0) {
+      return res.status(400).json({ error: 'No image data provided' });
     }
     
     // Get the investment
@@ -260,13 +248,13 @@ router.post('/:id/images', adminAuth, upload.array('images', 10), async (req, re
       return res.status(404).json({ error: 'Investment not found' });
     }
     
-    // Process uploaded files
-    const newImages = req.files.map((file) => {
-      // Create path that will work with static middleware
-      const relativePath = `/uploads/investments/${file.filename}`;
-      
+    // Process image data
+    const newImages = imageData.map((data, index) => {
       return {
-        url: relativePath
+        data: data,
+        contentType: contentTypes[index] || 'image/jpeg',
+        caption: captions[index] || '',
+        order: investment.images ? investment.images.length + index + 1 : index + 1
       };
     });
     
@@ -280,8 +268,17 @@ router.post('/:id/images', adminAuth, upload.array('images', 10), async (req, re
     
     res.json({
       success: true,
-      images: newImages,
-      investment: investment
+      images: newImages.map(img => ({
+        contentType: img.contentType,
+        caption: img.caption,
+        order: img.order
+      })),
+      investment: {
+        _id: investment._id,
+        title: investment.title,
+        status: investment.status,
+        imageCount: investment.images.length
+      }
     });
   } catch (error) {
     console.error('Error uploading images:', error);
@@ -308,52 +305,6 @@ router.delete('/:investmentId/images/:imageIndex', adminAuth, async (req, res) =
         const index = parseInt(imageIndex, 10);
         if (isNaN(index) || index < 0 || index >= investment.images.length) {
             return res.status(400).json({ error: 'Invalid image index' });
-        }
-        
-        // Get the image to delete
-        const imageToDelete = investment.images[index];
-        console.log('Image to delete:', imageToDelete);
-        
-        // If the image has a URL that points to a file in our system, delete it
-        if (imageToDelete && imageToDelete.url) {
-            try {
-                // Convert URL to file path
-                let imagePath = imageToDelete.url;
-                
-                // Remove leading slash if present
-                if (imagePath.startsWith('/')) {
-                    imagePath = imagePath.substring(1);
-                }
-                
-                // Try different paths if the image is from the old or new format
-                const possiblePaths = [
-                    path.join(__dirname, '..', imagePath),
-                    path.join(__dirname, '..', 'uploads', 'investments', path.basename(imagePath))
-                ];
-                
-                let fileDeleted = false;
-                
-                // Try each possible path
-                for (const filePath of possiblePaths) {
-                    console.log('Checking path:', filePath);
-                    
-                    if (fs.existsSync(filePath)) {
-                        console.log('File found, deleting:', filePath);
-                        fs.unlinkSync(filePath);
-                        fileDeleted = true;
-                        break;
-                    }
-                }
-                
-                if (fileDeleted) {
-                    console.log('File deleted successfully');
-                } else {
-                    console.log('File not found in any expected location');
-                }
-            } catch (fileError) {
-                console.error('Error deleting image file:', fileError);
-                // Continue with database update even if file deletion fails
-            }
         }
         
         // Remove the image from the array

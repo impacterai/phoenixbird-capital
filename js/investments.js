@@ -10,12 +10,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Create a promise to track when all components are loaded
         const componentsLoaded = new Promise(resolve => {
-            // Check if navbar and footer are loaded
+            // Check if footer is loaded
             const checkComponentsLoaded = () => {
-                const navbarLoaded = document.getElementById('navbar-container').innerHTML !== '';
-                const footerLoaded = document.getElementById('footer-container').innerHTML !== '';
+                const footerLoaded = document.getElementById('footer-container') ? 
+                    document.getElementById('footer-container').innerHTML !== '' : true;
                 
-                if (navbarLoaded && footerLoaded) {
+                if (footerLoaded) {
                     resolve();
                 } else {
                     setTimeout(checkComponentsLoaded, 100);
@@ -47,24 +47,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             };
         }
 
-        // Wait for navbar to be loaded before adding event listeners
-        const navbarContainer = document.getElementById('navbar-container');
-        if (navbarContainer) {
-            // Check if navbar is already loaded
-            if (navbarContainer.innerHTML) {
-                setupMobileNavigation();
-            } else {
-                // If not loaded yet, set up a mutation observer to detect when it's loaded
-                const observer = new MutationObserver((mutations) => {
-                    if (navbarContainer.innerHTML) {
-                        setupMobileNavigation();
-                        observer.disconnect();
-                    }
-                });
-                observer.observe(navbarContainer, { childList: true });
-            }
-        }
-        
         // Hide loader and show content
         setTimeout(() => {
             const pageLoader = document.getElementById('page-loader');
@@ -377,12 +359,30 @@ function createInvestmentCard(investment) {
     // Create carousel HTML if images exist
     let carouselHtml = '';
     if (investment.images && investment.images.length > 0) {
-        const slides = investment.images.map((image, index) => `
+        const slides = investment.images.map((image, index) => {
+            // Create image source from Base64 data if available
+            let imageUrl;
+            
+            if (image.data && image.contentType) {
+                // Use Base64 data directly from the database
+                imageUrl = `data:${image.contentType};base64,${image.data}`;
+            } else if (image.url) {
+                // Fallback for legacy images that might still use URL
+                imageUrl = image.url.startsWith('http') || image.url.startsWith('/') 
+                    ? image.url 
+                    : '/' + image.url;
+            } else {
+                // Default image if no data is available
+                imageUrl = 'images/phoenix-bird-logo.png';
+            }
+            
+            return `
             <div class="carousel-slide ${index === 0 ? 'active' : ''}">
-                <img src="${image.url}" alt="${image.caption || investment.title}">
+                <img src="${imageUrl}" alt="${image.caption || investment.title}" onerror="this.src='images/phoenix-bird-logo.png'; this.onerror=null;">
                 ${image.caption ? `<div class="carousel-caption">${image.caption}</div>` : ''}
             </div>
-        `).join('');
+            `;
+        }).join('');
 
         const indicators = investment.images.map((_, index) => `
             <div class="carousel-indicator ${index === 0 ? 'active' : ''}" data-slide="${index}"></div>

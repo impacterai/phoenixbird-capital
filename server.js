@@ -17,7 +17,16 @@ app.use(express.json());
 
 // Serve static files
 // Order matters here - more specific paths should come first
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+    setHeaders: function (res, path) {
+        // Set appropriate headers for images
+        if (path.endsWith('.jpg') || path.endsWith('.jpeg') || path.endsWith('.png') || path.endsWith('.webp')) {
+            res.set('Cache-Control', 'public, max-age=86400'); // Cache for 1 day
+            res.set('Content-Type', path.endsWith('.jpg') || path.endsWith('.jpeg') ? 'image/jpeg' : 
+                                    path.endsWith('.png') ? 'image/png' : 'image/webp');
+        }
+    }
+}));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/css', express.static(path.join(__dirname, 'css')));
 app.use('/js', express.static(path.join(__dirname, 'js')));

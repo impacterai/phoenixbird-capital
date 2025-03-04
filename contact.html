@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="js/navigation.js" defer></script>
     <style>
         .contact-container {
             max-width: 800px;
@@ -96,20 +97,29 @@
     </style>
 </head>
 <body>
-    <!-- Navbar will be loaded here -->
-    <nav class="navbar">
-        <div class="logo">
-            <a href="/">
-                <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" class="logo-img">
-            </a>
-        </div>
-        <button id="navToggle" class="nav-toggle">
+    <header>
+        <nav class="navbar">
+          <div class="logo">
+            <a href="/"><img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" class="logo-img"></a>
+          </div>
+          <!-- Desktop navbar links -->
+          <div class="desktop-nav-links">
+            <!-- These will be updated via JS -->
+          </div>
+          <button id="navToggle" class="nav-toggle">
             <i class="fas fa-bars"></i>
-        </button>
-        <div class="nav-links">
-            <!-- Links will be dynamically added here -->
-        </div>
-    </nav>
+          </button>
+          <!-- Mobile navbar links -->
+          <div class="nav-links">
+            <button id="navClose" class="nav-close">
+              <i class="fas fa-times"></i>
+            </button>
+            <div class="mobile-nav-links">
+              <!-- These will be updated via JS -->
+            </div>
+          </div>
+        </nav>
+      </header>
     
     <main>
         <div class="contact-container">
@@ -163,7 +173,8 @@
                 <div class="contact-method">
                     <i class="fas fa-map-marker-alt contact-icon"></i>
                     <h3>Office</h3>
-                    <p>San Francisco, CA</p>
+                    <p>535 Mission Street</p>
+                    <p>San Francisco, CA 94105</p>
                 </div>
             </div>
         </div>
@@ -173,7 +184,6 @@
     <div id="footer-container"></div>
     
     <script src="js/api.js"></script>
-    <script src="js/navigation.js"></script>
     <script src="js/components.js"></script>
     <script>
         document.getElementById('contactForm').addEventListener('submit', function(e) {
@@ -199,27 +209,73 @@
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-          // Check if the user is signed in (e.g., a token exists in localStorage)
-          const token = localStorage.getItem('token');
-          const navLinks = document.querySelector('.nav-links');
+        // Check for authentication (for example, a token in localStorage)
+        const token = localStorage.getItem('token');
 
-          if (!navLinks) return; // Safety check
+        // Get both containers
+        const desktopNav = document.querySelector('.desktop-nav-links');
+        const mobileNav = document.querySelector('.mobile-nav-links');
 
-          if (token) {
-              // If signed in, display "Invest" link and a logout button
-              navLinks.innerHTML = `
-                  <a href="/investments.html">Invest</a>
-                  <a href="https://midlandtrust.com/phoenixbird" target="_blank">IRA</a>
-                  <button onclick="logout()" class="logout-btn">Logout</button>
-              `;
-          } else {
-              // If not signed in, display "Home" and "About" links
-              navLinks.innerHTML = `
-                  <a href="/index.html">Home</a>
-                  <a href="/about.html">About</a>
-              `;
-          }
+        // Define the markup for signed-in and not signed-in states
+        let desktopHTML, mobileHTML;
+        if (token) {
+            // For authenticated users, show "Invest", "IRA", and a Logout button
+            desktopHTML = `
+            <a href="/investments.html">Investments</a>
+            <a href="https://midlandtrust.com/phoenixbird" target="_blank">IRA</a>
+            <button onclick="logout()" class="logout-btn">Logout</button>
+            `;
+            mobileHTML = `
+            <a href="/investments.html" class="mobile-nav-link">Investments</a>
+            <a href="https://midlandtrust.com/phoenixbird" target="_blank" class="mobile-nav-link">IRA</a>
+            <div class="mobile-login-btns">
+                <button onclick="logout()" class="login-btn">Logout</button>
+            </div>
+            `;
+        } else {
+            // For non-authenticated users, show "Home", "About", "IRA", and Sign In/Join buttons
+            desktopHTML = `
+            <a href="/index.html">Home</a>
+            <a href="/about.html">About</a>
+            <a href="https://midlandtrust.com/phoenixbird" target="_blank">IRA</a>
+            <a href="/login.html" class="login-btn">Sign In</a>
+            <a href="/signup.html" class="login-btn">Join</a>
+            `;
+            mobileHTML = `
+            <a href="/index.html" class="mobile-nav-link">Home</a>
+            <a href="/about.html" class="mobile-nav-link">About</a>
+            <a href="https://midlandtrust.com/phoenixbird" target="_blank" class="mobile-nav-link">IRA</a>
+            <div class="mobile-login-btns">
+                <a href="/login.html" class="login-btn">Sign In</a>
+                <a href="/signup.html" class="login-btn">Join</a>
+            </div>
+            `;
+        }
+
+        // Update the containers if they exist
+        if (desktopNav) desktopNav.innerHTML = desktopHTML;
+        if (mobileNav) mobileNav.innerHTML = mobileHTML;
+
+        // Mobile navigation toggle behavior:
+        const navToggle = document.getElementById('navToggle');
+        const navContainer = document.querySelector('.nav-links');
+        if (navToggle && navContainer) {
+            navToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            navContainer.classList.toggle('active');
+            });
+
+            document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768 &&
+                navContainer.classList.contains('active') &&
+                !navContainer.contains(e.target) &&
+                !navToggle.contains(e.target)) {
+                navContainer.classList.remove('active');
+            }
+            });
+        }
         });
+
     </script>
 </body>
 </html>

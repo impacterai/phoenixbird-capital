@@ -14,18 +14,32 @@
 <body>
     <header>
         <nav class="navbar">
-            <div class="logo">
-                <a href="/">
-                    <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" class="logo-img">
-                </a>
+            <a href="/">
+                <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" class="logo-img">
+            </a>
+            <div class="desktop-nav-links">
+                <a href="about.html">About</a>
+                <a href="https://midlandtrust.com/phoenixbird" target="_blank">IRA</a>
+                <a href="contact.html">Contact</a>
+                <a href="login.html" class="login-btn">Sign In</a>
+                <a href="signup.html" class="login-btn">Join</a>
             </div>
             <button id="navToggle" class="nav-toggle">
                 <i class="fas fa-bars"></i>
             </button>
             <div class="nav-links">
-                <a href="about.html">About</a>
-                <a href="/login.html" class="login-btn">Sign In</a>
-                <a href="/signup.html" class="login-btn">Join</a>
+                <button id="navClose" class="nav-close">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="mobile-nav-links">
+                    <a href="about.html" class="mobile-nav-link">About</a>
+                    <a href="https://midlandtrust.com/phoenixbird" target="_blank" class="mobile-nav-link">IRA</a>
+                    <a href="contact.html" class="mobile-nav-link">Contact</a>
+                    <div class="mobile-login-btns">
+                        <a href="login.html" class="login-btn" style="margin-bottom: 10px;">Sign In</a>
+                        <a href="signup.html" class="login-btn">Join</a>
+                    </div>
+                </div>
             </div>
         </nav>
     </header>
@@ -64,54 +78,15 @@
         </div>
     </section>
 
-    <section id="contact" class="contact-section">
-        <div class="contact-container">
-            <div class="contact-heading">
-                <h1>We'd Love To Hear From You</h1>
-                <p>Ready to start your investment journey? Contact us today.</p>
-            </div>
-            
-            <form id="contactForm" class="contact-form">
-                <div class="form-group">
-                    <label for="firstName">First Name</label>
-                    <input type="text" id="firstName" name="firstName" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="lastName">Last Name</label>
-                    <input type="text" id="lastName" name="lastName" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="message">Message</label>
-                    <textarea id="message" name="message" required></textarea>
-                </div>
-                
-                <button type="submit" class="submit-btn">Send Message</button>
-            </form>
-        </div>
-    </section>
-
     <footer>
         <div class="footer-content">
             <div class="footer-section">
                 <h3>PhoenixBird Capital</h3>
-                <p>INVEST WITH YOUR SELF-DIRECTED IRA OR 401K</p>
+                <a href="https://midlandtrust.com/phoenixbird" target="_blank">IRA</a>
             </div>
             <div class="footer-section">
                 <h3>Contact Us</h3>
                 <p>535 Mission Street <br>San Francisco, Ca 94105</p>
-                <p>Phone: (415) 725-8222</p>
             </div>
         </div>
         <div class="footer-bottom">

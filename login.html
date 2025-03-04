@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/login.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="js/navigation.js" defer></script>
     <style>
         body {
             background-color: #f3f4f6;
@@ -125,12 +126,23 @@
         <a href="/">
             <img src="images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" class="logo-img">
         </a>
+        <div class="desktop-nav-links">
+            <a href="index.html">Home</a>
+            <a href="signup.html">Join</a>
+        </div>
         <button id="navToggle" class="nav-toggle">
             <i class="fas fa-bars"></i>
         </button>
         <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="signup.html">Join</a>
+            <button id="navClose" class="nav-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="mobile-nav-links">
+                <a href="index.html" class="mobile-nav-link">Home</a>
+                <div class="mobile-login-btns">
+                    <a href="signup.html" class="login-btn">Join</a>
+                </div>
+            </div>
         </div>
     </nav>
     <div class="login-container">
@@ -163,7 +175,6 @@
     </div>
 
     <script src="js/api.js"></script>
-    <script src="js/navigation.js"></script>
     <script src="js/components.js"></script>
     <script>
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
