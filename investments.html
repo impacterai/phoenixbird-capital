@@ -29,15 +29,6 @@
                     // Token is expired
                     localStorage.removeItem('token');
                     window.location.href = '/login.html?redirect=investments.html';
-                    return;
-                }
-                
-                // Check if email is verified
-                const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-                if (userData && userData.emailVerified !== true) {
-                    // Email not verified, redirect to verification pending page
-                    window.location.href = '/verification-pending.html';
-                    return;
                 }
             } catch (error) {
                 // Invalid token

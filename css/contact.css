@@ -93,35 +93,6 @@
     text-decoration: underline;
 }
 
-/* Thank you message styles */
-.thank-you-message {
-    display: none;
-    background-color: #0A2540;
-    color: white;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-    margin-top: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-.thank-you-message h3 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-    color: #EFB700;
-}
-
-.thank-you-message p {
-    font-size: 1rem;
-    margin-bottom: 0;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
 /* Add a special style for mobile devices */
 @media (max-width: 768px) {
     .phone-link {

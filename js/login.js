@@ -44,21 +44,14 @@ async function handleLogin(event) {
 
         // Store the token and user data
         localStorage.setItem('token', data.token);
-        localStorage.setItem('userData', JSON.stringify({
-            id: data.user.id,
+        localStorage.setItem('user', JSON.stringify({
+            id: data.user._id,
             email: data.user.email,
             firstName: data.user.firstName,
             lastName: data.user.lastName,
             role: data.user.role,
-            emailVerified: data.user.emailVerified,
             isAuthenticated: true
         }));
-
-        // Check if email is verified
-        if (!data.user.emailVerified) {
-            window.location.href = '/verification-pending.html';
-            return;
-        }
 
         // Check if there's a redirect parameter
         const urlParams = new URLSearchParams(window.location.search);
