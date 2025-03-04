@@ -56,19 +56,6 @@ async function downloadDocument(filename) {
     }
 
     try {
-        // Check if we're in a local development environment
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            // Force download the local file
-            const url = `documents/${filename}`;
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename; // Force download instead of opening in new tab
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            return;
-        }
-
         const response = await fetch(`${API_URL}/documents/download/${filename}`, {
             method: 'GET',
             headers: {

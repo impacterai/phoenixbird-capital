@@ -194,7 +194,9 @@
                                             <span class="document-size">${doc.size}</span>
                                         </div>
                                     </div>
-                                    <button class="view-btn" onclick="viewDocumentInNewTab('${doc.filename}')">View Document</button>
+                                    <button class="download-btn" onclick="handleDocumentDownload('${doc.filename}')">
+                                        View Document
+                                    </button>
                                 </div>
                             `).join('')}
                         </div>
@@ -217,7 +219,9 @@
                                             <span class="document-size">${doc.size}</span>
                                         </div>
                                     </div>
-                                    <button class="view-btn" onclick="viewDocumentInNewTab('${doc.filename}')">View Document</button>
+                                    <button class="download-btn" onclick="handleDocumentDownload('${doc.filename}')">
+                                        View Document
+                                    </button>
                                 </div>
                             `).join('')}
                         </div>
@@ -230,7 +234,7 @@
                         <h2 style="font-size: 1.5rem; color: var(--primary-color); border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 1rem;">Investment-Specific Documents</h2>
                         <div class="document-links">
                             ${documents.map(doc => `
-                                <a href="#" class="document-link" onclick="viewDocumentInNewTab('${doc.filename}'); return false;">
+                                <a href="#" class="document-link" onclick="handleDocumentDownload('${doc.filename}'); return false;">
                                     <i class="fas fa-file-pdf"></i> ${doc.title}
                                 </a>
                             `).join('')}
@@ -519,11 +523,11 @@
             try {
                 // For demonstration purposes in development, provide direct access to local files
                 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                    // Force download the local file
+                    // Directly open/download the local file
                     const url = `documents/${filename}`;
                     const link = document.createElement('a');
                     link.href = url;
-                    link.download = filename; // Force download instead of opening in new tab
+                    link.target = '_blank'; // Open in new tab instead of downloading
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
@@ -570,17 +574,6 @@
             } catch (error) {
                 console.error('Error handling document download:', error);
                 alert(`Unable to download document: ${error.message}`);
-            }
-        }
-        
-        // Function to view document in a new tab
-        function viewDocumentInNewTab(filename) {
-            try {
-                const url = `documents/${filename}`;
-                window.open(url, '_blank');
-            } catch (error) {
-                console.error('Error opening document:', error);
-                alert(`Unable to open document: ${error.message}`);
             }
         }
         
