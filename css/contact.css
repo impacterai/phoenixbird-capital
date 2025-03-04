@@ -80,3 +80,31 @@
     margin-bottom: 10px;
     color: #192440;
 }
+
+.phone-link {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.phone-link:hover {
+    color: #004494;
+    text-decoration: underline;
+}
+
+/* Add a special style for mobile devices */
+@media (max-width: 768px) {
+    .phone-link {
+        font-size: 1.1rem;
+        padding: 8px 12px;
+        background-color: #f0f7ff;
+        border-radius: 20px;
+        display: inline-block;
+        margin-top: 5px;
+    }
+    
+    .phone-link:active {
+        background-color: #e0f0ff;
+    }
+}
