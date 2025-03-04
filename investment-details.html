@@ -937,17 +937,21 @@
                             <div class="carousel-slides">
                                 ${slides}
                             </div>                            
+                            ${investment.images.length > 1 ? `
                             <button class="carousel-control prev" onclick="prevSlide()">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
                             <button class="carousel-control next" onclick="nextSlide()">
                                 <i class="fas fa-chevron-right"></i>
-                            </button>                           
+                            </button>
+                            ` : ''}                           
                         </div>
                         </div>
+                        ${investment.images.length > 1 ? `
                         <div class="carousel-thumbnails">
                             ${thumbnailsHtml}
                         </div>
+                        ` : ''}
                     `;
                 } else {
                     // Create a placeholder image that looks like a real estate/investment property
