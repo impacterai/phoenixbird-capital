@@ -75,10 +75,13 @@ function setupEventListeners() {
 
 async function loadUsers(searchQuery = '') {
     try {
+        console.log(`Loading users for page ${currentPage}, search: "${searchQuery}"`);
         const data = await getUsers(currentPage, usersPerPage, searchQuery);
+        console.log('Received user data:', data);
         users = data.users || [];
         totalUsers = data.total || 0;
         
+        console.log(`Displaying ${users.length} users out of ${totalUsers} total`);
         displayUsers(users);
         updatePagination();
     } catch (error) {
@@ -147,7 +150,9 @@ function updatePagination() {
 }
 
 function changePage(delta) {
+    const oldPage = currentPage;
     currentPage += delta;
+    console.log(`Changing page from ${oldPage} to ${currentPage}`);
     loadUsers(document.getElementById('userSearch').value);
 }
 
@@ -307,17 +312,26 @@ async function activateUser(userId) {
 // New API functions
 async function getUsers(page, limit, search) {
     const token = localStorage.getItem('token');
-    const response = await fetch('/api/users', {
+    
+    // Build the query string properly
+    const queryParams = new URLSearchParams();
+    queryParams.append('page', page);
+    queryParams.append('limit', limit);
+    if (search) {
+        queryParams.append('search', search);
+    }
+    
+    const response = await fetch(`/api/users?${queryParams.toString()}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
-        },
-        params: {
-            page,
-            limit,
-            search
         }
     });
+    
+    if (!response.ok) {
+        throw new Error('Failed to fetch users');
+    }
+    
     return response.json();
 }
 
