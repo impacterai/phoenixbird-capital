@@ -120,6 +120,11 @@ async function login(email, password) {
         if (data.token) {
             setToken(data.token);
             setUserData(data.user);
+
+            // Store email verification status
+            if (data.emailVerificationStatus) {
+                localStorage.setItem('emailVerificationStatus', data.emailVerificationStatus);
+            }
         }
         return data;
     } catch (error) {

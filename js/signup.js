@@ -69,16 +69,20 @@ async function handleSignup(event) {
         
         if (result.success) {
             messageBox.className = 'message-box success';
-            messageBox.textContent = 'Account created successfully! Redirecting...';
+            messageBox.innerHTML = `
+                Account created successfully! 
+                ${result.message ? `<br>${result.message}` : ''}
+                <br>Redirecting...
+            `;
             form.appendChild(messageBox);
 
             // Log the user in
-            await login(formData.email, formData.password);
+            const loginResult = await login(formData.email, formData.password);
             
-            // Redirect to investments page
+            // Redirect to verification pending page instead of investments
             setTimeout(() => {
-                window.location.href = 'investments.html';
-            }, 1500);
+                window.location.href = 'verification-pending.html';
+            }, 2000);
         }
     } catch (error) {
         console.error('Signup error:', error);

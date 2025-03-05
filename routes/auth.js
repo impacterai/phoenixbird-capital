@@ -35,6 +35,10 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ error: 'Email already exists' });
         }
 
+        // Generate verification token
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+        const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
         // Create new user
         const user = new User({
             email,
@@ -42,12 +46,14 @@ router.post('/register', async (req, res) => {
             firstName,
             lastName,
             phone,
-            isAccredited
+            isAccredited,
+            verificationToken,
+            verificationTokenExpires
         });
 
         await user.save();
 
-        // Generate token
+        // Generate JWT token
         const token = jwt.sign(
             { 
                 userId: user._id,
@@ -57,27 +63,170 @@ router.post('/register', async (req, res) => {
             { expiresIn: '24h' }
         );
 
+         // Send verification email
+         const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email.html?token=${verificationToken}`;
+        
+         const msg = {
+             to: email,
+             from: process.env.SENDGRID_FROM_EMAIL,
+             subject: 'Welcome to PhoenixBird Capital - Please Verify Your Email',
+             html: `
+                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+                     <div style="text-align: center; margin-bottom: 20px;">
+                         <img src="${process.env.FRONTEND_URL || 'http://localhost:3000'}/images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" style="max-width: 200px;">
+                     </div>
+                     <h2 style="color: #0A2540; margin-bottom: 20px;">Welcome to PhoenixBird Capital, ${firstName}!</h2>
+                     <p>Thank you for signing up. To complete your registration and verify your email address, please click the button below:</p>
+                     <div style="text-align: center; margin: 30px 0;">
+                         <a href="${verificationUrl}" style="background-color: #EFB700; color: #0A2540; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Verify Email Address</a>
+                     </div>
+                     <p>If the button doesn't work, you can also copy and paste the following link into your browser:</p>
+                     <p style="word-break: break-all; color: #0A2540;">${verificationUrl}</p>
+                     <p>This link will expire in 24 hours.</p>
+                     <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+                     <p style="font-size: 12px; color: #666; text-align: center;">If you did not sign up for an account with PhoenixBird Capital, please disregard this email.</p>
+                 </div>
+             `
+         };
+ 
+         try {
+             // Try to send email but don't block registration if it fails
+             await sgMail.send(msg);
+             console.log('Verification email sent successfully');
+         } catch (emailError) {
+             // Log the error but continue with registration
+             console.error('Error sending verification email:', emailError);
+             // Don't auto-verify the user, but let them know about the issue
+         } 
+
         res.json({
             success: true,
+            message: 'Registration successful! Please check your email to verify your account.',
+            emailVerificationRequired: true,
+            emailVerificationStatus: 'pending',
             token,
             user: {
                 id: user._id,
                 email: user.email,
                 firstName: user.firstName,
                 lastName: user.lastName,
+                role: user.role,
                 isAccredited: user.isAccredited,
-                role: user.role
+                emailVerified: user.emailVerified
             }
         });
     } catch (error) {
         console.error('Registration error:', error);
-        if (error.name === 'ValidationError') {
-            return res.status(400).json({ error: 'Invalid input data' });
+        res.status(500).json({ error: 'An error occurred during registration' });
+    }
+});
+
+// Verify email
+router.get('/verify-email', async (req, res) => {
+    try {
+        const { token } = req.query;
+        
+        if (!token) {
+            return res.status(400).json({ error: 'Verification token is required' });   
         }
-        if (error.code === 11000) {
-            return res.status(400).json({ error: 'Email already exists' });
+        const user = await User.findOne({
+            verificationToken: token,
+            verificationTokenExpires: { $gt: Date.now() }
+        });
+        
+        if (!user) {
+            return res.status(400).json({ error: 'Invalid or expired verification token' });
         }
-        res.status(500).json({ error: 'Registration failed. Please try again.' });
+        // Update user as verified
+        user.emailVerified = true;
+        user.verificationToken = undefined;
+        user.verificationTokenExpires = undefined;
+        await user.save();
+        
+        res.json({
+            success: true,
+            message: 'Email verified successfully! You can now log in to your account.'
+        });
+        
+    } catch (error) {
+        console.error('Email verification error:', error);
+        res.status(500).json({ error: 'An error occurred during email verification' });
+    }
+});
+
+// Resend verification email
+router.post('/resend-verification', async (req, res) => {
+    try {
+        const { email } = req.body;
+        
+        if (!email) {
+            return res.status(400).json({ error: 'Email is required' });
+        }
+        
+        // Find user
+        const user = await User.findOne({ email });
+        
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        if (user.emailVerified) {
+            return res.status(400).json({ error: 'Email is already verified' });
+        }
+        
+        // Generate new verification token
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+        const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+        
+        // Update user
+        user.verificationToken = verificationToken;
+        user.verificationTokenExpires = verificationTokenExpires;
+        await user.save();
+        
+        // Send verification email
+        const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email.html?token=${verificationToken}`;
+        
+        const msg = {
+            to: email,
+            from: process.env.SENDGRID_FROM_EMAIL,
+            subject: 'PhoenixBird Capital - Verify Your Email',
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <img src="${process.env.FRONTEND_URL || 'http://localhost:3000'}/images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" style="max-width: 200px;">
+                    </div>
+                    <h2 style="color: #0A2540; margin-bottom: 20px;">Verify Your Email Address</h2>
+                    <p>You requested a new verification email. To verify your email address, please click the button below:</p>
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="${verificationUrl}" style="background-color: #EFB700; color: #0A2540; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Verify Email Address</a>
+                    </div>
+                    <p>If the button doesn't work, you can also copy and paste the following link into your browser:</p>
+                    <p style="word-break: break-all; color: #0A2540;">${verificationUrl}</p>
+                    <p>This link will expire in 24 hours.</p>
+                    <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+                    <p style="font-size: 12px; color: #666; text-align: center;">If you did not request this email, please disregard it.</p>
+                </div>
+            `
+        };
+        
+        try {
+            // Try to send email but don't block the process if it fails
+            await sgMail.send(msg);
+            console.log('Verification email resent successfully');
+        } catch (emailError) {
+            // Log the error but continue
+            console.error('Error resending verification email:', emailError);
+            // Don't auto-verify the user, but let them know about the issue
+        }
+        
+        res.json({
+            success: true,
+            message: 'Verification email sent! Please check your inbox.'
+        });
+        
+    } catch (error) {
+        console.error('Resend verification error:', error);
+        res.status(500).json({ error: 'An error occurred while resending verification email' });
     }
 });
 
@@ -159,15 +308,22 @@ router.post('/login', async (req, res) => {
             { expiresIn: '24h' }
         );
 
+        // Check if email is verified but don't block login
+        const emailVerificationStatus = user.emailVerified ? 'verified' : 'pending';
+
         res.json({
             success: true,
             token,
+            emailVerificationStatus,
+            emailVerificationRequired: true,
+            message: user.emailVerified ? 'Login successful' : 'Please verify your email before accessing investments',
             user: {
                 id: user._id,
                 email: user.email,
                 firstName: user.firstName,
                 lastName: user.lastName,
-                role: user.role
+                role: user.role,
+                emailVerified: user.emailVerified
             }
         });
     } catch (error) {
