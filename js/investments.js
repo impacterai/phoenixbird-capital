@@ -442,7 +442,7 @@ function createInvestmentCard(investment) {
                 ` : ''}
             <div class="investment-footer">
                 <button onclick="viewInvestment('${investment._id}')" class="invest-btn">View Details</button>
-                ${(investment.status.toLowerCase() === 'active' || investment.status.toLowerCase() === 'funding') ? 
+                ${(investment.status.toLowerCase() === 'active' || investment.status.toLowerCase() === 'coming soon' || investment.status.toLowerCase() === 'funding') ? 
                     `<button onclick="showInvestmentModal('${investment._id}', '${investment.title}', ${investment.minimumInvestment || 0})" class="invest-btn">Invest Now</button>` : 
                     ''}
             </div>
