@@ -257,7 +257,8 @@
 }
 
 .document-info {
-    padding: 1.5rem 1.5rem 1rem;
+    padding: 1rem;
+    flex: 1;
 }
 
 .document-info h4 {
@@ -358,6 +359,28 @@
 .download-btn:hover {
     background-color: #e0352b;
 }
+
+.view-btn {
+    background-color: var(--button-color);
+    color: var(--button-text-color);
+    border: none;
+    padding: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    width: 100%;
+    text-align: center;
+    margin-top: 0;
+    transition: background-color 0.3s;
+    border-radius: 0 0 4px 4px;
+}
+
+.view-btn:hover {
+    background-color: #0062cc;
+}
+
+
 
 /* Mobile Styles */
 @media (max-width: 768px) {
