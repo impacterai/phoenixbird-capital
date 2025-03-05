@@ -4,6 +4,8 @@ const crypto = require('crypto');
 const User = require('../models/User');
 const router = express.Router();
 const sgMail = require('@sendgrid/mail');
+const fs = require('fs');
+const path = require('path');
 
 // Initialize SendGrid
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -63,31 +65,46 @@ router.post('/register', async (req, res) => {
             { expiresIn: '24h' }
         );
 
+         // Construct the full path to the image file
+         const logoPath = path.join(__dirname, '../images/phoenix-bird-logo.png');
+
+         // Read the file and convert it to Base64
+         const logoData = fs.readFileSync(logoPath).toString('base64');
+
          // Send verification email
-         const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email.html?token=${verificationToken}`;
-        
+         const verificationUrl = `${process.env.FRONTEND_URL}/verify-email.html?token=${verificationToken}`;
+
          const msg = {
-             to: email,
-             from: process.env.SENDGRID_FROM_EMAIL,
-             subject: 'Welcome to PhoenixBird Capital - Please Verify Your Email',
-             html: `
-                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
-                     <div style="text-align: center; margin-bottom: 20px;">
-                         <img src="${process.env.FRONTEND_URL || 'http://localhost:3000'}/images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" style="max-width: 200px;">
-                     </div>
-                     <h2 style="color: #0A2540; margin-bottom: 20px;">Welcome to PhoenixBird Capital, ${firstName}!</h2>
-                     <p>Thank you for signing up. To complete your registration and verify your email address, please click the button below:</p>
-                     <div style="text-align: center; margin: 30px 0;">
-                         <a href="${verificationUrl}" style="background-color: #EFB700; color: #0A2540; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Verify Email Address</a>
-                     </div>
-                     <p>If the button doesn't work, you can also copy and paste the following link into your browser:</p>
-                     <p style="word-break: break-all; color: #0A2540;">${verificationUrl}</p>
-                     <p>This link will expire in 24 hours.</p>
-                     <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
-                     <p style="font-size: 12px; color: #666; text-align: center;">If you did not sign up for an account with PhoenixBird Capital, please disregard this email.</p>
-                 </div>
-             `
-         };
+          to: email,
+          from: process.env.SENDGRID_FROM_EMAIL,
+          subject: 'Welcome to PhoenixBird Capital - Please Verify Your Email',
+          html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+              <div style="text-align: center; margin-bottom: 20px;">
+                  <img src="cid:phoenixBirdLogo" alt="PhoenixBird Capital Logo" style="max-width: 200px;">
+              </div>
+              <h2 style="color: #0A2540; margin-bottom: 20px;">Welcome to PhoenixBird Capital, ${firstName}!</h2>
+              <p>Thank you for signing up. To complete your registration and verify your email address, please click the button below:</p>
+              <div style="text-align: center; margin: 30px 0;">
+                  <a href="${verificationUrl}" style="background-color: #EFB700; color: #0A2540; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Verify Email Address</a>
+              </div>
+              <p>If the button doesn't work, you can also copy and paste the following link into your browser:</p>
+              <p style="word-break: break-all; color: #0A2540;">${verificationUrl}</p>
+              <p>This link will expire in 24 hours.</p>
+              <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+              <p style="font-size: 12px; color: #666; text-align: center;">If you did not sign up for an account with PhoenixBird Capital, please disregard this email.</p>
+              </div>
+          `,
+          attachments: [
+              {
+              content: logoData,
+              filename: 'phoenix-bird-logo.png',
+              type: 'image/png',
+              disposition: 'inline',
+              content_id: 'phoenixBirdLogo'
+              }
+          ]
+        };
  
          try {
              // Try to send email but don't block registration if it fails
