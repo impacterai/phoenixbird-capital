@@ -301,6 +301,70 @@
     color: #e74c3c;
 }
 
+/* Status badges container */
+.status-badges-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+/* Countdown Timer Styles */
+.countdown-timer {
+    background-color: #EFB700;
+    color: rgb(0, 0, 0);
+    border-radius: 4px;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: pulse 2s infinite;
+}
+
+.countdown-value {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #000000;
+}
+
+.countdown-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(239, 183, 0, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 5px rgba(239, 183, 0, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(239, 183, 0, 0);
+    }
+}
+
+@media (max-width: 768px) {
+    .status-badges-container {
+        flex-wrap: wrap;
+    }
+    
+    .countdown-timer {
+        padding: 3px 6px;
+    }
+    
+    .countdown-value {
+        font-size: 0.9rem;
+    }
+    
+    .countdown-label {
+        font-size: 0.7rem;
+    }
+}
+
 /* Alert messages */
 .alert {
     position: fixed;
@@ -681,63 +745,4 @@
     color: #666;
     background: #f8f9fa;
     border-radius: 8px;
-}
-
-/* Countdown Timer Styles */
-.countdown-container {
-    display: flex;
-    justify-content: center;
-    margin: 15px 0;
-    width: 100%;
-}
-
-.countdown-timer {
-    background-color: #EFB700;
-    color: rgb(0, 0, 0);
-    border-radius: 8px;
-    padding: 10px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    animation: pulse 2s infinite;
-}
-
-.countdown-value {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #000000;
-    line-height: 1.2;
-}
-
-.countdown-label {
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(239, 183, 0, 0.4);
-    }
-    70% {
-        box-shadow: 0 0 0 10px rgba(239, 183, 0, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(239, 183, 0, 0);
-    }
-}
-
-@media (max-width: 768px) {
-    .countdown-timer {
-        padding: 8px 15px;
-    }
-    
-    .countdown-value {
-        font-size: 1.5rem;
-    }
-    
-    .countdown-label {
-        font-size: 0.8rem;
-    }
 }

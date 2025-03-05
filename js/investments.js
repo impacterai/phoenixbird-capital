@@ -425,9 +425,9 @@ function createInvestmentCard(investment) {
             <div class="offerings-header">
                 <h2 class="offerings-title">${investment.title}</h2>
             </div>
-            <div class="status-badge ${getStatusBadgeClass(investment.status)}">${investment.status}</div>
-            ${investment.status.toLowerCase() === 'active' && investment.endDate ? `
-            <div class="countdown-container">
+            <div class="status-badges-container">
+                <div class="status-badge ${getStatusBadgeClass(investment.status)}">${investment.status}</div>
+                ${investment.status.toLowerCase() === 'active' && investment.endDate ? `
                 <div class="countdown-timer" id="countdown-timer-${investment._id}">
                     ${investment.daysRemaining > 0 ? `
                     <span class="countdown-value">${investment.daysRemaining}</span>
@@ -436,8 +436,8 @@ function createInvestmentCard(investment) {
                     <span class="countdown-value">Closing soon</span>
                     `}
                 </div>
+                ` : ''}
             </div>
-            ` : ''}
             <p class="offerings-description">${investment.description}</p>
             <div class="investment-details">
                 ${details.map(detail => `

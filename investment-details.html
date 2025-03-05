@@ -335,23 +335,23 @@
                     <div class="investment-header">
                         <div class="investment-title-container">
                             <h1>${investment.title}</h1>
-                            <span class="status-badge ${getStatusBadgeClass(investment.status)}">${investment.status}</span>
+                            <div class="status-badges-container">
+                                <span class="status-badge ${getStatusBadgeClass(investment.status)}">${investment.status}</span>
+                                ${investment.status.toLowerCase() === 'active' && investment.endDate ? `
+                                <div class="countdown-timer" id="countdown-timer">
+                                    ${investment.daysRemaining > 0 ? `
+                                    <span class="countdown-value">${investment.daysRemaining}</span>
+                                    <span class="countdown-label">day${investment.daysRemaining !== 1 ? 's' : ''}</span>
+                                    ` : `
+                                    <span class="countdown-value">Closing soon</span>
+                                    `}
+                                </div>
+                                ` : ''}
+                            </div>
                         </div>
                         ${(investment.status.toLowerCase() === 'active' || investment.status.toLowerCase() === 'coming soon' || investment.status.toLowerCase() === 'funding') ? `
                         <div class="invest-button-container">
                             <button onclick="showInvestmentModal('${investment._id}', '${investment.title}', ${investment.minimumInvestment || 0})" class="invest-button">Invest</button>
-                        </div>
-                        ` : ''}
-                        ${investment.status.toLowerCase() === 'active' && investment.endDate ? `
-                        <div class="countdown-container">
-                            <div class="countdown-timer" id="countdown-timer">
-                                ${investment.daysRemaining > 0 ? `
-                                <span class="countdown-value">${investment.daysRemaining}</span>
-                                <span class="countdown-label">day${investment.daysRemaining !== 1 ? 's' : ''} left</span>
-                                ` : `
-                                <span class="countdown-value">Closing soon</span>
-                                `}
-                            </div>
                         </div>
                         ` : ''}
                     </div>
