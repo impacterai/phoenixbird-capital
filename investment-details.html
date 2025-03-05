@@ -337,7 +337,7 @@
                             <h1>${investment.title}</h1>
                             <span class="status-badge ${getStatusBadgeClass(investment.status)}">${investment.status}</span>
                         </div>
-                        ${(investment.status.toLowerCase() === 'active' || investment.status.toLowerCase() === 'funding') ? `
+                        ${(investment.status.toLowerCase() === 'active' || investment.status.toLowerCase() === 'coming soon' || investment.status.toLowerCase() === 'funding') ? `
                         <div class="invest-button-container">
                             <button onclick="showInvestmentModal('${investment._id}', '${investment.title}', ${investment.minimumInvestment || 0})" class="invest-button">Invest</button>
                         </div>

@@ -64,7 +64,7 @@
 }
 
 .invest-button:hover {
-    background-color: #20284b;
+    background-color: var(--button-hover-color);
 }
 
 .carousel-container {
@@ -552,8 +552,8 @@
 }
 
 .invest-btn {
-    background-color: var(--accent-color);
-    color: var(--primary-color);
+    background-color: var(--button-color);
+    color: var(--button-text-color);
     border: none;
     padding: 0.8rem 1.5rem;
     border-radius: 4px;
@@ -565,7 +565,7 @@
 }
 
 .invest-btn:hover {
-    background-color: #d9a700;
+    background-color: var(--button-hover-color);
 }
 
 .cancel-btn {
