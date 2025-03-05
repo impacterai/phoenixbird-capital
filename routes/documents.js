@@ -18,21 +18,19 @@ router.get('/download/:filename', auth, (req, res) => {
 
         console.log(`Attempting to download file: ${filePath}`);
         
+        // Set headers to force download instead of display in browser
+        res.setHeader('Content-Type', 'application/octet-stream');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.setHeader('Content-Transfer-Encoding', 'binary');
+        
         // Send the file
-        res.download(filePath, filename, (err) => {
-            if (err) {
-                console.error('Error downloading file:', err);
-                console.error('File path:', filePath);
-                console.error('Error details:', {
-                    code: err.code,
-                    message: err.message,
-                    stack: err.stack
-                });
-                
-                // Check if headers have already been sent
-                if (!res.headersSent) {
-                    res.status(500).json({ error: 'Error downloading document' });
-                }
+        const fileStream = fs.createReadStream(filePath);
+        fileStream.pipe(res);
+        
+        fileStream.on('error', (err) => {
+            console.error('Error streaming file:', err);
+            if (!res.headersSent) {
+                res.status(500).json({ error: 'Error downloading document' });
             }
         });
     } catch (error) {
