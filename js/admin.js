@@ -161,7 +161,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Validate form
         const requiredFields = ['investmentTitle', 'investmentDescription', 'minimumInvestment', 
-            'totalFundSize', 'targetReturn', 'investmentType', 'riskLevel', 'investmentStatus'];
+            'totalFundSize', 'targetReturn', 'investmentType', 'riskLevel', 'investmentStatus',
+            'startDate', 'endDate'];
         
         const invalidFields = requiredFields.filter(field => {
             const input = document.getElementById(field);
@@ -238,6 +239,8 @@ document.addEventListener('DOMContentLoaded', function() {
             currentRaise: parseFormattedNumber(document.getElementById('currentRaise').value),
             numberOfInvestors: parseInt(document.getElementById('numberOfInvestors').value),
             percentageRaised: parseFloat(document.getElementById('percentageRaised').value),
+            startDate: document.getElementById('startDate').value,
+            endDate: document.getElementById('endDate').value,
             highlights: document.getElementById('highlights').value
                 .split('\n')
                 .map(line => line.trim())
@@ -468,6 +471,19 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('investmentType').value = investment.type || '';
             document.getElementById('riskLevel').value = investment.riskLevel || '';
             document.getElementById('investmentStatus').value = investment.status || '';
+            
+            // Populate date fields
+            if (investment.startDate) {
+                document.getElementById('startDate').value = new Date(investment.startDate).toISOString().split('T')[0];
+            } else {
+                document.getElementById('startDate').value = '';
+            }
+            
+            if (investment.endDate) {
+                document.getElementById('endDate').value = new Date(investment.endDate).toISOString().split('T')[0];
+            } else {
+                document.getElementById('endDate').value = '';
+            }
             
             // Populate highlights
             if (investment.highlights && Array.isArray(investment.highlights)) {

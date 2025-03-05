@@ -298,6 +298,9 @@ async function loadInvestments() {
             container.appendChild(card);
         });
         
+        // Update countdown timers for all active investments
+        startCountdownTimers(investments);
+        
         return Promise.resolve(); // Return resolved promise when done
     } catch (error) {
         console.error('Error loading investments:', error);
@@ -423,6 +426,18 @@ function createInvestmentCard(investment) {
                 <h2 class="offerings-title">${investment.title}</h2>
             </div>
             <div class="status-badge ${getStatusBadgeClass(investment.status)}">${investment.status}</div>
+            ${investment.status.toLowerCase() === 'active' && investment.endDate ? `
+            <div class="countdown-container">
+                <div class="countdown-timer" id="countdown-timer-${investment._id}">
+                    ${investment.daysRemaining > 0 ? `
+                    <span class="countdown-value">${investment.daysRemaining}</span>
+                    <span class="countdown-label">day${investment.daysRemaining !== 1 ? 's' : ''} left</span>
+                    ` : `
+                    <span class="countdown-value">Closing soon</span>
+                    `}
+                </div>
+            </div>
+            ` : ''}
             <p class="offerings-description">${investment.description}</p>
             <div class="investment-details">
                 ${details.map(detail => `
@@ -515,4 +530,45 @@ function createInvestmentCard(investment) {
 
 function viewInvestment(investmentId) {
     window.location.href = `investment-details.html?id=${investmentId}`;
+}
+
+// Function to update countdown timer
+function updateCountdown(investmentId, endDateString) {
+    if (!endDateString) return;
+    
+    const countdownElement = document.getElementById(`countdown-timer-${investmentId}`);
+    if (!countdownElement) return;
+    
+    const endDate = new Date(endDateString);
+    const now = new Date();
+    
+    const timeDiff = endDate.getTime() - now.getTime();
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    
+    if (daysDiff > 0) {
+        countdownElement.innerHTML = `
+            <span class="countdown-value">${daysDiff}</span>
+            <span class="countdown-label">day${daysDiff !== 1 ? 's' : ''} left</span>
+        `;
+    } else {
+        countdownElement.innerHTML = `<span class="countdown-value">Closing soon</span>`;
+    }
+}
+
+// Update countdown timers for all active investments
+function startCountdownTimers(investments) {
+    investments.forEach(investment => {
+        if (investment.status.toLowerCase() === 'active' && investment.endDate) {
+            updateCountdown(investment._id, investment.endDate);
+        }
+    });
+    
+    // Update all countdowns every minute
+    setInterval(() => {
+        investments.forEach(investment => {
+            if (investment.status.toLowerCase() === 'active' && investment.endDate) {
+                updateCountdown(investment._id, investment.endDate);
+            }
+        });
+    }, 60000); // Update every minute
 }

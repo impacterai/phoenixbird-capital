@@ -342,6 +342,18 @@
                             <button onclick="showInvestmentModal('${investment._id}', '${investment.title}', ${investment.minimumInvestment || 0})" class="invest-button">Invest</button>
                         </div>
                         ` : ''}
+                        ${investment.status.toLowerCase() === 'active' && investment.endDate ? `
+                        <div class="countdown-container">
+                            <div class="countdown-timer" id="countdown-timer">
+                                ${investment.daysRemaining > 0 ? `
+                                <span class="countdown-value">${investment.daysRemaining}</span>
+                                <span class="countdown-label">day${investment.daysRemaining !== 1 ? 's' : ''} left</span>
+                                ` : `
+                                <span class="countdown-value">Closing soon</span>
+                                `}
+                            </div>
+                        </div>
+                        ` : ''}
                     </div>
                     
                     <div class="investment-flex-container">
@@ -421,6 +433,11 @@
                     
                     if (slides.length > 0) slides[0].classList.add('active');
                     if (thumbnails.length > 0) thumbnails[0].classList.add('active');
+                }
+                
+                // Update countdown timer
+                if (investment.endDate) {
+                    startCountdownTimer(investment.endDate);
                 }
                 
             } catch (error) {
@@ -584,6 +601,37 @@
                 console.error('Error opening document:', error);
                 alert(`Unable to open document: ${error.message}`);
             }
+        }
+        
+        // Function to update countdown timer
+        function updateCountdown(endDateString) {
+            if (!endDateString) return;
+            
+            const countdownElement = document.getElementById('countdown-timer');
+            if (!countdownElement) return;
+            
+            const endDate = new Date(endDateString);
+            const now = new Date();
+            
+            const timeDiff = endDate.getTime() - now.getTime();
+            const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            
+            if (daysDiff > 0) {
+                countdownElement.innerHTML = `
+                    <span class="countdown-value">${daysDiff}</span>
+                    <span class="countdown-label">day${daysDiff !== 1 ? 's' : ''} left</span>
+                `;
+            } else {
+                countdownElement.innerHTML = `<span class="countdown-value">Closing soon</span>`;
+            }
+        }
+        
+        // Update countdown every minute
+        function startCountdownTimer(endDateString) {
+            if (!endDateString) return;
+            
+            updateCountdown(endDateString);
+            setInterval(() => updateCountdown(endDateString), 60000); // Update every minute
         }
         
         // Investment modal

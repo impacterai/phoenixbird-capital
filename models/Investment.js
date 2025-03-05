@@ -66,6 +66,14 @@ const investmentSchema = new mongoose.Schema({
         enum: ['low', 'medium', 'high'],
         required: true
     },
+    startDate: {
+        type: Date,
+        required: false
+    },
+    endDate: {
+        type: Date,
+        required: false
+    },
     highlights: [{
         type: String,
         trim: true
@@ -109,6 +117,18 @@ investmentSchema.virtual('progressPercentage').get(function() {
 // Virtual field for remaining investment needed
 investmentSchema.virtual('remainingInvestment').get(function() {
     return this.targetRaise - this.currentRaise;
+});
+
+// Virtual field for days remaining until closing
+investmentSchema.virtual('daysRemaining').get(function() {
+    if (!this.endDate) return null;
+    
+    const today = new Date();
+    const endDate = new Date(this.endDate);
+    const timeDiff = endDate.getTime() - today.getTime();
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    
+    return daysDiff > 0 ? daysDiff : 0;
 });
 
 // Ensure virtuals are included in JSON output

@@ -391,13 +391,29 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="investmentStatus">Status</label>
-                            <select id="investmentStatus" name="status" required>
-                                <option value="active">Active</option>
-                                <option value="coming soon">Coming Soon</option>
-                                <option value="closed">Closed</option>
-                            </select>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="investmentStatus">Status</label>
+                                <select id="investmentStatus" name="status" required>
+                                    <option value="active">Active</option>
+                                    <option value="coming soon">Coming Soon</option>
+                                    <option value="closed">Closed</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <!-- Placeholder for balance -->
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="startDate">Start Date</label>
+                                <input type="date" id="startDate" name="startDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="endDate">End Date</label>
+                                <input type="date" id="endDate" name="endDate" required>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="highlights">Investment Highlights (one per line)</label>

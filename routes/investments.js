@@ -91,7 +91,9 @@ router.post('/', adminAuth, async (req, res) => {
             targetRaise,
             currentRaise,
             numberOfInvestors,
-            percentageRaised
+            percentageRaised,
+            startDate,
+            endDate
         } = req.body;
 
         const investment = new Investment({
@@ -110,6 +112,8 @@ router.post('/', adminAuth, async (req, res) => {
             currentRaise: currentRaise || 0,
             numberOfInvestors: numberOfInvestors || 0,
             percentageRaised: percentageRaised || 0,
+            startDate,
+            endDate,
             createdBy: req.user._id
         });
 
@@ -139,7 +143,9 @@ router.put('/:id', adminAuth, async (req, res) => {
             'targetRaise',
             'currentRaise',
             'numberOfInvestors',
-            'percentageRaised'
+            'percentageRaised',
+            'startDate',
+            'endDate'
         ];
 
         const updateData = {};

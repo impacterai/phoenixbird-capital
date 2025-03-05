@@ -188,6 +188,15 @@ async function handleInvestmentSubmit(event) {
             zipCode: investment['location.zipCode']
         };
 
+        // Process date fields
+        if (investment.startDate) {
+            investment.startDate = new Date(investment.startDate);
+        }
+        
+        if (investment.endDate) {
+            investment.endDate = new Date(investment.endDate);
+        }
+
         // Remove the flattened location properties
         delete investment['location.address'];
         delete investment['location.city'];
