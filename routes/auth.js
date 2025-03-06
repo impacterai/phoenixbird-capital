@@ -201,7 +201,7 @@ router.post('/resend-verification', async (req, res) => {
         await user.save();
         
         // Send verification email
-        const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email.html?token=${verificationToken}`;
+        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email.html?token=${verificationToken}`;
         
         const msg = {
             to: email,
@@ -210,7 +210,7 @@ router.post('/resend-verification', async (req, res) => {
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
                     <div style="text-align: center; margin-bottom: 20px;">
-                        <img src="${process.env.FRONTEND_URL || 'http://localhost:3000'}/images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" style="max-width: 200px;">
+                        <img src="${process.env.FRONTEND_URL}/images/phoenix-bird-logo.png" alt="PhoenixBird Capital Logo" style="max-width: 200px;">
                     </div>
                     <h2 style="color: #0A2540; margin-bottom: 20px;">Verify Your Email Address</h2>
                     <p>You requested a new verification email. To verify your email address, please click the button below:</p>
