@@ -10,6 +10,54 @@ const path = require('path');
 // Initialize SendGrid
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+// Helper function to send admin notification email
+async function sendAdminNotificationEmail(newUser) {
+    try {
+        const msg = {
+            to: 'manny@impacter.ai',
+            from: process.env.SENDGRID_FROM_EMAIL,
+            subject: 'New User Registration - PhoenixBird Capital',
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+                <h2 style="color: #0A2540; margin-bottom: 20px;">New User Registration Alert</h2>
+                <p>A new user has just signed up on PhoenixBird Capital:</p>
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee; width: 40%;"><strong>Name:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">${newUser.firstName} ${newUser.lastName}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Email:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">${newUser.email}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Phone:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">${newUser.phone || 'Not provided'}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Accredited Investor:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">${newUser.isAccredited ? 'Yes' : 'No'}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Registration Time:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">${new Date().toLocaleString()}</td>
+                    </tr>
+                </table>
+                <p>You can view and manage this user in the <a href="${process.env.FRONTEND_URL}/admin-users.html" style="color: #EFB700;">admin dashboard</a>.</p>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+                <p style="font-size: 12px; color: #666; text-align: center;">This is an automated notification from the PhoenixBird Capital platform.</p>
+                </div>
+            `
+        };
+
+        await sgMail.send(msg);
+        console.log('Admin notification email sent successfully');
+    } catch (emailError) {
+        console.error('Error sending admin notification email:', emailError);
+        // Don't throw the error, just log it - we don't want to block registration if this fails
+    }
+}
+
 // Register new user
 router.post('/register', async (req, res) => {
     try {
@@ -110,6 +158,15 @@ router.post('/register', async (req, res) => {
              // Try to send email but don't block registration if it fails
              await sgMail.send(msg);
              console.log('Verification email sent successfully');
+
+             // Send notification email to admin
+             await sendAdminNotificationEmail({
+                 email,
+                 firstName,
+                 lastName,
+                 phone,
+                 isAccredited
+             });
          } catch (emailError) {
              // Log the error but continue with registration
              console.error('Error sending verification email:', emailError);
